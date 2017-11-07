@@ -1,0 +1,103 @@
+\documentclass[a4paper,10pt,DIV=14]{scrartcl}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc} % korrekte Darstellung von Umlauten u. Sonderzeichen
+\usepackage[ngerman]{babel} % Sprachpaket, ngerman = neue deutsche Rechtschreibung
+\usepackage{amsmath} % Setzen mathematischer Formeln
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{fancyvrb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\usepackage{tabularx}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündig mit Breitenangabe
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe
+
+\newcommand{\gqq}[1]{\glqq{}#1\grqq{}}
+\newcommand{\gq}[1]{\glq{}#1\grq{}}
+
+\renewcommand{\thesection}{Aufgabe \arabic{section}:}
+\renewcommand{\thesubsection}{\alph{subsection})}
+\titleformat*{\subsection}{\normalfont\fontfamily{phv}\fontsize{12}{15}\selectfont}
+
+
+\captionsetup[figure]{labelformat=empty}
+
+
+\begin{document}
+
+\title{Graphische Datenverarbeitung WS17/18 \\ Theorieübung 1}
+\author{
+  Salmah Ahmad (2880011)
+  \and
+  Markus Höhn (1683303)
+  \and
+  Tobias Mertz (2274355)
+  \and
+  Steven Lamarr Reynolds (1620638)
+  \and
+  Sascha Zenglein (2487032)
+}
+
+\maketitle
+
+\section{Pipeline}
+
+\subsection{Aus was besteht der Input der Pipeline?}
+Der Input der Pipeline besteht aus einer gegebenen Szenenbeschreibung.
+
+
+\subsection{Zum Input gehören unter anderem \gqq{Objekte}. In welcher Form sind konkrete \gqq{Objekte} im Input gegeben?}
+
+\begin{itemize}[itemsep=0pt]
+	\item (virtuelle) Kamera
+	\item Dreidimensionale Objekte
+	\item Lichtquellen
+	\item Beleuchtungsalgorithmen
+	\item Texturen
+	\item ...
+\end{itemize}
+
+
+\subsection{Was ist der Output der Pipeline?}
+Der Output der Pipeline ist ein 2D Bild der gegeben Szenenbeschreibung.
+
+
+\subsection{Weshalb ist eine Pipeline die aus $n$ Abschnitten besteht (theoretisch) $n$-mal schneller als eine Pipeline mit nur einem Abschnitt?}
+Bei einer Pipeline mit $n$ Abschnitten kann eine parallele Verarbeitung durchgeführt werden.
+
+
+\subsection{Weshalb ist die Pipeline Geschwindigkeit vom Bottleneck abhängig? Wieso warten die anderen Pipeline-Abschnitte bis der Bottleneck-Abschnitt fertig ist?}
+Der Bottleneck-Abschnitt ist der langsamste der Pipeline.
+
+
+\section{Model \& View Transformation}
+
+\subsection{Stellen Sie die Gleichung $(x, z)^T = f(u,v)$ auf, die die $u, v$ Koordinaten in das Weltkoordinatensystem transformiert. Bestimmen Sie nun die Position der Szenenobjekte bezüglich des Weltkoordinatensystems.}
+
+
+\subsection{Bestimmen Sie, welche Translation und welche Rotation auf die Szene ausgeübt werden müssen, um die Kamera in den Ursprung zu verschieben und anschließend die Blickrichtung nach -z zu rotieren.}
+
+
+\subsection{Berechnen Sie die Position der Szenenobjekte nach der Model- und View-Transformation. Fertigen Sie eine Skizze an.}
+
+
+
+\section{Optische Triangulation}
+
+\subsection{Stellen Sie die Gleichung $\beta = f_1(p)$ auf, um aus einer Pixelposition $p$ den Winkel $\beta$ zu berechnen. Verwenden Sie dabei die Koordinate des Pixelmittelpunktes! \\ Wie groß ist $\beta$, wenn der Laserpunkt in der Mitte von Pixel 5223 registriert wird?}
+
+\subsection{Stellen Sie die Gleichung $\alpha = f_2(\gamma)$ auf, um aus dem Spiegelwinkel $\gamma$ den Winkel $\alpha$ zu berechnen. \\ Berechnen Sie $f_2(45^\circ)$ und $f_2(77^\circ)$.}
+
+\subsection{Stellen Sie die Gleichung $z = f_3(\alpha, \beta)$ auf, um aus den Winkeln $\alpha$ und $\beta$ den Tiefenwert $z$ zu berechnen. \\ Welcher Tiefenwert gehört zu den Winkeln $\alpha = 15^\circ$ und $\beta = 30^\circ$?}
+
+\subsection{Stellen Sie die Gleichung $x = f_4(\beta, z)$ auf, um aus dem Winkel $\beta$ und $z$ die $x$-Koordinate zu berechnen \\ Berechnen sie $f_4(40^\circ, 100cm)$.}
+
+\subsection{Stellen Sie nun die Gesamtgleichung $(x,z)^T = f_5(p, \gamma)$ auf, um aus der Pixelposition $p$ und dem Winkel $\gamma$ die Koordinaten $(x, z)^T$ des abgetasteten Punktes zu berechnen.}
+
+\subsection{Zum Spiegelwinkel $\gamma = 67^\circ$ wird ein Laserpunkt im Mittelpunkt von Pixel 5730 registriert. Welche Koordinaten hat der abgetastete Punkt mit oben beschriebenen Aufbau?}
+
+\end{document}
