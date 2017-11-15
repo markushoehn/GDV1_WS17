@@ -112,9 +112,9 @@ Ergebnisse:
 \subsection{Stellen Sie die Gleichung $\beta = f_1(p)$ auf, um aus einer Pixelposition $p$ den Winkel $\beta$ zu berechnen. Verwenden Sie dabei die Koordinate des Pixelmittelpunktes! \\ Wie groß ist $\beta$, wenn der Laserpunkt in der Mitte von Pixel 5223 registriert wird?}
 
 
-$$f_1(p) = \arctan \left( \frac{\vert (\frac{p_x}{8191}) \cdot 48mm - 24mm) \vert}{24 mm} \right) := \beta $$
+$$f_1(p) = \arctan \left( \frac{\vert (\frac{p}{8191}) \cdot 48mm - 24mm) \vert}{24 mm} \right) := \beta $$
 
-$f_1(5223) = \dg{15,38}$
+$f_1(5223) = \dg{15,3923}$
 
 \subsection{Stellen Sie die Gleichung $\alpha = f_2(\gamma)$ auf, um aus dem Spiegelwinkel $\gamma$ den Winkel $\alpha$ zu berechnen. \\ Berechnen Sie $f_2(45^\circ)$ und $f_2(77^\circ)$.}
 
@@ -154,15 +154,23 @@ $f_1(5223) = \dg{15,38}$
 Mithilfe des Sinussatzes gilt: $$ a = b \cdot \frac{\sin(\dg{90} - \beta)}{\sin(\alpha + \beta)} $$
 Weiter gilt: $$ \cos(\alpha) = \frac{h_b}{a} $$
 Mit $h_b := z$ gilt:
-$$ z = \cos(\alpha) \cdot \frac{b \cdot \sin(\dg{90} - \beta)}{\sin(\alpha + \beta)} $$
-
+$$ z = f_3(\alpha, \beta) = \cos(\alpha) \cdot \frac{b \cdot \sin(\dg{90} - \beta)}{\sin(\alpha + \beta)} $$
 Für $\alpha = \dg{15}$ und $\beta = \dg{30}$ folgt:
-$$ z = \cos(\dg{15}) \cdot \frac{150mm \cdot \sin(\dg{90} - \dg{30})}{\sin(\dg{15} + \dg{30})} = 177.5mm $$
+$$ z = \cos(\dg{15}) \cdot \frac{150mm \cdot \sin(\dg{90} - \dg{30})}{\sin(\dg{15} + \dg{30})} = 177.4519mm $$
 
 \subsection{Stellen Sie die Gleichung $x = f_4(\beta, z)$ auf, um aus dem Winkel $\beta$ und $z$ die $x$-Koordinate zu berechnen \\ Berechnen sie $f_4(40^\circ, 100cm)$.}
 
+$$ x = f_4(\beta, z) = \tan(\beta) \cdot z $$
+
+$f_4(\dg{40}, 100cm) = \tan(\dg{40}) \cdot 100cm = 83,91m$
+
 \subsection{Stellen Sie nun die Gesamtgleichung $(x,z)^T = f_5(p, \gamma)$ auf, um aus der Pixelposition $p$ und dem Winkel $\gamma$ die Koordinaten $(x, z)^T$ des abgetasteten Punktes zu berechnen.}
 
+$$ f_5(p, \gamma) = \begin{pmatrix} x \\ z \end{pmatrix} = \begin{pmatrix} f_4\langle f_1(p), f_3[f_2(\gamma), f_1(p)]\rangle \\ f_3[f_2(\gamma), f_1(p)] \end{pmatrix} $$
+
 \subsection{Zum Spiegelwinkel $\gamma = 67^\circ$ wird ein Laserpunkt im Mittelpunkt von Pixel 5730 registriert. Welche Koordinaten hat der abgetastete Punkt mit oben beschriebenen Aufbau?}
+
+$$ f_5(\dg{67}, 5730) = (43,8637, 109,9074)^T $$
+
 
 \end{document}
