@@ -10,6 +10,7 @@
 \usepackage{siunitx}
 \usepackage{booktabs}
 \usepackage{enumitem}
+\usepackage{gensymb}
 
 \usepackage{tabularx}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündig mit Breitenangabe
@@ -90,6 +91,194 @@ Ergebnisse:
 	\item Sonne: $ (0, 0)^T $
 	\item Planet: $ (-2\sqrt{3}, -2)^T $
 	\item Mond: $ (2 - 2\sqrt{3}, -3)^T $
+\end{itemize}
+
+\subsubsection{Alternative: Stellen Sie die Gleichung $(x, z)^T = f(u,v)$ auf, die die $u, v$ Koordinaten in das Weltkoordinatensystem transformiert. Bestimmen Sie nun die Position der Szenenobjekte bezüglich des Weltkoordinatensystems.}
+
+Um die Koordinaten des Planetenkoordinatensystems in das Weltkoordinatensystem zu transformieren, sind die folgenden Schritte notwendig:
+\begin{enumerate}[itemsep=0pt]
+\item Das Planetenkoordinatensystem muss so gedreht werden, dass die v-Achse entgegengesetzt zur z-Achse verläuft, also nach oben zeigt. Hierzu müssen Koordinaten um $270\degree - \alpha$ im Uhrzeigersinn oder $\alpha + 90\degree$ gegen den Uhrzeigersinn rotiert werden.
+\item Danach müssen die Koordinaten an der x-Achse gespiegelt werden, sodass die v-Achse nun in Richtung der z-Achse zeigt.
+\item Als letztes muss jeder Punkt um die aktuelle Position des Planeten im Weltkoordinatensystem verschoben werden.
+\end{enumerate}
+
+\newcommand{\rotangle}{\alpha + 90 \degree}
+\begin{enumerate}[itemsep=0pt]
+\item Die Rotationsmatrix für die beschriebene Rotation ist folgende:
+\[
+R = 
+\begin{pmatrix}
+\cos(\rotangle) & -\sin(\rotangle) \\
+\sin(\rotangle) & \cos(\rotangle) \\
+\end{pmatrix}
+\]
+\item Die Spiegelung an der x-Achse wird beschrieben durch die Multiplikation mit:
+\[
+M =
+\begin{pmatrix}
+1 & 0 \\
+0 & -1 \\
+\end{pmatrix}
+\]
+
+\item Die Translation wird durch die Addition mit 
+\[
+t= 
+\begin{pmatrix}
+\cos \alpha \cdot r \\
+-\sin \alpha \cdot r \\
+\end{pmatrix}
+\]
+beschrieben.
+\end{enumerate}
+Diese Operationen in der genannten Reihenfolge beschreiben die gesuchte Funktion $f(u,v)$, die folgendermaßen aussieht:
+\begin{align*}
+f(u,v) &= 
+t + M \cdot R \cdot
+\begin{pmatrix}
+u \\
+v \\
+\end{pmatrix} \\
+&= 
+\begin{pmatrix}
+\cos \alpha \cdot r \\
+-\sin \alpha \cdot r \\
+\end{pmatrix}
++ 
+\begin{pmatrix}
+1 & 0 \\
+0 & -1 \\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+\cos(\rotangle) & -\sin(\rotangle) \\
+\sin(\rotangle) & \cos(\rotangle) \\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+u \\
+v \\
+\end{pmatrix}
+\\
+&= 
+\begin{pmatrix}
+\cos \alpha \cdot r\\
+-\sin \alpha \cdot r\\
+\end{pmatrix}
++ 
+\begin{pmatrix}
+\cos(\rotangle) & -\sin(\rotangle) \\
+-\sin(\rotangle) & -\cos(\rotangle) \\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+u \\
+v \\
+\end{pmatrix}
+\\
+\end{align*}
+
+Die Ergebnisse für die genannten Objekte sind:
+\begin{itemize}
+\item Sonne: Position: $(u,v)^T = (0,4)^T$ 
+\begin{align*}
+f(0,4) &=
+\begin{pmatrix}
+\cos 150\degree \cdot 4 \\
+-\sin 150\degree \cdot 4 \\
+\end{pmatrix}
++ 
+\begin{pmatrix}
+\cos 240\degree & -\sin 240\degree \\
+-\sin 240\degree & -\cos 240\degree \\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+0 \\
+4 \\
+\end{pmatrix}
+\\
+&=
+\begin{pmatrix}
+-2\sqrt{3} \\
+-2
+\end{pmatrix}
++ 
+\begin{pmatrix}
+2\sqrt{3} \\
+2  \\
+\end{pmatrix}
+= \begin{pmatrix}
+0 \\
+0
+\end{pmatrix}
+\end{align*}
+\item Planet: Position: $(u,v)^T = (0,0)^T$ 
+\begin{align*}
+f(0,0) &=
+\begin{pmatrix}
+\cos 150\degree \cdot 4 \\
+-\sin 150\degree \cdot 4 \\
+\end{pmatrix}
++ 
+\begin{pmatrix}
+\cos 240\degree & -\sin 240\degree \\
+-\sin 240\degree & -\cos 240\degree \\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+0 \\
+0 \\
+\end{pmatrix}
+\\
+&=
+\begin{pmatrix}
+-2\sqrt{3} \\
+-2
+\end{pmatrix}
++ 
+\begin{pmatrix}
+0 \\
+0 \\
+\end{pmatrix}
+= \begin{pmatrix}
+-2\sqrt{3} \\
+-2
+\end{pmatrix}
+\end{align*}
+\item Mond: Position: $(u,v)^T = (\cos\beta \cdot r_M, \sin\beta \cdot r_M)^T = (-\sqrt{3}, 1)^T$
+\begin{align*}
+f(-\sqrt{3}, 1) &=
+\begin{pmatrix}
+\cos 150\degree \cdot 4 \\
+-\sin 150\degree \cdot 4 \\
+\end{pmatrix}
++ 
+\begin{pmatrix}
+\cos 240\degree & -\sin 240\degree \\
+-\sin 240\degree & -\cos 240\degree \\
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+-\sqrt{3} \\
+1 \\
+\end{pmatrix}
+\\
+&=
+\begin{pmatrix}
+-2\sqrt{3} \\
+-2
+\end{pmatrix}
++ 
+\begin{pmatrix}
+\sqrt{3} \\
+-1  \\
+\end{pmatrix}
+= \begin{pmatrix}
+-\sqrt{3} \\
+-3
+\end{pmatrix}
+\end{align*}
 \end{itemize}
 
 
