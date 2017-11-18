@@ -60,7 +60,6 @@ Der Input der Pipeline besteht aus einer gegebenen Szenenbeschreibung.
 	\item Lichtquellen
 	\item Beleuchtungsalgorithmen
 	\item Texturen
-	\item ...
 \end{itemize}
 
 
@@ -69,7 +68,7 @@ Der Output der Pipeline ist ein 2D Bild der gegeben Szenenbeschreibung.
 
 
 \subsection{Weshalb ist eine Pipeline die aus $n$ Abschnitten besteht (theoretisch) $n$-mal schneller als eine Pipeline mit nur einem Abschnitt?}
-Bei einer Pipeline mit $n$ Abschnitten kann eine parallele Verarbeitung durchgeführt werden.
+Bei einer Pipeline mit $n$ Abschnitten kann eine $n$-fache parallele Verarbeitung durchgeführt werden.
 
 
 \subsection{Weshalb ist die Pipeline Geschwindigkeit vom Bottleneck abhängig? Wieso warten die anderen Pipeline-Abschnitte bis der Bottleneck-Abschnitt fertig ist?}
@@ -288,13 +287,121 @@ f(-\sqrt{3}, 1) &=
 	\item Translation: $ \left(-2, -2\sqrt{3}\right)^T $
 	\item Winkel: $ \arctan\left(\frac{2}{2\sqrt{3}}\right) = \dg{30} $
 	\item Rotation: $ \begin{pmatrix}	\cos(\dg{30}) & -\sin(\dg{30}) \\ \sin(\dg{30}) & cos(\dg{30}) \\ \end{pmatrix}
-	= \begin{pmatrix} \frac{\sqrt{3}}{2} & \frac{1}{2} \\ \frac{1}{2} & \frac{\sqrt{3}}{2} \end{pmatrix} $
+	= \begin{pmatrix} \frac{\sqrt{3}}{2} & -\frac{1}{2} \\ \frac{1}{2} & \frac{\sqrt{3}}{2} \end{pmatrix} $
 \end{itemize}
 
 
 \subsection{Berechnen Sie die Position der Szenenobjekte nach der Model- und View-Trans\-for\-ma\-tion. Fertigen Sie eine Skizze an.}
 
+\begin{align*}
+ \begin{pmatrix} x' \\ z' \end{pmatrix} &= R \cdot \left(\begin{pmatrix} x \\ z \end{pmatrix} + T\right) \\
+R &= 
+\begin{pmatrix} 
+\frac{\sqrt{3}}{2} & -\frac{1}{2} \\
+\frac{1}{2} & \frac{\sqrt{3}}{2}
+\end{pmatrix} \\
+T &= \begin{pmatrix}
+-2 \\ -2\sqrt{3}
+\end{pmatrix} \\
+Sonne: \begin{pmatrix} x' \\ z' \end{pmatrix} 
+&= 
+\begin{pmatrix} 
+\frac{\sqrt{3}}{2} & -\frac{1}{2} \\
+\frac{1}{2} & \frac{\sqrt{3}}{2}
+\end{pmatrix} 
+\cdot 
+\left(
+\begin{pmatrix}
+0 \\ 0 
+\end{pmatrix} + 
+\begin{pmatrix}
+-2 \\ -2\sqrt{3}
+\end{pmatrix}\right) \\
+&= 
+\begin{pmatrix} 
+\frac{\sqrt{3}}{2} & -\frac{1}{2} \\
+\frac{1}{2} & \frac{\sqrt{3}}{2}
+\end{pmatrix} 
+\cdot 
+\begin{pmatrix}
+-2 \\ -2\sqrt{3}
+\end{pmatrix} \\
+&= 
+\begin{pmatrix}
+\sqrt{3} + \sqrt{3} \\
+-1 - 3
+\end{pmatrix} \\
+&= 
+\begin{pmatrix}
+0 \\ -4
+\end{pmatrix} \\
+Planet: \begin{pmatrix} x' \\ z' \end{pmatrix} 
+&= 
+\begin{pmatrix} 
+\frac{\sqrt{3}}{2} & -\frac{1}{2} \\
+\frac{1}{2} & \frac{\sqrt{3}}{2}
+\end{pmatrix} 
+\cdot 
+\left(
+\begin{pmatrix} 
+-2\sqrt{3} \\ -2 
+\end{pmatrix} + 
+\begin{pmatrix}
+-2 \\ -2\sqrt{3}
+\end{pmatrix}\right) \\
+&= 
+\begin{pmatrix} 
+\frac{\sqrt{3}}{2} & -\frac{1}{2} \\
+\frac{1}{2} & \frac{\sqrt{3}}{2}
+\end{pmatrix} 
+\cdot 
+\begin{pmatrix}
+-2\sqrt{3} - 2 \\ -2\sqrt{3} -2
+\end{pmatrix} \\
+&=
+\begin{pmatrix}
+-3 - \sqrt{3} + \sqrt{3} +1 \\
+-\frac{1}{2}\sqrt{3} - 1 -3 - \sqrt{3}
+\end{pmatrix} \\
+&=
+\begin{pmatrix}
+- 2 \\ -2\sqrt{3} - 4
+\end{pmatrix} \\
+Mond: \begin{pmatrix} x' \\ z' \end{pmatrix} 
+&= 
+\begin{pmatrix} 
+\frac{\sqrt{3}}{2} & -\frac{1}{2} \\
+\frac{1}{2} & \frac{\sqrt{3}}{2}
+\end{pmatrix} 
+\cdot 
+\left(
+\begin{pmatrix} 
+-\sqrt{3} \\ -3 
+\end{pmatrix} + 
+\begin{pmatrix}
+-2 \\ -2\sqrt{3}
+\end{pmatrix}\right) \\
+&= 
+\begin{pmatrix} 
+\frac{\sqrt{3}}{2} & -\frac{1}{2} \\
+\frac{1}{2} & \frac{\sqrt{3}}{2}
+\end{pmatrix} 
+\cdot 
+\begin{pmatrix}
+-\sqrt{3} - 2 \\ -3 - 2\sqrt{3}
+\end{pmatrix} \\
+&=
+\begin{pmatrix}
+-\frac{3}{2} - \sqrt{3} + \frac{3}{2} + \sqrt{3}\\
+-\frac{\sqrt{3}}{2} - 1 - \frac{3\sqrt{3}}{2} - 3
+\end{pmatrix} \\
+&=
+\begin{pmatrix}
+0 \\ -2\sqrt{3} - 4
+\end{pmatrix} 
+\end{align*}
 
+\includegraphics[width=.95\linewidth]{skizze.png}
 
 \section{Optische Triangulation}
 
