@@ -101,24 +101,28 @@ void TriangleMesh::loadLSA(const char* filename) {
         in >> alpha;
         in >> beta;
         in >> gamma;
-        hb = cos(alpha) * (baseline * sin(90.0f - beta)) / sin(alpha + beta);
+        alpha = alpha * 2 * M_PI / 360.0f;
+        beta = beta * 2 * M_PI / 360.0f;
+        gamma = gamma * 2 * M_PI / 360.0f;
+        hb = cos(alpha) * (baseline * sin(0.5f * M_PI - beta)) / sin(alpha + beta);
         x = tan(beta) * hb;
         y = sin(gamma) * hb;
         z = cos(gamma) * hb;
         Vec3f tmp(x, y, z);
         vertices[i] = tmp;
     }
+  triangles.resize(nf);
   // read triangles
     for(int i = 0; i < nf; ++i)
     {
-        int x, y, z;
+        int n, x, y, z;
+        in >> n;
         in >> x;
         in >> y;
         in >> z;
         Vec3i tmp(x, y, z);
         triangles[i] = tmp;
     }
-  triangles.resize(nf);
   // TODO: read all triangles from the file
   // calculate normals
 	calculateNormals();
@@ -160,7 +164,8 @@ void TriangleMesh::loadOFF(const char* filename) {
   // TODO: read triangles from the file
     for(int i = 0; i < nf; ++i)
     {
-        int x, y, z;
+        int n, x, y, z;
+        in >> n;
         in >> x;
         in >> y;
         in >> z;
@@ -178,4 +183,12 @@ void TriangleMesh::loadOFF(const char* filename) {
 void TriangleMesh::draw() {
   if (triangles.size() == 0) return;
   // TODO: draw triangles with immediate mode
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i < triangles.size(); ++i)
+    {
+            glVertex3d(vertices[triangles[i].x].x, vertices[triangles[i].x].y, vertices[triangles[i].x].z);
+            glVertex3d(vertices[triangles[i].y].x, vertices[triangles[i].y].y, vertices[triangles[i].y].z);
+            glVertex3d(vertices[triangles[i].z].x, vertices[triangles[i].z].y, vertices[triangles[i].z].z);
+    }
+    glEnd();
 }
