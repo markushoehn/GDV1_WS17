@@ -39,8 +39,8 @@ int main(int argc, char** argv) {
 	initialize();
 
 	// load mesh // TODO: enter correct filename and Load OFF or LSA.
-    char* filename = "Modelle/delphin.off"; 
-    trimesh.loadOFF(filename); 
+    char* filename = "../Modelle/delphin.lsa"; 
+    trimesh.loadLSA(filename); 
 
 	// activate main loop
 	glutTimerFunc(20, processTimedEvent, 0);
