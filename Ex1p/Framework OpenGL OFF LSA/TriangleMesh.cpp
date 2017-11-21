@@ -71,6 +71,7 @@ void TriangleMesh::flipNormals() {
 // === LOAD MESH ===
 // =================
 
+// TASK b)
 void TriangleMesh::loadLSA(const char* filename) {  
   std::ifstream in(filename);
   if (!in.is_open()) {
@@ -94,15 +95,36 @@ void TriangleMesh::loadLSA(const char* filename) {
   // read vertices  
   vertices.resize(nv);
   // TODO: read alpha, beta, gamma for each vertex and calculate verticex coordinates
-
+    for(int i = 0; i < nv; ++i)
+    {
+        float alpha, beta, gamma, hb, x, y, z;
+        in >> alpha;
+        in >> beta;
+        in >> gamma;
+        hb = cos(alpha) * (baseline * sin(90.0f - beta)) / sin(alpha + beta);
+        x = tan(beta) * hb;
+        y = sin(gamma) * hb;
+        z = cos(gamma) * hb;
+        Vec3f tmp(x, y, z);
+        vertices[i] = tmp;
+    }
   // read triangles
+    for(int i = 0; i < nf; ++i)
+    {
+        int x, y, z;
+        in >> x;
+        in >> y;
+        in >> z;
+        Vec3i tmp(x, y, z);
+        triangles[i] = tmp;
+    }
   triangles.resize(nf);
   // TODO: read all triangles from the file
-
   // calculate normals
 	calculateNormals();
 }
 
+// TASK b)
 void TriangleMesh::loadOFF(const char* filename) {
   std::ifstream in(filename);
   if (!in.is_open()) {
@@ -124,11 +146,27 @@ void TriangleMesh::loadOFF(const char* filename) {
   // read vertices  
   vertices.resize(nv);
   // TODO: read all vertices from the file
-
+    for(int i = 0; i < nv; ++i)
+    {
+        float x, y, z;
+        in >> x;
+        in >> y;
+        in >> z;
+        Vec3f tmp(x, y, z);
+        vertices[i] = tmp;
+    }
   // read triangles
   triangles.resize(nf);
   // TODO: read triangles from the file
-
+    for(int i = 0; i < nf; ++i)
+    {
+        int x, y, z;
+        in >> x;
+        in >> y;
+        in >> z;
+        Vec3i tmp(x, y, z);
+        triangles[i] = tmp;
+    }
   // calculate normals
 	calculateNormals();
 }
