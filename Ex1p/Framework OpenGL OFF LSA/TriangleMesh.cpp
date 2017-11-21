@@ -18,7 +18,21 @@
 
 void TriangleMesh::calculateNormals() {
   normals.resize(vertices.size());
+    for (int i = 0; i < normals.size(); ++i)
+    {
+        normals[i] = Vec3f();
+    }
   // TODO: calculate normals for each vertex
+    for (int i = 0; i < triangles.size(); ++i)
+    {
+        Vec3i ti = triangles[i];
+        Vec3f e1 = vertices[ti.x] - vertices[ti.y];
+        Vec3f e2 = vertices[ti.x] - vertices[ti.z];
+        Vec3f cross = e1 ^ e2;
+        normals[ti.x] += cross;
+        normals[ti.y] += cross;
+        normals[ti.z] += cross;
+    }
 
   // normalize normals
   for (Normals::iterator nit=normals.begin(); nit!=normals.end(); ++nit) {
@@ -112,6 +126,7 @@ void TriangleMesh::loadLSA(const char* filename) {
         vertices[i] = tmp;
     }
   triangles.resize(nf);
+  // TODO: read all triangles from the file
   // read triangles
     for(int i = 0; i < nf; ++i)
     {
@@ -123,7 +138,6 @@ void TriangleMesh::loadLSA(const char* filename) {
         Vec3i tmp(x, y, z);
         triangles[i] = tmp;
     }
-  // TODO: read all triangles from the file
   // calculate normals
 	calculateNormals();
 }
