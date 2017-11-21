@@ -25,13 +25,23 @@ void TriangleMesh::calculateNormals() {
   // TODO: calculate normals for each vertex
     for (int i = 0; i < triangles.size(); ++i)
     {
+        // calculate normal of triangle
         Vec3i ti = triangles[i];
         Vec3f e1 = vertices[ti.x] - vertices[ti.y];
-        Vec3f e2 = vertices[ti.x] - vertices[ti.z];
-        Vec3f cross = e1 ^ e2;
-        normals[ti.x] += cross;
-        normals[ti.y] += cross;
-        normals[ti.z] += cross;
+        Vec3f e2 = vertices[ti.y] - vertices[ti.z];
+        Vec3f e3 = vertices[ti.z] - vertices[ti.x];
+        Vec3f cross = e1 ^ (e3 * -1);
+        cross.normalize();
+        // calculate weighting factors
+        e1.normalize();
+        e2.normalize();
+        float f1 = acos(e1 * (e3 * -1));
+        float f2 = acos((e1 * -1) * e2);
+        float f3 = acos((e2 * -1) * e3);
+        // add weighted normal to all points
+        normals[ti.x] += cross * f1;
+        normals[ti.y] += cross * f2;
+        normals[ti.z] += cross * f3;
     }
 
   // normalize normals
@@ -121,7 +131,7 @@ void TriangleMesh::loadLSA(const char* filename) {
         hb = cos(alpha) * (baseline * sin(0.5f * M_PI - beta)) / sin(alpha + beta);
         x = tan(beta) * hb;
         y = sin(gamma) * hb;
-        z = cos(gamma) * hb;
+        z = cos(gamma) * hb * -1;
         Vec3f tmp(x, y, z);
         vertices[i] = tmp;
     }
