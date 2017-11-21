@@ -1,4 +1,7 @@
 **/build/
 *.aux
 *.log
-
+*CMakeCache.txt
+*cmake_install.cmake
+*Makefile
+*CMakeFiles
