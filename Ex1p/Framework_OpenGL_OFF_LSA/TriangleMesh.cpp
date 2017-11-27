@@ -18,37 +18,40 @@
 
 void TriangleMesh::calculateNormals() {
   normals.resize(vertices.size());
-    for (int i = 0; i < normals.size(); ++i)
-    {
-        normals[i] = Vec3f();
-    }
-  // TODO: calculate normals for each vertex
-    for (int i = 0; i < triangles.size(); ++i)
-    {
-        // calculate normal of triangle
-        Vec3i ti = triangles[i];
-        Vec3f e1 = vertices[ti.x] - vertices[ti.y];
-        Vec3f e2 = vertices[ti.y] - vertices[ti.z];
-        Vec3f e3 = vertices[ti.z] - vertices[ti.x];
-        Vec3f cross = e1 ^ (e3 * -1);
-        cross.normalize();
-        // calculate weighting factors
-        e1.normalize();
-        e2.normalize();
-        float f1 = acos(e1 * (e3 * -1));
-        float f2 = acos((e1 * -1) * e2);
-        float f3 = acos((e2 * -1) * e3);
-        // add weighted normal to all points
-        normals[ti.x] += cross * f1;
-        normals[ti.y] += cross * f2;
-        normals[ti.z] += cross * f3;
-    }
+  for (int i = 0; i < normals.size(); ++i)
+  {
+    normals[i] = Vec3f();
+  }
+
+  // ==============
+  // Task d) and e): calculate normals for each vertex
+  for (int i = 0; i < triangles.size(); ++i)
+  {
+    // calculate normal of triangle
+    Vec3i ti = triangles[i];
+    Vec3f e1 = vertices[ti.x] - vertices[ti.y];
+    Vec3f e2 = vertices[ti.y] - vertices[ti.z];
+    Vec3f e3 = vertices[ti.z] - vertices[ti.x];
+    Vec3f cross = e1 ^ (e3 * -1);
+    cross.normalize();
+    // calculate weighting factors
+    e1.normalize();
+    e2.normalize();
+    float f1 = acos(e1 * (e3 * -1));
+    float f2 = acos((e1 * -1) * e2);
+    float f3 = acos((e2 * -1) * e3);
+    // add weighted normal to all points
+    normals[ti.x] += cross * f1;
+    normals[ti.y] += cross * f2;
+    normals[ti.z] += cross * f3;
+  }
+  // ==============
 
   // normalize normals
   for (Normals::iterator nit=normals.begin(); nit!=normals.end(); ++nit) {
      //the normalize() function returns a boolean which can be used if you want to check for erroneous normals
 	 (*nit).normalize();
-   }
+  }
 }
 
 // ===============================
@@ -118,36 +121,42 @@ void TriangleMesh::loadLSA(const char* filename) {
   clear();
   // read vertices  
   vertices.resize(nv);
-  // TODO: read alpha, beta, gamma for each vertex and calculate verticex coordinates
-    for(int i = 0; i < nv; ++i)
-    {
-        float alpha, beta, gamma, hb, x, y, z;
-        in >> alpha;
-        in >> beta;
-        in >> gamma;
-        alpha = alpha * 2 * M_PI / 360.0f;
-        beta = beta * 2 * M_PI / 360.0f;
-        gamma = gamma * 2 * M_PI / 360.0f;
-        hb = cos(alpha) * (baseline * sin(0.5f * M_PI - beta)) / sin(alpha + beta);
-        x = tan(beta) * hb;
-        y = sin(gamma) * hb;
-        z = cos(gamma) * hb * -1;
-        Vec3f tmp(x, y, z);
-        vertices[i] = tmp;
-    }
+
+  // ==============
+  // Task b): read alpha, beta, gamma for each vertex and calculate verticex coordinates
+  for(int i = 0; i < nv; ++i)
+  {
+    float alpha, beta, gamma, hb, x, y, z;
+    in >> alpha;
+    in >> beta;
+    in >> gamma;
+    alpha = alpha * 2 * M_PI / 360.0f;
+    beta = beta * 2 * M_PI / 360.0f;
+    gamma = gamma * 2 * M_PI / 360.0f;
+    hb = cos(alpha) * (baseline * sin(0.5f * M_PI - beta)) / sin(alpha + beta);
+    x = tan(beta) * hb;
+    y = sin(gamma) * hb;
+    z = cos(gamma) * hb * -1;
+    Vec3f tmp(x, y, z);
+    vertices[i] = tmp;
+  }
+  // ==============
   triangles.resize(nf);
-  // TODO: read all triangles from the file
-  // read triangles
-    for(int i = 0; i < nf; ++i)
-    {
-        int n, x, y, z;
-        in >> n;
-        in >> x;
-        in >> y;
-        in >> z;
-        Vec3i tmp(x, y, z);
-        triangles[i] = tmp;
-    }
+
+  // ==============
+  // Task b): read all triangles from the file
+  for(int i = 0; i < nf; ++i)
+  {
+    int n, x, y, z;
+    in >> n;
+    in >> x;
+    in >> y;
+    in >> z;
+    Vec3i tmp(x, y, z);
+    triangles[i] = tmp;
+  }
+  // ==============
+
   // calculate normals
 	calculateNormals();
 }
@@ -173,31 +182,38 @@ void TriangleMesh::loadOFF(const char* filename) {
   clear();
   // read vertices  
   vertices.resize(nv);
-  // TODO: read all vertices from the file
-    for(int i = 0; i < nv; ++i)
-    {
-        float x, y, z;
-        in >> x;
-        in >> y;
-        in >> z;
-        Vec3f tmp(x, y, z);
-        vertices[i] = tmp;
-    }
+
+  // ==============
+  // Task a): read all vertices from the file
+  for(int i = 0; i < nv; ++i)
+  {
+    float x, y, z;
+    in >> x;
+    in >> y;
+    in >> z;
+    Vec3f tmp(x, y, z);
+    vertices[i] = tmp;
+  }
+  // ==============
   // read triangles
   triangles.resize(nf);
-  // TODO: read triangles from the file
-    for(int i = 0; i < nf; ++i)
-    {
-        int n, x, y, z;
-        in >> n;
-        in >> x;
-        in >> y;
-        in >> z;
-        Vec3i tmp(x, y, z);
-        triangles[i] = tmp;
-    }
+
+  // ==============
+  // Task a): read triangles from the file
+  for(int i = 0; i < nf; ++i)
+  {
+    int n, x, y, z;
+    in >> n;
+    in >> x;
+    in >> y;
+    in >> z;
+    Vec3i tmp(x, y, z);
+    triangles[i] = tmp;
+  }
+  // ==============
+
   // calculate normals
-	calculateNormals();
+  calculateNormals();
 }
 
 // ==============
@@ -206,13 +222,16 @@ void TriangleMesh::loadOFF(const char* filename) {
 
 void TriangleMesh::draw() {
   if (triangles.size() == 0) return;
-  // TODO: draw triangles with immediate mode
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < triangles.size(); ++i)
-    {
-            glVertex3d(vertices[triangles[i].x].x, vertices[triangles[i].x].y, vertices[triangles[i].x].z);
-            glVertex3d(vertices[triangles[i].y].x, vertices[triangles[i].y].y, vertices[triangles[i].y].z);
-            glVertex3d(vertices[triangles[i].z].x, vertices[triangles[i].z].y, vertices[triangles[i].z].z);
-    }
-    glEnd();
+
+  // ==============
+  // Task c): draw triangles with immediate mode
+  glBegin(GL_TRIANGLES);
+  for (int i = 0; i < triangles.size(); ++i)
+  {
+    glVertex3d(vertices[triangles[i].x].x, vertices[triangles[i].x].y, vertices[triangles[i].x].z);
+    glVertex3d(vertices[triangles[i].y].x, vertices[triangles[i].y].y, vertices[triangles[i].y].z);
+    glVertex3d(vertices[triangles[i].z].x, vertices[triangles[i].z].y, vertices[triangles[i].z].z);
+  }
+  glEnd();
+  // ==============
 }
