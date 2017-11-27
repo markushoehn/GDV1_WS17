@@ -17,6 +17,8 @@
 #include "main.h"         // this header
 #include <algorithm>
 
+const bool DRAW_AS_MUCH_AS_POSSIBLE = false;
+
 // ==============
 // === BASICS ===
 // ==============
@@ -39,8 +41,8 @@ int main(int argc, char** argv) {
 	initialize();
 
 	// load mesh // TODO: enter correct filename and Load OFF or LSA.
-    char* filename = "../Modelle/delphin.lsa"; 
-    trimesh.loadLSA(filename); 
+    char* filename = "Modelle/delphin.lsa";
+    trimesh.loadLSA(filename);
 
 	// activate main loop
 	glutTimerFunc(20, processTimedEvent, 0);
@@ -166,7 +168,13 @@ void renderScene() {
 	// draw objects
 	glEnable(GL_LIGHTING);
 	glColor3f(0.2,0.5,0.8);
-	trimesh.draw();
+
+	if(DRAW_AS_MUCH_AS_POSSIBLE)
+		drawAsMuchAsPossible();
+	else
+		trimesh.draw();
+
+	// ==============
   // swap buffers
 	glutSwapBuffers();
 }
@@ -245,4 +253,25 @@ void coutHelp()
 	cout << "L: toggle (L)ight movement" << endl;
 	cout << "==========================" << endl;
 	cout << endl;
+}
+
+
+void drawAsMuchAsPossible(){
+	// ==============
+	// Task f): Erstellen Sie eine kleine Szene mit mehreren Dreiecksnetzen, die Sie nach belieben plat-
+	// zieren. Versuchen Sie die Hardware mit dem immediate mode auszureizen. Wie viele Drei-
+	// ecke können Sie noch flüssig darstellen?
+
+	// Auf einem 64 bit Linux mit einem 7 Jahre alten Intel i3 M370 @ 2.4GHz werden 20 000 Dreiecke flüssig gezeichnet.
+
+	int count = 20000;
+	for (int i = 0; i < count; ++i)
+	{
+		glBegin(GL_TRIANGLES);
+		glColor3f(0.5,0.5,0.5);
+		glVertex3f(1,0,0);
+		glVertex3f(0,1,0);
+		glVertex3f(0,0,1);
+		glEnd();
+	}
 }

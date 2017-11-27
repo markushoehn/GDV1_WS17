@@ -74,3 +74,5 @@ void mouseMoved(int x, int y);
 // ===============
 
 void coutHelp();
+
+void drawAsMuchAsPossible();
