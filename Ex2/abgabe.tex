@@ -67,7 +67,7 @@ M^A(\alpha) & = \begin{pmatrix}
 				\begin{pmatrix}
 					1 & 0             & 0              & 0 \\
 					0 & \cos(-\alpha) & -\sin(-\alpha) & 0 \\
-					0 & \sin(-\alpha) & \sin(-\alpha)  & 0 \\
+					0 & \sin(-\alpha) & \cos(-\alpha)  & 0 \\
 					0 & 0             & 0              & 1 \\
 				\end{pmatrix} \cdot
 				\begin{pmatrix}
@@ -85,13 +85,13 @@ M^A(\alpha) & = \begin{pmatrix}
 				\begin{pmatrix}
 					1 & 0             & 0              & -5                               \\
 					0 & \cos(-\alpha) & -\sin(-\alpha) & -7\cos(-\alpha) + 5\sin(-\alpha)  \\
-					0 & \sin(-\alpha) & \sin(-\alpha)  & -7\sin(-\alpha) - 5\cos(-\alpha) \\
+					0 & \sin(-\alpha) & \cos(-\alpha)  & -7\sin(-\alpha) - 5\cos(-\alpha) \\
 					0 & 0             & 0              & 1                                \\
 				\end{pmatrix} \\
 			& = \begin{pmatrix}
 					1 & 0             & 0              & 0                                    \\
-					0 & \cos(-\alpha) & -\sin(-\alpha) & -7\cos(-\alpha) + \sin(-\alpha) + 7  \\
-					0 & \sin(-\alpha) & \sin(-\alpha)  & -7\sin(-\alpha) - 5\cos(-\alpha) + 5 \\
+					0 & \cos(-\alpha) & -\sin(-\alpha) & -7\cos(-\alpha) + 5\sin(-\alpha) + 7  \\
+					0 & \sin(-\alpha) & \cos(-\alpha)  & -7\sin(-\alpha) - 5\cos(-\alpha) + 5 \\
 					0 & 0             & 0              & 1                                    \\
 				\end{pmatrix}
 \end{align*}
@@ -109,7 +109,7 @@ $$ \beta = \frac{- \alpha * 20 \cdot 360}{360 \cdot 50} = -0.4 \alpha$$
 					\begin{pmatrix}
 						1 & 0                & 0                 & 0 \\
 						0 & \cos(-0.4\alpha) & -\sin(-0.4\alpha) & 0 \\
-						0 & \sin(-0.4\alpha) & \sin(-0.4\alpha)  & 0 \\
+						0 & \sin(-0.4\alpha) & \cos(-0.4\alpha)  & 0 \\
 						0 & 0                & 0                 & 1 \\
 					\end{pmatrix} \cdot
 					\begin{pmatrix}
@@ -127,25 +127,87 @@ $$ \beta = \frac{- \alpha * 20 \cdot 360}{360 \cdot 50} = -0.4 \alpha$$
 					\begin{pmatrix}
 						1 & 0                & 0                 & -5                                     \\
 						0 & \cos(-0.4\alpha) & -\sin(-0.4\alpha) & -7\cos(-0.4\alpha) + 2\sin(-0.4\alpha) \\
-						0 & \sin(-0.4\alpha) & \sin(-0.4\alpha)  & -7\sin(-0.4\alpha) - 2\cos(-0.4\alpha) \\
+						0 & \sin(-0.4\alpha) & \cos(-0.4\alpha)  & -7\sin(-0.4\alpha) - 2\cos(-0.4\alpha) \\
 						0 & 0                & 0                 & 1                                      \\
 					\end{pmatrix} \\
 				& = \begin{pmatrix}
 						1 & 0                & 0                 & 0                                          \\
 						0 & \cos(-0.4\alpha) & -\sin(-0.4\alpha) & -7\cos(-0.4\alpha) + 2\sin(-0.4\alpha) + 7 \\
-						0 & \sin(-0.4\alpha) & \sin(-0.4\alpha)  & -7\sin(-0.4\alpha) - 2\cos(-0.4\alpha) + 2 \\
+						0 & \sin(-0.4\alpha) & \cos(-0.4\alpha)  & -7\sin(-0.4\alpha) - 2\cos(-0.4\alpha) + 2 \\
 						0 & 0                & 0                 & 1                                          \\
 					\end{pmatrix}
 \end{align*}
 
 \section{Baryzentrische Koordinaten}
 
-\subsection{Gegeben sei ein Tetraeder $T = [p_0, p_1, p_2, p_3]$ mit $p_0 = (0, 0, 0)^T$, $p_1 = (-2, 1, 0)^T$, $p_2 = (0, 5, 1)^T$ und $p_1 = (-1, 2, 4)^T$. \vspace{.5em} \\  Berechnen Sie die baryzentrischen Koordinaten $\lambda_i, i = 0, 1, 2, 3$ für den Punkt $p = (-1, 2, 2)^T$. Verwenden Sie dafür die Determinanten der Matrizen folgender Form:}
+\subsection{Gegeben sei ein Tetraeder $T = [p_0, p_1, p_2, p_3]$ mit $p_0 = (0, 0, 0)^T$, $p_1 = (-2, 1, 0)^T$, $p_2 = (0, 5, 1)^T$ und $p_3 = (-1, 2, 4)^T$. \vspace{.5em} \\  Berechnen Sie die baryzentrischen Koordinaten $\lambda_i, i = 0, 1, 2, 3$ für den Punkt $p = (-1, 2, 2)^T$. Verwenden Sie dafür die Determinanten der Matrizen folgender Form:}
 	$$M = \begin{pmatrix}
-	p_0 & p_1 & p_2 & p_3 \\
+	\begin{bmatrix}0\\0\\0\end{bmatrix} & \begin{bmatrix}-2\\1\\0\end{bmatrix} & \begin{bmatrix}0\\5\\1\end{bmatrix} & \begin{bmatrix}-1\\2\\4\end{bmatrix} \\
 	1   & 1   & 1   & 1   \\
 	\end{pmatrix}$$
 
+
+\begin{align*}
+	\det M & = 0 \cdot	\begin{vmatrix}
+							1 & 5 & 2 \\
+							0 & 1 & 4 \\
+							1 & 1 & 1 \\
+						\end{vmatrix}
+		 - (-2) \cdot	\begin{vmatrix}
+						 	0 & 5 & 2 \\
+						 	0 & 1 & 4 \\
+						 	1 & 1 & 1 \\
+						\end{vmatrix}
+		 + 0 \cdot		\begin{vmatrix}
+						 	0 & 1 & 2 \\
+						 	0 & 0 & 4 \\
+						 	1 & 1 & 1 \\
+						\end{vmatrix}
+		 - (-1) \cdot	\begin{vmatrix}
+		 					0 & 1 & 5 \\
+		 					0 & 0 & 1 \\
+		 					1 & 1 & 1 \\
+						\end{vmatrix} \\
+	       & = 0 \cdot 15 + 2 \cdot 18 + 0 \cdot 4 + 1 \cdot 1 \\
+	       & = 37
+\end{align*}
+
+\begin{alignat*}{3}
+	L_0 = \begin{vmatrix}
+				-1 & -2 &  0 & -1 \\
+			 2 &  1 &  5 &  2 \\
+			 2 &  0 &  1 &  4 \\
+			 1 &  1 &  1 &  1 \\
+			\end{vmatrix} = 4
+	& \qquad \Rightarrow \qquad
+	& \lambda_0 = \frac{L_0}{\det M} = \frac{4}{37} \\
+	L_1 = \begin{vmatrix}
+				0 & -1 &  0 & -1 \\
+				0 &  2 &  5 &  2 \\
+				0 &  2 &  1 &  4 \\
+				1 &  1 &  1 &  1 \\
+	 	  \end{vmatrix} = 10
+	& \qquad \Rightarrow \qquad
+	& \lambda_1 = \frac{L_1}{\det M} = \frac{10}{37} \\
+	L_2 = \begin{vmatrix}
+				0 & -2 & -1 & -1 \\
+				0 &  1 &  2 &  2 \\
+				0 &  0 &  2 &  4 \\
+				1 &  1 &  1 &  1 \\
+			\end{vmatrix} = 6
+	& \qquad \Rightarrow \qquad
+	& \lambda_2 = \frac{L_2}{\det M} = \frac{6}{37} \\
+	L_3 = \begin{vmatrix}
+				0 & -2 &  0 & -1 \\
+				0 &  1 &  5 &  2 \\
+				0 &  0 &  1 &  2 \\
+				1 &  1 &  1 &  1 \\
+			\end{vmatrix} = 17
+	& \qquad \Rightarrow \qquad
+	& \lambda_3 = \frac{L_3}{\det M} = \frac{17}{37} \\
+\end{alignat*}
+
+$$ p_{BAR} = \left( \frac{4}{37}, \frac{10}{37}, \frac{6}{37}, \frac{17}{37} \right)  ^T $$
 
 \subsection{\emph{Verallgemeinterte baryzentrische Koordinaten} sind nicht hinsichtlich eines $k+1$ Simplexes des $\mathbb{R}^k$ definiert, sondern hinsichtlich allgemeiner Polygone $p_0, \dots, p_n$ mit $n+1$ Eckpunkten.}
 
