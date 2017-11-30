@@ -212,29 +212,67 @@ $$ p_{BAR} = \left( \frac{4}{37}, \frac{10}{37}, \frac{6}{37}, \frac{17}{37} \ri
 \subsection{\emph{Verallgemeinterte baryzentrische Koordinaten} sind nicht hinsichtlich eines $k+1$ Simplexes des $\mathbb{R}^k$ definiert, sondern hinsichtlich allgemeiner Polygone $p_0, \dots, p_n$ mit $n+1$ Eckpunkten.}
 
 Gegeben sei ein Pentagon mit $p_0 = (0, 1)^T$, $p_1 = (4, 0)^T$, $p_2 = (6, 3)^T$, $p_4 = (3, 4)^T$, $p_4 = (1, 3)^T$.
+
+Berechnen Sie zwei Tupel $(\lambda_0, \lambda_1, \lambda_2, \lambda_3, \lambda_4)$ der verallgemeinerten baryzentrischen Koordinaten für den Punkt $p = (3.5, 2)^T$, wobei gelten soll: $\lambda_0 + \lambda_1 + \lambda_2 + \lambda_3 + \lambda_4 = 1$.
+
+Für das \textbf{erste} Tupel soll gelten: $\lambda_i \geq 0, i = 0,1,2,3,4$.
+
+
+$$ MUSS NOCH GESCHRIEBEN WERDEN $$
+
+
+Für das \textbf{zweite} Tupel soll die strengere Annahme $\lambda_i > 0, i = 0,1,2,3,4$ gelten.
+
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[]{simplex}
 \end{figure}
 
-Berechnen Sie zwei Tupel $(\lambda_0, \lambda_1, \lambda_2, \lambda_3, \lambda_4)$ der verallgemeinerten baryzentrischen Koordinaten für den Punkt $p = (3.5, 2)^T$, wobei gelten soll: $\lambda_0 + \lambda_1 + \lambda_2 + \lambda_3 + \lambda_4 = 1$.
+$A_0 = \begin{vmatrix}
+			6 & 3 &  3.5 \\
+			3 & 4 &  2   \\
+			1 & 1 &  1   \\
+		\end{vmatrix} = 5.5 $
+	
+$A_1 = \begin{vmatrix}
+			3 & 1 &  3.5 \\
+			4 & 3 &  2   \\
+			1 & 1 &  1   \\
+		\end{vmatrix} = 4.5 $
 
-Für das \textbf{erste} Tupel soll gelten: $\lambda_i \geq 0, i = 0,1,2,3,4$.
-Für das \textbf{zweite} Tupel soll die strengere Annahme $\lambda_i > 0, i = 0,1,2,3,4$ gelten.
+$A_2 = \begin{vmatrix}
+			1 & 0 &  3.5 \\
+			3 & 1 &  2   \\
+			1 & 1 &  1   \\
+		\end{vmatrix} = 6 $
+
+$A_3 = \begin{vmatrix}
+			0 & 4 &  3.5 \\
+			1 & 0 &  2   \\
+			1 & 1 &  1   \\
+		\end{vmatrix} = 7.5 $
+
+$A_4 = \begin{vmatrix}
+			4 & 6 &  3.5 \\
+			0 & 3 &  2   \\
+			1 & 1 &  1   \\
+		\end{vmatrix} = 5.5 $
+
+$A_ges = A_0 + A_1 + A_2 + A_3 + A_4$
+\begin{align*}
+\lambda_0 = \frac{A_0}{A_ges} = \frac{0.5 \cdot 5.5}{0.5 \cdot 29} & = 0.1900 \\
+\lambda_1 = \frac{A_1}{A_ges} =\frac{0.5 \cdot 4.5}{0.5 \cdot 29} & = 0.1552 \\
+\lambda_2 = \frac{A_2}{A_ges} =\frac{0.5 \cdot 6}{0.5 \cdot 29}   & = 0.2070 \\
+\lambda_1 = \frac{A_3}{A_ges} =\frac{0.5 \cdot 7.5}{0.5 \cdot 29} & = 0.2586 \\
+\lambda_4 = \frac{A_4}{A_ges} =\frac{0.5 \cdot 5.5}{0.5 \cdot 29} & = 0.1900 \\
+\end{align*}
 
 
 \subsection{Tragen Sie in die folgende Zeichnung für alle gelb markierten Punkte die baryzentrischen Koordinaten bezogen auf die jeweiligen drei Punkte $A$, $B$ und $C \in \mathbb{R}^2$ ein.}
 
 \begin{figure}[!htbp]
-	\begin{minipage}[c]{0.49\textwidth}
-		\centering						
-		\includegraphics[width=0.95\linewidth]{map}
-	\end{minipage}
-	\hfill
-	\begin{minipage}[c]{0.49\textwidth}
-		\centering						
-		\includegraphics[width=0.95\linewidth]{map2}
-	\end{minipage}
+	\centering						
+	\includegraphics[width=0.95\linewidth]{map2}
 \end{figure}
 
 
@@ -270,6 +308,7 @@ Zeichnen Sie den dazugehörigen Baum dieser Szene. Gehen Sie dabei so vor, dass 
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\linewidth]{kd_blur}
+	\caption*{Die verschwommenen Teilbäume $F$, $J$ unud $K$ können verworfen werden.}
 \end{figure}
 
 \end{document}
