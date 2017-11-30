@@ -28,10 +28,10 @@ int main(int argc, char** argv) {
   glutInitWindowPosition(300,200);
   glutInitWindowSize(600,400);
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-  glutCreateWindow("Framework VBO and Shader"); 
+  glutCreateWindow("Framework VBO and Shader");
   // link functions to certain openGL events
   glutDisplayFunc(renderScene);
-  glutReshapeFunc(reshape);  
+  glutReshapeFunc(reshape);
   glutMouseFunc(mousePressed);
   glutMotionFunc(mouseMoved);
   glutKeyboardFunc(keyPressed);
@@ -44,7 +44,8 @@ int main(int argc, char** argv) {
   if (programID != 0) programIDs.push_back(programID);
   cout << programIDs.size() << " shaders loaded. Use keys 3 to " << programIDs.size() + 2 << "." << endl;
   // load mesh
-  char* filename = "Models/delphin.off";  
+  //char* filename = "Models/delphin.off";
+  char* filename = "Models/Sketched-Teddy-org.off";
   Vec3f mid(0.0f,0.0f,0.0f);
   trimesh.loadOFF(filename, mid, 4.0f);
   // activate main loop
@@ -99,7 +100,7 @@ void initialize() {
   // set shading model
   glShadeModel(GL_SMOOTH);
   // set lighting (white light)
-  GLfloat global_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };  
+  GLfloat global_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
   GLfloat ambientLight[] =   { 0.1f, 0.1f, 0.1f, 1.0f };
   GLfloat diffuseLight[] =   { 1.0f, 1.0f, 1.0f, 1.0f };
   GLfloat specularLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -141,7 +142,7 @@ void processTimedEvent(int x) {
     glutPostRedisplay();
   }
   // calculate FPS
-  if (fpsCout == true) {    
+  if (fpsCout == true) {
     int msPassedFPS = clock() - fpsClock;
     // cout fps after roughly one second
     if (msPassedFPS > 1000) {
@@ -170,7 +171,7 @@ void processTimedEvent(int x) {
 void drawCS() {
   glBegin(GL_LINES);
     // red X
-    glColor3f(1,0,0); 
+    glColor3f(1,0,0);
     glVertex3f(0,0,0);
     glVertex3f(5,0,0);
     // green Y
@@ -188,11 +189,11 @@ void drawLight() {
   GLfloat lp[] = { lightPos.x, lightPos.y, lightPos.z, 1.0f };
   glLightfv(GL_LIGHT0, GL_POSITION, lp);
   // draw yellow sphere for light source
-  glPushMatrix();    
+  glPushMatrix();
     glTranslatef(lp[0], lp[1], lp[2]);
-    glColor3f(1,1,0);    
-    glutSolidSphere(0.2f,16,16);    
-  glPopMatrix();  
+    glColor3f(1,1,0);
+    glutSolidSphere(0.2f,16,16);
+  glPopMatrix();
 }
 
 void renderScene() {
@@ -202,30 +203,30 @@ void renderScene() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   // translate to centerPos
-  glTranslatef(centerPos.x, centerPos.y, centerPos.z);  
+  glTranslatef(centerPos.x, centerPos.y, centerPos.z);
   // rotate scene
   glRotatef(angleX,0.0f,1.0f,0.0f);
   glRotatef(angleY,1.0f,0.0f,0.0f);
   // draw coordinate system without lighting
   glDisable(GL_LIGHTING);
-  drawCS();  
+  drawCS();
     // draw sphere for light still without lighting
   drawLight();
   // scale scene to fixed box size
-  float scale = 5.0f / max(1,gridSize); 
-  glScalef(scale, scale, scale);  
+  float scale = 5.0f / max(1,gridSize);
+  glScalef(scale, scale, scale);
   // draw objects
   glEnable(GL_LIGHTING);
   for (int i = -gridSize; i <= gridSize; ++i) {
 	  for (int j = -gridSize; j <= gridSize; ++j) {
-		  if (i != 0 || j != 0) {			  
+		  if (i != 0 || j != 0) {
 			  float r = (float)i/(2.0f*gridSize) + 0.5f;
 			  float g = (float)j/(2.0f*gridSize) + 0.5f;
-			  float b = 1.0f - 0.5f*r - 0.5f*g;	
+			  float b = 1.0f - 0.5f*r - 0.5f*g;
         glColor3f(r,g,b);
 		  }
       else glColor3f(1,1,1);
-      glPushMatrix();      
+      glPushMatrix();
       glTranslatef(4.0f*i, 0.0f, 4.0f*j);
       switch (drawMode) {
       case 1:
@@ -278,7 +279,7 @@ void keyPressed(unsigned char key, int x, int y) {
       {
         int n = (int)key - 48;
         if (programIDs.size() > n-3)
-          glUseProgram(programIDs[n-3]);   
+          glUseProgram(programIDs[n-3]);
       }
       glutPostRedisplay();
       break;
@@ -318,7 +319,7 @@ void keyPressed(unsigned char key, int x, int y) {
         cout << "Drawing " << gridLength*gridLength*trimesh.getNumTriangles() << " triangles." << endl;
         glutPostRedisplay();
         break;
-      }      
+      }
     // decrease gridSize
     case '-' :
       {
@@ -328,7 +329,7 @@ void keyPressed(unsigned char key, int x, int y) {
         cout << "Drawing " << gridLength*gridLength*trimesh.getNumTriangles() << " triangles." << endl;
         glutPostRedisplay();
         break;
-      }      
+      }
     // toggle FPS calculation
     case 'f':
     case 'F':
@@ -339,7 +340,7 @@ void keyPressed(unsigned char key, int x, int y) {
 
 void mousePressed(int button, int state, int x, int y) {
   mouseButton = button;
-  mouseX = x; 
+  mouseX = x;
   mouseY = y;
 }
 
