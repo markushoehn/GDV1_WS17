@@ -1,4 +1,14 @@
-**/build/
+# ignore all
+*
+# unignore all with extensions
+!*.*
+# unignore all dirs
+!*/
+
+
+## ignore list
+
+*/build/*
 *.aux
 *.log
 *CMakeCache.txt
