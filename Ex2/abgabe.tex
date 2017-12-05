@@ -324,6 +324,12 @@ $$ p_{BAR} = \left( \frac{5.5}{29}, \frac{4.5}{29}, \frac{6}{29}, \frac{7.5}{29}
 
 Erklären Sie für alle drei Datenstrukturen ob und warum diese Änderungen für dynamische Szenen ausreichend sind. Überlegen Sie sich insbesondere inwiefern der Zweck der Datenstruktur (die beschleunigte Suche von Objekten im Raum) weiter erfüllt wird.
 
+\begin{itemize}
+\item Hüllenkörperhierarchien: Die Schritte sind ausreichend, da durch anpassen der übergeordneten Volumen die Hierarchie korrekt bleibt. Das Culling kann also immer noch korrekt ausgeführt werden.
+\item Reguläre Gitter:  Die Änderungen sind ausreichend, da eine Zelle als einzige Information enthält, welche Elemente enthalten sind. Der Zweck der beschleunigten Suche wird weiter erfüllt, da der Zugriff auf Nachbar-Zellen sehr schnell und damit auch das Update schnell durchgeführt werden kann.
+\item Octree: Die Zellen beim Octree sind an die gegebenen Objekte im Raum angepasst. Demnach reicht der beschriebene Ansatz zwar aus, liefert aber unter Umständen weniger schnell ein Ergebnis in dynamischen Szenen.
+\end{itemize}
+
 \subsection{Gegeben ist eine 2D-Szene mit Objekten, wobei jedes Symbol ein Objekt repräsentiert. Weiterhin gegeben ist eine KD-Tree-Zerlegung dieser Szene. Die Buchstaben kennzeichnen die Geraden, die die Halbebenen voneinander abtrennen.}
 
 \begin{figure}[!htbp]
