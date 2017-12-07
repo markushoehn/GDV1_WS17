@@ -226,11 +226,41 @@ void TriangleMesh::drawImmediate() {
 
 void TriangleMesh::drawArray() {
 	if (triangles.size() == 0) return;
-	// TODO: draw in array mode
+
+	// exercise 2a)
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	// glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid* pointer)
+	// size: The number of vertex coordinates, 2 for 2D points, 3 for 3D points.
+	// type: GL_FLOAT, GL_SHORT, GL_INT or GL_DOUBLE.
+	// stride: The number of bytes to offset to the next vertex (used for interleaved array).
+	// pointer: The pointer to the vertex array.
+	glVertexPointer(3, GL_FLOAT, 0, &vertices);
+	
+	// glNormalPointer(GLenum type, GLsizei stride, const GLvoid* pointer)
+	// type: GL_FLOAT, GL_SHORT, GL_INT or GL_DOUBLE.
+	// stride: The number of bytes to offset to the next normal (used for interleaved array).
+	// pointer: The pointer to the vertex array.
+	glNormalPointer(GL_FLOAT, 0, &normals);
+
+ 	// glDrawElements() requires 4 parameters.
+	// The first one is the type of primitive,
+	// the second is the number of indices of index array,
+	// the third is data type of index array
+	// the last parameter is the address of index array
+	cout << "triangles.size(): " << triangles.size() << endl;
+	cout << "vertices.size(): " << vertices.size() << endl;
+	cout << "normals.size(): " << normals.size() << endl;
+	
+	glDrawElements(GL_TRIANGLES, triangles.size(), GL_UNSIGNED_INT, &triangles);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 void TriangleMesh::drawVBO() {
 	if (VBOsupported == false) return;
 	if (VBOv == 0 || VBOn == 0 || VBOf == 0) return;
 	// TODO: draw in VBO mode
+	// exercise 2b)
 }
