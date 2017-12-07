@@ -235,24 +235,21 @@ void TriangleMesh::drawArray() {
 	// type: GL_FLOAT, GL_SHORT, GL_INT or GL_DOUBLE.
 	// stride: The number of bytes to offset to the next vertex (used for interleaved array).
 	// pointer: The pointer to the vertex array.
-	glVertexPointer(3, GL_FLOAT, 0, &vertices);
+	glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
 	
 	// glNormalPointer(GLenum type, GLsizei stride, const GLvoid* pointer)
 	// type: GL_FLOAT, GL_SHORT, GL_INT or GL_DOUBLE.
 	// stride: The number of bytes to offset to the next normal (used for interleaved array).
 	// pointer: The pointer to the vertex array.
-	glNormalPointer(GL_FLOAT, 0, &normals);
+	glNormalPointer(GL_FLOAT, 0, &normals[0]);
 
  	// glDrawElements() requires 4 parameters.
 	// The first one is the type of primitive,
 	// the second is the number of indices of index array,
 	// the third is data type of index array
 	// the last parameter is the address of index array
-	cout << "triangles.size(): " << triangles.size() << endl;
-	cout << "vertices.size(): " << vertices.size() << endl;
-	cout << "normals.size(): " << normals.size() << endl;
-	
-	glDrawElements(GL_TRIANGLES, triangles.size(), GL_UNSIGNED_INT, &triangles);
+
+	glDrawElements(GL_TRIANGLES, 3*triangles.size(), GL_UNSIGNED_INT, &triangles[0]);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
