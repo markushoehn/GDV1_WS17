@@ -36,7 +36,7 @@ private:
   typedef Vec3f Vertex;
   typedef vector<Triangle> Triangles;
   typedef vector<Normal> Normals;
-  typedef vector<Vertex> Vertices;  
+  typedef vector<Vertex> Vertices;
 
   // data of TriangleMesh
   Vertices vertices;

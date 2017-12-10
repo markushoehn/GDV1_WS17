@@ -56,7 +56,30 @@ void TriangleMesh::createAllVBOs() {
 		VBOsupported = false;
 		cout << "VBOs are not supported!" << endl;
 	}
-	// TODO: create VBOs
+	
+	// exercise b)
+
+	// TODO: if this is loaded the array drawing doesnt work anymore?
+	if(VBOsupported) {
+
+		int bufferSize;
+
+		// generate new VBO
+		glGenBuffers(1, &VBOv);
+		// bind VBO
+		glBindBuffer(GL_ARRAY_BUFFER, VBOv);
+		// upload data to VBO
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*vertices.size()+normals.size(), 0, GL_STATIC_DRAW);
+		
+		// 				type 					OFFSET 				SIZE 				POINTER
+		glBufferSubData(GL_ARRAY_BUFFER, 0,					3*vertices.size(),  &vertices[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, 3*vertices.size(), normals.size(), 	&normals[0]);
+
+		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+
+		cout << "generating VBOs with " << bufferSize << " bytes and " << VBOv << " vertices?" << endl;
+
+	}
 }
 
 void TriangleMesh::cleanupVBO() {
@@ -260,4 +283,22 @@ void TriangleMesh::drawVBO() {
 	if (VBOv == 0 || VBOn == 0 || VBOf == 0) return;
 	// TODO: draw in VBO mode
 	// exercise 2b)
+	glBindBuffer(GL_ARRAY_BUFFER, VBOv);
+	
+	glNormalPointer(GL_FLOAT, 0, (void*)vertices.size());
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOn);
+	//glIndexPointer(GL_UNSIGNED_INT, 0, 0);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+
+	glDrawElements(GL_TRIANGLES, 3*triangles.size(), GL_UNSIGNED_INT, 0); // last parameter is offset
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
