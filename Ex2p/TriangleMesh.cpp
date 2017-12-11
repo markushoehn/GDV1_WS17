@@ -62,42 +62,22 @@ void TriangleMesh::createAllVBOs() {
 	// TODO: if this is loaded the array drawing doesnt work anymore?
 	if(VBOsupported) {
 
-		int bufferSize;
-		int vertexSize = 3*vertices.size();
-		int normalSize = normals.size();
-		int triangleSize = 3*triangles.size();
+		int vertexSize = 3*vertices.size()*sizeof(float);
+		int normalSize = 3*normals.size()*sizeof(float);
+		int triangleSize = 3*triangles.size()*sizeof(float);
 
-		// generate new VBO
 		glGenBuffers(1, &VBOv);
-		// bind VBO
 		glBindBuffer(GL_ARRAY_BUFFER, VBOv);
-		// upload data to VBO
-		glBufferData(GL_ARRAY_BUFFER, vertexSize*sizeof(float), &vertices[0], GL_STATIC_DRAW);
-		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
-        std::cout << "Vertex Array in VBO: " << bufferSize << " bytes\n";
-        std::cout << "Data size in VBO:    " << vertexSize*sizeof(float) << " bytes\n";
-
-        glGenBuffers(1, &VBOn);
-        glBindBuffer(GL_ARRAY_BUFFER, VBOn);
-		glBufferData(GL_ARRAY_BUFFER, normalSize*sizeof(float), &normals[0], GL_STATIC_DRAW);
-		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
-        std::cout << "Normal Array in VBO: " << bufferSize << " bytes\n";
-        std::cout << "Data size in VBO:    " << normalSize*sizeof(float) << " bytes\n";
-
+		glBufferData(GL_ARRAY_BUFFER, vertexSize, &vertices[0], GL_STATIC_DRAW);
+		
+		glGenBuffers(1, &VBOn);
+		glBindBuffer(GL_ARRAY_BUFFER, VBOn);
+		glBufferData(GL_ARRAY_BUFFER, normalSize, &normals[0], GL_STATIC_DRAW);
 
 		glGenBuffers(1, &VBOf);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOf);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangleSize*sizeof(int), &triangles[0], GL_STATIC_DRAW);
-        glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
-        std::cout << "Index Array in VBO: " << bufferSize << " bytes\n";
-        std::cout << "data size in VBO:   " << triangleSize*sizeof(int) << " bytes\n";
-
-		cout << "VBOv: " << VBOv << ", VOBn: " << VBOn << ", VBOf: " << VBOf << endl;
-
-		cout << "size of vertices: " << vertices.size()*sizeof(float) << endl;
-		cout << "size of normals: " << normals.size()*sizeof(float) << endl;
-		cout << "size of triangles: " << triangles.size()*sizeof(int) << endl;
-
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangleSize, &triangles[0], GL_STATIC_DRAW);
+        
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
@@ -304,13 +284,17 @@ void TriangleMesh::drawVBO() {
 	if (VBOv == 0 || VBOn == 0 || VBOf == 0) return;
 	// TODO: draw in VBO mode
 	// exercise 2b)
+	glBindBuffer(GL_ARRAY_BUFFER, VBOn);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	
+	glNormalPointer(GL_FLOAT, 0, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOv);
 	glVertexPointer(3, GL_FLOAT, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, VBOn);
-    glNormalPointer(GL_FLOAT, 0, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOf);
+    glIndexPointer(GL_UNSIGNED_INT, 0, 0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOf);
 	glDrawElements(GL_TRIANGLES, 3*triangles.size(), GL_UNSIGNED_INT, 0); // last parameter is offset
