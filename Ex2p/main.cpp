@@ -44,8 +44,8 @@ int main(int argc, char** argv) {
   if (programID != 0) programIDs.push_back(programID);
   cout << programIDs.size() << " shaders loaded. Use keys 3 to " << programIDs.size() + 2 << "." << endl;
   // load mesh
-  //char* filename = "Models/delphin.off";
-  char* filename = "Models/Sketched-Teddy-org.off";
+  char* filename = "Models/delphin.off";
+  //schar* filename = "Models/Sketched-Teddy-org.off";
   Vec3f mid(0.0f,0.0f,0.0f);
   trimesh.loadOFF(filename, mid, 4.0f);
   // activate main loop

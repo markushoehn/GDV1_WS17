@@ -63,22 +63,38 @@ void TriangleMesh::createAllVBOs() {
 	if(VBOsupported) {
 
 		int bufferSize;
+        int bufferSize2;
+		int vertexSize = 3*vertices.size();
+		int normalSize = normals.size();
+		int triangleSize = 3*triangles.size();
 
 		// generate new VBO
 		glGenBuffers(1, &VBOv);
 		// bind VBO
 		glBindBuffer(GL_ARRAY_BUFFER, VBOv);
 		// upload data to VBO
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*vertices.size()+normals.size(), 0, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertexSize+normalSize, 0, GL_STATIC_DRAW);
 		
-		// 				type 					OFFSET 				SIZE 				POINTER
-		glBufferSubData(GL_ARRAY_BUFFER, 0,					3*vertices.size(),  &vertices[0]);
-		glBufferSubData(GL_ARRAY_BUFFER, 3*vertices.size(), normals.size(), 	&normals[0]);
-
+		// 				type 			 OFFSET      SIZE                   POINTER
+		glBufferSubData(GL_ARRAY_BUFFER, 0,          vertexSize,            &vertices[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, vertexSize, vertexSize+normalSize, &normals[0]);
 		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+        std::cout << "Vertex and Normal Array in VBO: " << bufferSize << " bytes\n";
+        std::cout << "data size in VBO:               " << (vertexSize+normalSize) << " bytes\n";
 
-		cout << "generating VBOs with " << bufferSize << " bytes and " << VBOv << " vertices?" << endl;
 
+		glGenBuffers(1, &VBOf);
+		glBindBuffer(GL_ARRAY_BUFFER, VBOf);
+		glBufferData(GL_ARRAY_BUFFER, triangleSize, &triangles[0], GL_STATIC_DRAW);
+        glGetBufferParameterivARB(GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &bufferSize2);
+        std::cout << "Index Array in VBO: " << bufferSize2 << " bytes\n";
+        std::cout << "data size in VBO:   " << triangleSize << " bytes\n";
+
+		cout << "VBOv: " << VBOv << ", VOBn: " << VBOn << ", VBOf: " << VBOf << endl;
+
+		cout << "size of vertices: " << vertices.size() << endl;
+		cout << "size of normals: " << normals.size() << endl;
+		cout << "size of triangles: " << triangles.size() << endl;
 	}
 }
 
@@ -285,11 +301,10 @@ void TriangleMesh::drawVBO() {
 	// exercise 2b)
 	glBindBuffer(GL_ARRAY_BUFFER, VBOv);
 	
-	glNormalPointer(GL_FLOAT, 0, (void*)vertices.size());
 	glVertexPointer(3, GL_FLOAT, 0, 0);
+	glNormalPointer(GL_FLOAT, 0, (void*)(3*vertices.size()));
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOn);
-	//glIndexPointer(GL_UNSIGNED_INT, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOf);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -300,5 +315,5 @@ void TriangleMesh::drawVBO() {
 	glDisableClientState(GL_NORMAL_ARRAY);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
