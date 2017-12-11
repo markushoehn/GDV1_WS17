@@ -5,13 +5,14 @@ void main()
     float intensity;
     vec4 color;
     vec3 n = normalize(normal);
-    intensity = dot(vec3(gl_LightSource[0].position),n);
+    vec3 lightDir = normalize(vec3(gl_LightSource[0].position));
+    intensity = dot(lightDir,n);
 
     if (intensity > 0.95)
         color = vec4(1.0,0.5,0.5,1.0);
-    else if (intensity > 0.8)
+    else if (intensity > 0.5)
         color = vec4(0.6,0.3,0.3,1.0);
-    else if (intensity > 0.75)
+    else if (intensity > 0.3)
         color = vec4(0.4,0.2,0.2,1.0);
     else
         color = vec4(0.2,0.1,0.1,1.0);
