@@ -305,3 +305,30 @@ void TriangleMesh::drawVBO() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+
+
+
+/*
+
+// exercise 2c)
+
+averaged FPS over ~10 sec
+1024100 triangles. (delphin.off, normal shader)
+Intel(R) Core(TM) i3 CPU       M 370  @ 2.40GHz
+
+
+Immediate
+0.007254109846153848
+
+Array
+0.02880962641666666
+
+VBO
+0.06143070797101453
+
+VBO is 2 times faster then Array Mode.
+VBO is 8 times faster then Immediate Mode.
+Array Mode is nearly 4 times faster then Immediate Mode.
+
+
+*/
