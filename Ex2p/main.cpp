@@ -43,6 +43,17 @@ int main(int argc, char** argv) {
   programID = readShaders("Shader/FlatGreyShader.vert", "Shader/FlatGreyShader.frag");
   if (programID != 0) programIDs.push_back(programID);
   cout << programIDs.size() << " shaders loaded. Use keys 3 to " << programIDs.size() + 2 << "." << endl;
+
+  programID = 0;
+  programID = readShaders("Shader/Toonshader.vert", "Shader/Toonshader.frag");
+  if (programID != 0) programIDs.push_back(programID);
+  cout << programIDs.size() << " shaders loaded. Use keys 4 to " << programIDs.size() + 2 << "." << endl;
+
+  programID = 0;
+  programID = readShaders("Shader/WaveShader.vert", "Shader/WaveShader.frag");
+  if (programID != 0) programIDs.push_back(programID);
+  cout << programIDs.size() << " shaders loaded. Use keys 5 to " << programIDs.size() + 2 << "." << endl;
+
   // load mesh
   char* filename = "Models/delphin.off";
   //schar* filename = "Models/Sketched-Teddy-org.off";
