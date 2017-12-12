@@ -11,6 +11,7 @@
 \usepackage{siunitx}
 \usepackage{booktabs}
 \usepackage{enumitem}
+\usepackage{tikz}
 
 \usepackage{tabularx}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündig mit Breitenangabe
@@ -48,6 +49,31 @@
 \maketitle
 
 \section{Räumliche Datenstrukturen (2 Punkte)}
+
+\begin{tikzpicture}[sibling distance=5cm, level distance=1.8cm,
+level 1/.style={sibling distance=3cm},
+level 2/.style={sibling distance=1.5cm},  
+  every node/.style = {shape=circle, rounded corners,
+    draw, align=center,
+%    top color=white, bottom color=blue!20
+	}]]
+  \node[minimum size=1cm] {A}
+    child[minimum size=1cm] { node {$B_1$} 
+    	child[minimum size=1cm] { node {$C_1$}
+    		child[minimum size=1cm] { node {E}}
+    		child[missing, minimum size=1cm] {node {}}
+    	}
+    	child[minimum size=1cm] { node {F}}
+    }
+    child[minimum size=1cm] { node {G}
+      child[minimum size=1cm] { node {H}}
+      child[minimum size=1cm] { node {D}
+			child[minimum size=1cm] { node {$C_2$}}     
+			child[minimum size=1cm] { node {$B_2$}}
+		}
+      };
+\end{tikzpicture}
+
 
 \subsection{a) (1 Punkt)}
 
