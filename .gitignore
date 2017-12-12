@@ -20,3 +20,19 @@
 *.synctex.gz
 *.log
 *.aux
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# TeXlipse plugin
+.texlipse
+
+# CDT-specific (C/C++ Development Tooling)
+.cproject
+tmp/
+bin/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
