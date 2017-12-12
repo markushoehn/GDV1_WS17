@@ -15,3 +15,8 @@
 *cmake_install.cmake
 *Makefile
 *CMakeFiles
+
+# tex files
+*.synctex.gz
+*.log
+*.aux
