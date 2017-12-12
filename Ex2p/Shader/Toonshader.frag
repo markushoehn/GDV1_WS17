@@ -7,7 +7,7 @@ void main()
     vec3 n = normalize(normal);
     vec3 lightDir = normalize(vec3(gl_LightSource[0].position));
     intensity = dot(lightDir,n);
-
+    
     if (intensity > 0.95)
         color = vec4(1.0,0.5,0.5,1.0);
     else if (intensity > 0.5)

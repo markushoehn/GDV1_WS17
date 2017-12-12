@@ -46,7 +46,9 @@ int main(int argc, char** argv) {
   if (programID != 0) programIDs.push_back(programID);
   programID = readShaders("Shader/WaveShader.vert", "Shader/WaveShader.frag");
   if (programID != 0) programIDs.push_back(programID);
-  
+  programID = readShaders("Shader/NormalShader.vert", "Shader/NormalShader.frag");
+  if (programID != 0) programIDs.push_back(programID);
+
   cout << programIDs.size() << " shaders loaded. Use keys 1 to " << programIDs.size() + 2 << "." << endl;
 
   // load mesh
@@ -223,14 +225,15 @@ void renderScene() {
   glScalef(scale, scale, scale);
   // draw objects
   glEnable(GL_LIGHTING);
+
   for (int i = -gridSize; i <= gridSize; ++i) {
-	  for (int j = -gridSize; j <= gridSize; ++j) {
-		  if (i != 0 || j != 0) {
-			  float r = (float)i/(2.0f*gridSize) + 0.5f;
-			  float g = (float)j/(2.0f*gridSize) + 0.5f;
-			  float b = 1.0f - 0.5f*r - 0.5f*g;
+    for (int j = -gridSize; j <= gridSize; ++j) {
+      if (i != 0 || j != 0) {
+        float r = (float)i/(2.0f*gridSize) + 0.5f;
+        float g = (float)j/(2.0f*gridSize) + 0.5f;
+        float b = 1.0f - 0.5f*r - 0.5f*g;
         glColor3f(r,g,b);
-		  }
+      }
       else glColor3f(1,1,1);
       glPushMatrix();
       glTranslatef(4.0f*i, 0.0f, 4.0f*j);
@@ -246,8 +249,14 @@ void renderScene() {
         break;
       }
       glPopMatrix();
-	  }
+    }
   }
+
+  /// ?????????????? how to give time to shaders ??????????????
+  GLint loc0;
+  loc0 = glGetUniformLocation(0,"time");
+  glUniform1f(loc0,fpsCounterFrames*1.0);
+  /// ?????????????? how to give time to shaders ??????????????
   // swap Buffers
   glutSwapBuffers();
 }
@@ -257,7 +266,7 @@ void renderScene() {
 // =================
 
 void keyPressed(unsigned char key, int x, int y) {
-	switch (key) {
+  switch (key) {
     // EXC => exit
     case 27:
       exit(0);
