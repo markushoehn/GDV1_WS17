@@ -206,6 +206,89 @@ $n_r=
 $ \\
 
 \subsubsection{iii}
+$r = n \cdot tan(\frac{\theta}{2}) \qquad  l = -n \cdot tan(\frac{\theta}{2})
+$\\
+$f'_l=
+P_0 \cdot f_l =
+\begin{pmatrix}
+    \frac{2}{r-l} & 0 & \frac{r+l}{l-r}\\
+    0 & \frac{2}{f-n} & \frac{-f-n}{f-n}\\
+    0 & 0 & 1\\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+    n \cdot tan(\frac{\theta}{2})\\
+    f\\
+    1\\
+\end{pmatrix}$\\$ = 
+\begin{pmatrix}
+    \frac{1}{n \cdot tan(\frac{\theta}{2})} & 0 & 0\\
+    0 & \frac{2}{f-n} & \frac{-f-n}{f-n}\\
+    0 & 0 & 1\\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+    n \cdot tan(\frac{\theta}{2})\\
+    f\\
+    1
+\end{pmatrix} =
+\begin{pmatrix}
+    1\\
+    1\\
+    1\\
+\end{pmatrix}
+$\\
+$f'_r=
+P_0 \cdot f_r =
+\begin{pmatrix}
+    \frac{1}{n \cdot tan(\frac{\theta}{2})} & 0 & 0\\
+    0 & \frac{2}{f-n} & \frac{-f-n}{f-n}\\
+    0 & 0 & 1\\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+    -n \cdot tan(\frac{\theta}{2})\\
+    f\\
+    1
+\end{pmatrix} =
+\begin{pmatrix}
+    -1\\
+    1\\
+    1\\
+\end{pmatrix}
+$\\
+$n'_l=
+P_0 \cdot n_l =
+\begin{pmatrix}
+    \frac{1}{n \cdot tan(\frac{\theta}{2})} & 0 & 0\\
+    0 & \frac{2}{f-n} & \frac{-f-n}{f-n}\\
+    0 & 0 & 1\\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+    n \cdot tan(\frac{\theta}{2})\\
+    n\\
+    1
+\end{pmatrix} =
+\begin{pmatrix}
+    1\\
+    -1\\
+    1\\
+\end{pmatrix}
+$\\
+$n'_r=
+P_0 \cdot n_r =
+\begin{pmatrix}
+    \frac{1}{n \cdot tan(\frac{\theta}{2})} & 0 & 0\\
+    0 & \frac{2}{f-n} & \frac{-f-n}{f-n}\\
+    0 & 0 & 1\\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+    -n \cdot tan(\frac{\theta}{2})\\
+    n\\
+    1
+\end{pmatrix} =
+\begin{pmatrix}
+    -1\\
+    -1\\
+    1\\
+\end{pmatrix}$\\
 
 \subsection{b)}
 \subsection{c)}
