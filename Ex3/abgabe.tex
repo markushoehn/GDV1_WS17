@@ -85,19 +85,19 @@ H, G, $B_2$, D, $C_2$, A, $C_1$, E, $B_1$, F
 \subsection{a)}
 \subsubsection{i}
 $f_l= \begin{pmatrix}
-tan(\frac{\Theta}{2})\cdot f \\
+tan(\frac{\theta}{2})\cdot f \\
 f \\
 \end{pmatrix}$ \\
 $f_r= \begin{pmatrix}
--tan(\frac{\Theta}{2})\cdot f \\
+-tan(\frac{\theta}{2})\cdot f \\
 f \\
 \end{pmatrix}$ \\
 $n_l= \begin{pmatrix}
-tan(\frac{\Theta}{2})\cdot n \\
+tan(\frac{\theta}{2})\cdot n \\
 n \\
 \end{pmatrix}$ \\
 $n_r= \begin{pmatrix}
--tan(\frac{\Theta}{2})\cdot n \\
+-tan(\frac{\theta}{2})\cdot n \\
 n \\
 \end{pmatrix}$ 
 
@@ -115,19 +115,20 @@ $f_l=
 	0 & -\frac{1}{-n} & 0  \\
 \end{pmatrix} \cdot
 \begin{pmatrix}
-	tan(\frac{\Theta}{2})\cdot -f \\
-	-f \\
+	tan(\frac{\theta}{2})\cdot f \\
+	f \\
+	1 \\
 \end{pmatrix}
 = 
 \begin{pmatrix}
-	-\frac{-n}{-f} \cdot tan(\frac{\Theta}{2})\cdot (-f)\\
-	-\frac{-n}{-f} \cdot(-f)-(-f-n) \\
+	-\frac{-n}{f} \cdot tan(\frac{\theta}{2})\cdot f\\
+	-\frac{-n}{f} \cdot(-f)-(-f-n) \\
 	1 \\
 \end{pmatrix}\\
 = 
 \begin{pmatrix}
-	n \cdot tan(\frac{\Theta}{2})\\
-	f+2n \\
+	n \cdot tan(\frac{\theta}{2})\\
+	f \\
 	1 \\
 \end{pmatrix}
 $ \\
@@ -138,19 +139,20 @@ $f_r=
 	0 & -\frac{1}{-n} & 0  \\
 \end{pmatrix} \cdot
 \begin{pmatrix}
-	-tan(\frac{\Theta}{2})\cdot -f \\
-	-f \\
+	-tan(\frac{\theta}{2})\cdot f \\
+	f \\
+	1 \\
 \end{pmatrix}
 =
 \begin{pmatrix}
-	-\frac{-n}{-f} \cdot(-tan(\frac{\Theta}{2}))\cdot (-f)\\
-	-\frac{-n}{-f} \cdot(-f)-(-f-n) \\
+	-\frac{-n}{f} \cdot(-tan(\frac{\theta}{2}))\cdot f\\
+	-\frac{-n}{f} \cdot(-f)-(-f-n) \\
 	1 \\
 \end{pmatrix}\\
 = 
 \begin{pmatrix}
-	-n \cdot tan(\frac{\Theta}{2})\\
-	f+2n \\
+	-n \cdot tan(\frac{\theta}{2})\\
+	f \\
 	1 \\
 \end{pmatrix}
 $ \\
@@ -161,19 +163,20 @@ $n_l=
 	0 & -\frac{1}{-n} & 0  \\
 \end{pmatrix} \cdot
 \begin{pmatrix}
-	tan(\frac{\Theta}{2})\cdot -n \\
-	-n \\
+	tan(\frac{\theta}{2})\cdot n \\
+	n \\
+	1 \\
 \end{pmatrix}
 =
 \begin{pmatrix}
-	-\frac{-n}{-f} \cdot tan(\frac{\Theta}{2})\cdot (-n)\\
-	-\frac{-n}{-n} \cdot(-f)-(-f-n) \\
+	-\frac{-n}{n} \cdot tan(\frac{\theta}{2})\cdot n\\
+	-\frac{-n}{n} \cdot(-f)-(-f-n) \\
 	1 \\
 \end{pmatrix}\\
 = 
 \begin{pmatrix}
-	\frac{n^2}{f} \cdot tan(\frac{\Theta}{2})\\
-	2f+n \\
+	n\cdot tan(\frac{\theta}{2})\\
+	n \\
 	1 \\
 \end{pmatrix}
 $ \\
@@ -184,19 +187,20 @@ $n_r=
 	0 & -\frac{1}{-n} & 0  \\
 \end{pmatrix} \cdot
 \begin{pmatrix}
-	-tan(\frac{\Theta}{2})\cdot -n \\
-	-n \\
+	-tan(\frac{\theta}{2})\cdot n \\
+	n \\
+	1 \\
 \end{pmatrix}
 =
 \begin{pmatrix}
-	-\frac{-n}{-n} \cdot(-tan(\frac{\Theta}{2}))\cdot (-n)\\
-	-\frac{-n}{-n} \cdot(-f)-(-f-n) \\
+	-\frac{-n}{n} \cdot(-tan(\frac{\theta}{2}))\cdot n\\
+	-\frac{-n}{n} \cdot(-f)-(-f-n) \\
 	1 \\
 \end{pmatrix}\\
 = 
 \begin{pmatrix}
-	-\frac{n^2}{f} \cdot tan(\frac{\Theta}{2})\\
-	2f+n \\
+	-n \cdot tan(\frac{\theta}{2})\\
+	n \\
 	1 \\
 \end{pmatrix}
 $ \\
