@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
 
   // load mesh
   char* filename = "Models/delphin.off";
-  //schar* filename = "Models/Sketched-Teddy-org.off";
+  //char* filename = "Models/Sketched-Teddy-org.off";
   Vec3f mid(0.0f,0.0f,0.0f);
   trimesh.loadOFF(filename, mid, 4.0f);
   // activate main loop

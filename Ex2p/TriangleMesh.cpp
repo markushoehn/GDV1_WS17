@@ -331,4 +331,16 @@ VBO is 8 times faster then Immediate Mode.
 Array Mode is nearly 4 times faster then Immediate Mode.
 
 
+
+bear modell
+Immediate
+0.002692334
+
+Array
+0.006124764
+
+VBO
+0.007063694
+
 */
+
