@@ -14,6 +14,8 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 
+\usepackage{subcaption}
+
 \usepackage{tabularx}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündig mit Breitenangabe
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
@@ -292,8 +294,47 @@ P_0 \cdot n_r =
     1\\
 \end{pmatrix}$\\
 
-\subsection{b)}
-\subsection{c)}
+\subsection{} %b)
+\begin{figure}[H]
+	\captionsetup{justification=centering}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{2b_0}
+		\caption{0}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{2b_1}
+		\caption{1}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{2b_2}
+		\caption{2}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{2b_3}
+		\caption{3}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{2b_4}
+		\caption{4}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{2b_5}
+		\caption{5}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{2b_full}
+		\caption{full}
+	\end{subfigure}
+	\caption{Alle Ergebnisse}
+\end{figure}
+
+\subsection{} %c)
 $z'_0 = 6$\\
 $z'_1 = 6$\\
 $z'_2 = 7$\\
