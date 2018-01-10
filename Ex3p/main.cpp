@@ -61,12 +61,18 @@ int main(int argc, char** argv) {
   filename = "Textures/skybox1/neg_x.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[3] = loadTexture(image);
-  filename = "Textures/skybox1/pos_y.bmp"; 
+  filename = "Textures/skybox1/pos_y.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[4] = loadTexture(image);
   filename = "Textures/skybox1/neg_y.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[5] = loadTexture(image);
+
+
+  filename = "Textures/TEST_GRID.bmp";
+  image = loadBMP(filename.c_str());
+  textureIDs[0] = loadTexture(image);
+
   // free memory
   delete image;
   // activate main loop
@@ -107,6 +113,7 @@ void initialize() {
   glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
   // sky box texture IDs (6 IDs, initialized with 0)
   skyboxTextureIDs.resize(6,0);
+  textureIDs.resize(1,0);
 }
 
 void setDefaults() {
@@ -307,7 +314,11 @@ void renderScene() {
   // doppeldecker
   glColor3f(1,1,1);
   //draw() returns the drawn number of triangles
+
+  glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
   triangles = meshes[0].draw();
+  glBindTexture(GL_TEXTURE_2D, 0);
+
   if (triangles > 0) {
     trianglesDrawn += triangles;
     objectsDrawn++;

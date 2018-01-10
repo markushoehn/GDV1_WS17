@@ -45,6 +45,8 @@ unsigned int drawMode;
 // skybox texture IDs
 vector<GLuint> skyboxTextureIDs;
 
+vector<GLuint> textureIDs;
+
 // ==============
 // === BASICS ===
 // ==============

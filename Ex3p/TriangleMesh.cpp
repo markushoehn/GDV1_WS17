@@ -230,7 +230,18 @@ void TriangleMesh::calculateNormalsByArea() {
 void TriangleMesh::calculateTexCoordsSphereMapping() {
   texCoords.clear();
   // texCoords by central projection on unit sphere
-  // optional ...
+  texCoords.resize(vertices.size());
+  for (int i = 0; i < vertices.size(); ++i)
+  {
+    float x = vertices[i][0];
+    float y = vertices[i][1];
+    float z = vertices[i][2];
+    float u = (1 / ( 2 * M_PI)) * atan2(x,z) + 0.5;
+    float v = (1 / M_PI) * asin(y / (sqrt (x*x + y*y + z*z))) + 0.5;
+
+    texCoords[i].v = v;
+    texCoords[i].u = u;
+  }
 }
 
 void TriangleMesh::calculateBB() {
