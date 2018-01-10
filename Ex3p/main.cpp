@@ -209,7 +209,63 @@ void drawSkybox() {
   glEnable(GL_TEXTURE_2D);
   glColor3f(1,1,1);
   // draw skybox
-  // ...
+  
+  float pWidth = 2;
+  float pLength = 2;
+  float pHeight = 2;
+  float px = cameraPos.x - pWidth/2;
+  float py = cameraPos.y - pLength/2;
+  float pz = cameraPos.z - pHeight/2;
+
+
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[0]);//neg_z
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 0); glVertex3f(px,          py,           pz);
+  glTexCoord2f(0, 1); glVertex3f(px,          py + pHeight, pz);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py + pHeight, pz);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py,           pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[2]);//pos_z
+glBegin(GL_QUADS);
+  glTexCoord2f(1, 0); glVertex3f(px,          py,           pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px,          py + pHeight, pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py,           pz + pLength);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[5]);//neg_y
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py, pz);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py, pz + pLength);
+  glTexCoord2f(1, 0); glVertex3f(px,          py, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px,          py, pz);
+glEnd();
+
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[4]);//pos_y
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 1); glVertex3f(px,          py + pHeight, pz);
+  glTexCoord2f(1, 1); glVertex3f(px,          py + pHeight, pz + pLength);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py + pHeight, pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[1]);//pos_x
+glBegin(GL_QUADS);
+  glTexCoord2f(1, 0); glVertex3f(px, py,           pz);
+  glTexCoord2f(0, 0); glVertex3f(px, py,           pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px, py + pHeight, pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px, py + pHeight, pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[3]);//neg_x
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py,           pz);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py,           pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py + pHeight, pz);
+ glEnd();
+
   // restore matrix and attributes
   glPopMatrix();
   glBindTexture(GL_TEXTURE_2D, 0);
