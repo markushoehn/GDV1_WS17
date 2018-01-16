@@ -17,7 +17,7 @@ class Terrain {
     Terrain(int size = 256, float disp = 0.123456f);
 
     float getHeight(int x, int y);
-    void generate();
+    void generate(int mode, bool smooth);
     void visualize();
     std::Vec3f coords(int idx, int idz, float bbox_height, float bbox_plane);
     int getSize();

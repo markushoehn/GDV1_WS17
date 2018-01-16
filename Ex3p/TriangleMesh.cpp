@@ -219,7 +219,7 @@ void TriangleMesh::generateHeightmap(float bbox_height, float bbox_plane) {
     col.push_back(Vec3f(1.0f, 1.0f, 1.0f));   // white
     float colstep = bbox_height / col.size();
     Terrain terr;
-    terr.generate();
+    terr.generate(0, true);
     int size = terr.getSize();
     int nv = pow(size, 2);
     int nf = (6 + (size - 2) * 3 + pow((size - 2), 2) * 6) / 3;
@@ -320,7 +320,8 @@ void TriangleMesh::calculateBB() {
 
 void TriangleMesh::checkVBOSupport() {
   // check if VBOs are supported and cleanup VBOs
-  if(glGenBuffers && glBindBuffer && glBufferData && glBufferSubData && glMapBuffer && glUnmapBuffer && glDeleteBuffers && glGetBufferParameteriv) {
+  bool glGenBuffed = true;
+  if(glGenBuffed && glBindBuffer && glBufferData && glBufferSubData && glMapBuffer && glUnmapBuffer && glDeleteBuffers && glGetBufferParameteriv) {
     VBOsupported = true;
     //cout << "VBOs are supported!" << endl;
   }

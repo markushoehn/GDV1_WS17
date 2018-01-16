@@ -27,7 +27,7 @@
 
 void terrain(){
   Terrain x = Terrain(128, 0.12345678f);
-  x.generate();
+  x.generate(0, true);
   x.visualize();
 }
 
@@ -36,6 +36,9 @@ void terrain(){
 // ==============
 
 int main(int argc, char** argv) {
+
+  terrain();
+
   // initialize openGL window
   windowHeight = 600;
   windowWidth = 400;

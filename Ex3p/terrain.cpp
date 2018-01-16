@@ -25,46 +25,88 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
         return Terrain::_height[x][y];
     }
 
-    void Terrain::generate()
+    void Terrain::generate(int mode, bool smooth)
     {
-        int count;
-        int it = 0;
-        float min;
-        float max;
-        do
+        float min = 10.0f;
+        float max = -10.0f;
+        
+        if(mode == 0)
         {
-            count = 0;
-            min = 10.0f;
-            max = -10.0f;
-            float v = rand();
-            float a = sin(v);
-            float b = cos(v);
-            float d = sqrt(2) * Terrain::_size;
-            float c = ((float) rand() / (float) RAND_MAX) * d - d/2;
-            
-//            std::cout << it << " - " << round(a * 1000.0f) / 1000.0f << "*x + " << round(b * 1000.0f) / 1000.0f << "*z = " << round(c * 1000.0f) / 1000.0f << std::endl;
-            ++it;
+            int count;
+            int it = 0;
+
+            do
+            {
+                count = 0;
+                float v = rand();
+                float a = sin(v);
+                float b = cos(v);
+                float d = sqrt(2) * Terrain::_size;
+                float c = ((float) rand() / (float) RAND_MAX) * d - d/2;
+
+                std::cout << ++it << " - " << round(a * 1000.0f) / 1000.0f << "*x + " << round(b * 1000.0f) / 1000.0f << "*z = " << round(c * 1000.0f) / 1000.0f << std::endl;
+                for(int z = 0; z < Terrain::_size; ++z)
+                {
+                    for(int x = 0; x < Terrain::_size; ++x)
+                    {
+                        if(a*x + b*z - c > 0)
+                            Terrain::_height[z][x] += Terrain::_displacement;
+                        else
+                            Terrain::_height[z][x] -= Terrain::_displacement;
+
+                        if (abs(Terrain::_height[z][x]) >= Terrain::_max_height)
+                            ++count;
+                        if (Terrain::_height[z][x] > max)
+                            max = Terrain::_height[z][x];
+                        if (Terrain::_height[z][x] < min)
+                            min = Terrain::_height[z][x];
+                    }
+                }
+            } while((count < Terrain::_threshold) && (it < 1000));
+        }
+
+        if(smooth)
+        {
+            int ksize = 3;
+            int hsize = ksize / 2;
+            float kernel [] = {1.0f, 1.0f, 1.0f,
+                               1.0f, 2.0f, 1.0f,
+                               1.0f, 1.0f, 1.0f};
+
             for(int z = 0; z < Terrain::_size; ++z)
+            {
                 for(int x = 0; x < Terrain::_size; ++x)
                 {
-                    if(a*x + b*z - c > 0)
-                        Terrain::_height[z][x] += Terrain::_displacement;
-                    else
-                        Terrain::_height[z][x] -= Terrain::_displacement;
+                    float sum = 0.0f;
 
-                    if (abs(Terrain::_height[z][x]) >= Terrain::_max_height)
-                        ++count;
-                    if (Terrain::_height[z][x] > max)
-                        max = Terrain::_height[z][x];
-                    if (Terrain::_height[z][x] < min)
-                        min = Terrain::_height[z][x];
+                    for(int n = 0; n < ksize; ++n)
+                    {
+                        for(int m = 0; m < ksize; ++m)
+                        {
+                            int curz = z + (n - hsize);
+                            int curx = x + (m - hsize);
+
+                            if(curz < 0 || curz > (Terrain::_size - 1) || curx < 0 || curx > (Terrain::_size - 1))
+                                sum += 0.0f;
+                            else
+                                sum += Terrain::_height[z][x] * (n * ksize + m);
+                        }
+                    }
+
+                    if (sum > max) max = sum;
+                    if (sum < min) min = sum;
+
+                    Terrain::_height[z][x] = sum;
                 }
-        } while((count < Terrain::_threshold) && (it < 1000));
-        
+            }
+        }
+
+        // normalize
         for(int z = 0; z < Terrain::_size; ++z)
             for(int x = 0; x < Terrain::_size; ++x)
             {
                 Terrain::_height[z][x] = (Terrain::_height[z][x] - min) / (max - min);
+
                 if(Terrain::_height[z][x] >= 1.0f) {
                     Terrain::_height[z][x] = 1.0f;
                 }
@@ -72,7 +114,6 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                     Terrain::_height[z][x] = 0.0f;
                 }
             }
-                
     }
 
     void Terrain::visualize()
