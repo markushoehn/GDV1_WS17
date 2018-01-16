@@ -7,7 +7,7 @@
 #include "terrain.h"
 #include <iostream>
 
-Terrain::Terrain(int size, float disp) : _size(size), _disp(disp)
+Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
     {
         Terrain::_max_height = 200.0f;
         Terrain::_threshold = 10;
@@ -45,9 +45,10 @@ Terrain::Terrain(int size, float disp) : _size(size), _disp(disp)
                 for(int x = 0; x < Terrain::_size; ++x)
                 {
                     if(a*x + b*z - c > 0)
-                        Terrain::_height[z][x] += Terrain::_disp;
+                        Terrain::_height[z][x] += Terrain::_displacement;
                     else
-                        Terrain::_height[z][x] -= Terrain::_disp;
+                        Terrain::_height[z][x] -= Terrain::_displacement;
+
                     if (abs(Terrain::_height[z][x]) >= Terrain::_max_height)
                         ++count;
                     if (Terrain::_height[z][x] > max)
@@ -56,6 +57,7 @@ Terrain::Terrain(int size, float disp) : _size(size), _disp(disp)
                         min = Terrain::_height[z][x];
                 }
         } while((count < Terrain::_threshold) && (it < 1000));
+        
         for(int z = 0; z < Terrain::_size; ++z)
             for(int x = 0; x < Terrain::_size; ++x)
                 Terrain::_height[z][x] = (Terrain::_height[z][x] - min) / (max - min);
