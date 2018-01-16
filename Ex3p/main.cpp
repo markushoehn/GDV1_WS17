@@ -17,7 +17,19 @@
 #include <iostream>       // cout
 #include <fstream>        // read file
 #include "main.h"         // this header
+#include "terrain.h"      // our fancy terrain
 #include <algorithm>
+
+// ===============
+// === TERRAIN ===
+// ===============
+
+void terrain(){
+  Terrain x = Terrain(128, 0.12345678f);
+  x.generate();
+  x.visualize();
+  return 1;
+}
 
 // ==============
 // === BASICS ===
