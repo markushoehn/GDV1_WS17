@@ -7,20 +7,10 @@
 #include "terrain.h"
 #include <iostream>
 
-Terrain::Terrain(int size) : _size(size)
+Terrain::Terrain(int size, float disp) : _size(size), _disp(disp)
     {
-        Terrain::_height = new float*[Terrain::_size];
-        for(int i = 0; i < Terrain::_size; ++i)
-        {
-            Terrain::_height[i] = new float[Terrain::_size];
-            for(int j = 0; j < Terrain::_size; ++j)
-                Terrain::_height[i][j] = 0;
-        }
-    }
-
-Terrain::Terrain(int size, float disp) : _size(size)
-    {
-        Terrain::_disp = disp;
+        Terrain::_max_height = 200.0f;
+        Terrain::_threshold = 10;
         Terrain::_height = new float*[Terrain::_size];
         for(int i = 0; i < Terrain::_size; ++i)
         {

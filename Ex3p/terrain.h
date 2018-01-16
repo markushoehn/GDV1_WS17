@@ -8,14 +8,13 @@
 class Terrain {
     private:
         float** _height;
-        const int _size = 1;
-        float _disp = 0.12345678f;
-        float _max_height = 10.0f;
-        int _threshold = 20;
+        const int _size;
+        float _displacement;
+        float _max_height;
+        int _threshold;
 
     public:
-    Terrain(int size);
-    Terrain(int size, float disp);
+    Terrain(int size = 256, float disp = 0.123456f);
 
     float getHeight(int x, int y);
     void generate();
