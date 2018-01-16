@@ -56,34 +56,38 @@ int main(int argc, char** argv) {
   setDefaults();  
   // load doppeldecker: mesh[0] (flies in positive z direction)
   TriangleMesh doppeldecker;
-  string filename = "Models/doppeldecker.off";
+  string filename = "../Models/doppeldecker.off";
   doppeldecker.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 5.0f);
   meshes.push_back(doppeldecker);
+  TriangleMesh terr;
+  terr.generateHeightmap();
+  terr.toggleWithColorArray();
+  meshes.push_back(terr);
   // cout mesh data
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
   // load sky box
   Image* image;
-  filename = "Textures/skybox1/neg_z.bmp";
+  filename = "../Textures/skybox1/neg_z.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[0] = loadTexture(image);
-  filename = "Textures/skybox1/pos_x.bmp";
+  filename = "../Textures/skybox1/pos_x.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[1] = loadTexture(image);
-  filename = "Textures/skybox1/pos_z.bmp";
+  filename = "../Textures/skybox1/pos_z.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[2] = loadTexture(image);
-  filename = "Textures/skybox1/neg_x.bmp";
+  filename = "../Textures/skybox1/neg_x.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[3] = loadTexture(image);
-  filename = "Textures/skybox1/pos_y.bmp";
+  filename = "../Textures/skybox1/pos_y.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[4] = loadTexture(image);
-  filename = "Textures/skybox1/neg_y.bmp";
+  filename = "../Textures/skybox1/neg_y.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[5] = loadTexture(image);
 
 
-  filename = "Textures/TEST_GRID.bmp";
+  filename = "../Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
   textureIDs[0] = loadTexture(image);
 
@@ -368,6 +372,13 @@ bool viewFurstumCulling(Vec3f position){
   return true;
 }
 
+void drawTerrain() {
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    meshes[1].draw();
+    glDisable(GL_COLOR_MATERIAL);
+}
+
 void renderScene() {
   unsigned int trianglesDrawn = 0;
   unsigned int objectsDrawn = 0;
@@ -392,6 +403,7 @@ void renderScene() {
   // doppeldecker
   glColor3f(1,1,1);
   //draw() returns the drawn number of triangles
+  drawTerrain();
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
   cout << "is inside: " << viewFurstumCulling(meshes[0].getBoundingBoxMid()) << endl;
