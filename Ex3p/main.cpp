@@ -45,6 +45,10 @@ int main(int argc, char** argv) {
   string filename = "Models/doppeldecker.off";
   doppeldecker.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 5.0f);
   meshes.push_back(doppeldecker);
+  TriangleMesh terr;
+  terr.generateHeightmap();
+  terr.toggleWithColorArray();
+  meshes.push_back(terr);
   // cout mesh data
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
   // load sky box
@@ -290,6 +294,13 @@ void drawLight() {
   glPopMatrix();  
 }
 
+void drawTerrain() {
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    meshes[1].draw();
+    glDisable(GL_COLOR_MATERIAL);
+}
+
 void renderScene() {
   unsigned int trianglesDrawn = 0;
   unsigned int objectsDrawn = 0;
@@ -314,6 +325,7 @@ void renderScene() {
   // doppeldecker
   glColor3f(1,1,1);
   //draw() returns the drawn number of triangles
+  drawTerrain();
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
   triangles = meshes[0].draw();

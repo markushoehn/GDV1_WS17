@@ -10,7 +10,7 @@
 Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
     {
         Terrain::_max_height = 200.0f;
-        Terrain::_threshold = 10;
+        Terrain::_threshold = 100;
         Terrain::_height = new float*[Terrain::_size];
         for(int i = 0; i < Terrain::_size; ++i)
         {
@@ -29,18 +29,21 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
     {
         int count;
         int it = 0;
-        float min = 10.0f;
-        float max = -10.0f;
+        float min;
+        float max;
         do
         {
             count = 0;
+            min = 10.0f;
+            max = -10.0f;
             float v = rand();
             float a = sin(v);
             float b = cos(v);
             float d = sqrt(2) * Terrain::_size;
             float c = ((float) rand() / (float) RAND_MAX) * d - d/2;
             
-            std::cout << ++it << " - " << round(a * 1000.0f) / 1000.0f << "*x + " << round(b * 1000.0f) / 1000.0f << "*z = " << round(c * 1000.0f) / 1000.0f << std::endl;
+//            std::cout << it << " - " << round(a * 1000.0f) / 1000.0f << "*x + " << round(b * 1000.0f) / 1000.0f << "*z = " << round(c * 1000.0f) / 1000.0f << std::endl;
+            ++it;
             for(int z = 0; z < Terrain::_size; ++z)
                 for(int x = 0; x < Terrain::_size; ++x)
                 {
@@ -60,7 +63,16 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
         
         for(int z = 0; z < Terrain::_size; ++z)
             for(int x = 0; x < Terrain::_size; ++x)
+            {
                 Terrain::_height[z][x] = (Terrain::_height[z][x] - min) / (max - min);
+                if(Terrain::_height[z][x] >= 1.0f) {
+                    Terrain::_height[z][x] = 1.0f;
+                }
+                if(Terrain::_height[z][x] <= 0.0f) {
+                    Terrain::_height[z][x] = 0.0f;
+                }
+            }
+                
     }
 
     void Terrain::visualize()
@@ -76,12 +88,17 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
         out.close();
     }
 
-    std::Vec3f Terrain::coords(int idx, int idz, float size)
+    std::Vec3f Terrain::coords(int idx, int idz, float bbox_height, float bbox_plane)
     {
-        float step = size / Terrain::_size;
-        float x = idx * step - 0.5 * size;
-        float z = idz * step - 0.5 * size;
-        float y = Terrain::_height[idz][idx] * size - 0.5 * size;
+        float step = bbox_plane / Terrain::_size;
+        float x = idx * step - 0.5 * bbox_plane;
+        float z = idz * step - 0.5 * bbox_plane;
+        float y = Terrain::_height[idz][idx] * bbox_height;
         std::Vec3f coord(x, y, z);
         return coord;
+    }
+
+    int Terrain::getSize()
+    {
+        return Terrain::_size;
     }

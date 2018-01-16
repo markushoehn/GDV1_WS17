@@ -21,6 +21,8 @@
 #include "ClipPlane.h"
 #include "TriangleMesh.h"
 #include <algorithm>
+#include <math.h>
+#include "terrain.h"
 
 // ===============================
 // === CONSTRUCTOR, DESTRUCTOR ===
@@ -205,6 +207,60 @@ void TriangleMesh::loadOFF(const char* filename, const Vec3f& BBmid, const float
   loadOFF(filename, false);  
   translateToCenter(BBmid, false);
   scaleToLength(BBlength, true);
+}
+
+void TriangleMesh::generateHeightmap(float bbox_height, float bbox_plane) {
+    std::vector<Vec3f> col;
+    col.push_back(Vec3f(0.0f, 0.75f, 1.0f));   // light blue
+    col.push_back(Vec3f(0.0f, 0.5f, 0.0f));   // dark green
+    col.push_back(Vec3f(0.0f, 1.0f, 0.0f));   // light green
+    col.push_back(Vec3f(0.5f, 0.3f, 0.0f));   // brown
+    col.push_back(Vec3f(0.5f, 0.5f, 0.5f));   // gray
+    col.push_back(Vec3f(1.0f, 1.0f, 1.0f));   // white
+    float colstep = bbox_height / col.size();
+    Terrain terr;
+    terr.generate();
+    int size = terr.getSize();
+    int nv = pow(size, 2);
+    int nf = (6 + (size - 2) * 3 + pow((size - 2), 2) * 6) / 3;
+    clear();
+    vertices.resize(nv);
+    colors.resize(nv);
+    for(int z = 0; z < size; ++z) {
+        for(int x = 0; x < size; ++x) {
+            int i = z * size + x;
+            std::Vec3f coords = terr.coords(x, z, bbox_height, bbox_plane);
+            vertices[i][0] = coords[0];
+            vertices[i][1] = coords[1] - bbox_height;
+            vertices[i][2] = coords[2];
+            boundingBoxMin[0] = std::min(vertices[i][0], boundingBoxMin[0]);
+            boundingBoxMin[1] = std::min(vertices[i][1], boundingBoxMin[1]);
+            boundingBoxMin[2] = std::min(vertices[i][2], boundingBoxMin[2]);
+            boundingBoxMax[0] = std::max(vertices[i][0], boundingBoxMax[0]);
+            boundingBoxMax[1] = std::max(vertices[i][1], boundingBoxMax[1]);
+            boundingBoxMax[2] = std::max(vertices[i][2], boundingBoxMax[2]);
+            int colidx = (int) (coords[1] / colstep);
+            colors[i][0] = col[colidx][0];
+            colors[i][1] = col[colidx][1];
+            colors[i][2] = col[colidx][2];
+        }
+    }
+    boundingBoxMid = 0.5f*boundingBoxMin + 0.5f*boundingBoxMax;
+    boundingBoxSize = boundingBoxMax - boundingBoxMin;
+    triangles.resize(nf);
+    for(int z = 0; z < (size - 1); ++z) {
+        for(int x = 0; x < (size - 1); ++x) {
+            triangles[(z * size + x) * 2][0] = z * size + x;
+            triangles[(z * size + x) * 2][1] = (z + 1) * size + x;
+            triangles[(z * size + x) * 2][2] = z * size + x + 1;
+            triangles[(z * size + x) * 2 + 1][0] = (z + 1) * size + x;
+            triangles[(z * size + x) * 2 + 1][1] = z * size + x + 1;
+            triangles[(z * size + x) * 2 + 1][2] = (z + 1) * size + x + 1;
+        }
+    }
+    calculateNormalsByArea();
+    calculateTexCoordsSphereMapping();
+    createAllVBOs();
 }
 
 void TriangleMesh::calculateNormalsByArea() {

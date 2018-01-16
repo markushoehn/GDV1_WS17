@@ -126,6 +126,8 @@ public:
   // translates and scales vertices with bounding box center at BBmid and largest side BBlength
   void loadOFF(const char* filename, const Vec3f& BBmid, const float BBlength);
 
+  void generateHeightmap(float bbox_height = 100.0f, float bbox_plane = 1000.0f);
+
 private:
 
   // calculate normals, weighted by area
