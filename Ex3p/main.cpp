@@ -28,7 +28,6 @@ void terrain(){
   Terrain x = Terrain(128, 0.12345678f);
   x.generate();
   x.visualize();
-  return 1;
 }
 
 // ==============
@@ -54,7 +53,7 @@ int main(int argc, char** argv) {
   setDefaults();  
   // load doppeldecker: mesh[0] (flies in positive z direction)
   TriangleMesh doppeldecker;
-  string filename = "Models/doppeldecker.off";
+  string filename = "../Models/doppeldecker.off";
   doppeldecker.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 5.0f);
   meshes.push_back(doppeldecker);
   TriangleMesh terr;
@@ -65,27 +64,27 @@ int main(int argc, char** argv) {
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
   // load sky box
   Image* image;
-  filename = "Textures/skybox1/neg_z.bmp";
+  filename = "../Textures/skybox1/neg_z.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[0] = loadTexture(image);
-  filename = "Textures/skybox1/pos_x.bmp";
+  filename = "../Textures/skybox1/pos_x.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[1] = loadTexture(image);
-  filename = "Textures/skybox1/pos_z.bmp";
+  filename = "../Textures/skybox1/pos_z.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[2] = loadTexture(image);
-  filename = "Textures/skybox1/neg_x.bmp";
+  filename = "../Textures/skybox1/neg_x.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[3] = loadTexture(image);
-  filename = "Textures/skybox1/pos_y.bmp";
+  filename = "../Textures/skybox1/pos_y.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[4] = loadTexture(image);
-  filename = "Textures/skybox1/neg_y.bmp";
+  filename = "../Textures/skybox1/neg_y.bmp";
   image = loadBMP(filename.c_str());
   skyboxTextureIDs[5] = loadTexture(image);
 
 
-  filename = "Textures/TEST_GRID.bmp";
+  filename = "../Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
   textureIDs[0] = loadTexture(image);
 
