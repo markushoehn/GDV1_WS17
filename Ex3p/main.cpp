@@ -37,8 +37,6 @@ void terrain(){
 
 int main(int argc, char** argv) {
 
-  terrain();
-
   // initialize openGL window
   windowHeight = 600;
   windowWidth = 400;
@@ -57,9 +55,18 @@ int main(int argc, char** argv) {
   // further initializations
   initialize();
   setDefaults();  
+
+
+
+  // set flag for build dir
+  bool build = false;
+  string prefix = ".";
+  if(build) prefix = "..";
+
+
   // load doppeldecker: mesh[0] (flies in positive z direction)
   TriangleMesh doppeldecker;
-  string filename = "../Models/doppeldecker.off";
+  string filename = prefix + "/Models/doppeldecker.off";
   doppeldecker.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 5.0f);
   meshes.push_back(doppeldecker);
   TriangleMesh terr;
@@ -68,29 +75,40 @@ int main(int argc, char** argv) {
   meshes.push_back(terr);
   // cout mesh data
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
-  // load sky box
-  Image* image;
-  filename = "../Textures/skybox1/neg_z.bmp";
-  image = loadBMP(filename.c_str());
-  skyboxTextureIDs[0] = loadTexture(image);
-  filename = "../Textures/skybox1/pos_x.bmp";
-  image = loadBMP(filename.c_str());
-  skyboxTextureIDs[1] = loadTexture(image);
-  filename = "../Textures/skybox1/pos_z.bmp";
-  image = loadBMP(filename.c_str());
-  skyboxTextureIDs[2] = loadTexture(image);
-  filename = "../Textures/skybox1/neg_x.bmp";
-  image = loadBMP(filename.c_str());
-  skyboxTextureIDs[3] = loadTexture(image);
-  filename = "../Textures/skybox1/pos_y.bmp";
-  image = loadBMP(filename.c_str());
-  skyboxTextureIDs[4] = loadTexture(image);
-  filename = "../Textures/skybox1/neg_y.bmp";
-  image = loadBMP(filename.c_str());
-  skyboxTextureIDs[5] = loadTexture(image);
+
+  // load sky box-
+  string names [] = {"neg_z.bmp", "pos_x.bmp", "pos_z.bmp", "neg_x.bmp", "neg_z.bmp", "pos_y.bmp", "neg_y.bmp"};
+  string sbox = "skybox2";
+  Image * image;
+  for(int i = 0; i < 6; ++i)
+  {
+    filename = prefix + "/Textures/" + sbox + "/" +names[i];
+    image = loadBMP(filename.c_str());
+    skyboxTextureIDs[i] = loadTexture(image);
+  }
+
+//  Image* image;
+//  filename = "./Textures/skybox1/neg_z.bmp";
+//  image = loadBMP(filename.c_str());
+//  skyboxTextureIDs[0] = loadTexture(image);
+//  filename = "./Textures/skybox1/pos_x.bmp";
+//  image = loadBMP(filename.c_str());
+//  skyboxTextureIDs[1] = loadTexture(image);
+//  filename = "./Textures/skybox1/pos_z.bmp";
+//  image = loadBMP(filename.c_str());
+//  skyboxTextureIDs[2] = loadTexture(image);
+//  filename = "./Textures/skybox1/neg_x.bmp";
+//  image = loadBMP(filename.c_str());
+//  skyboxTextureIDs[3] = loadTexture(image);
+//  filename = "./Textures/skybox1/pos_y.bmp";
+//  image = loadBMP(filename.c_str());
+//  skyboxTextureIDs[4] = loadTexture(image);
+//  filename = "./Textures/skybox1/neg_y.bmp";
+//  image = loadBMP(filename.c_str());
+//  skyboxTextureIDs[5] = loadTexture(image);
 
 
-  filename = "../Textures/TEST_GRID.bmp";
+  filename = prefix + "/Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
   textureIDs[0] = loadTexture(image);
 

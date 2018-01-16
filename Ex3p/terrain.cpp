@@ -67,12 +67,30 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
 
         if(smooth)
         {
+            // normal smooth filter
+            /*            
             int ksize = 3;
-            int hsize = ksize / 2;
             float kernel [] = {1.0f, 1.0f, 1.0f,
                                1.0f, 2.0f, 1.0f,
                                1.0f, 1.0f, 1.0f};
+            */
 
+            // gaussioan smooth filter
+            int ksize = 5;
+            float d = 273.0f;
+            float kernel [] = {1.0f / d,  4.0f / d,  7.0f / d,  4.0f / d, 1.0f / d,
+                               4.0f / d, 16.0f / d, 26.0f / d, 16.0f / d, 4.0f / d,
+                               7.0f / d, 26.0f / d, 41.0f / d, 26.0f / d, 7.0f / d,
+                               4.0f / d, 16.0f / d, 26.0f / d, 16.0f / d, 4.0f / d,
+                               1.0f / d,  4.0f / d,  7.0f / d,  4.0f / d, 1.0f / d};
+
+            std::cout << "kernel vals" << std::endl;
+            for(int y = 0; y < ksize; ++y)
+                for(int x = 0; x < ksize; ++x)
+                    std::cout << kernel[ksize * y + x] << std::endl;
+
+
+            int hsize = ksize / 2;
             for(int z = 0; z < Terrain::_size; ++z)
             {
                 for(int x = 0; x < Terrain::_size; ++x)
@@ -89,7 +107,7 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                             if(curz < 0 || curz > (Terrain::_size - 1) || curx < 0 || curx > (Terrain::_size - 1))
                                 sum += 0.0f;
                             else
-                                sum += Terrain::_height[z][x] * (n * ksize + m);
+                                sum += Terrain::_height[z][x] * kernel[ksize * n + m];
                         }
                     }
 
