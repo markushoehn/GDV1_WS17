@@ -12,12 +12,14 @@ SET(HEADER_FILES
   "imageloader.h"
   "ClipPlane.h"
   "terrain.h"
+  "plane.h"
 )
 SET(SOURCE_FILES  
   "main.cpp"
   "TriangleMesh.cpp"
   "imageloader.cpp"
   "terrain.cpp"
+  "plane.cpp"
 )
 SOURCE_GROUP(Header FILES ${HEADER_FILES})
 SOURCE_GROUP(Source FILES ${SOURCE_FILES})

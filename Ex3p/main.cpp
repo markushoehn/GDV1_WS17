@@ -19,6 +19,7 @@
 #include "main.h"         // this header
 #include "terrain.h"      // our fancy terrain
 #include <algorithm>
+#define ANG2RAD 3.14159265358979323846/180.0
 
 // ===============
 // === TERRAIN ===
@@ -28,7 +29,6 @@ void terrain(){
   Terrain x = Terrain(128, 0.12345678f);
   x.generate();
   x.visualize();
-  return 1;
 }
 
 // ==============
@@ -37,9 +37,11 @@ void terrain(){
 
 int main(int argc, char** argv) {
   // initialize openGL window
+  windowHeight = 600;
+  windowWidth = 400;
   glutInit(&argc, argv);
   glutInitWindowPosition(300,200);
-  glutInitWindowSize(600,400);
+  glutInitWindowSize(windowHeight,windowWidth);
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
   glutCreateWindow("OpenGL Terrain Texture Culling"); 
   // link functions to certain openGL events
@@ -302,6 +304,70 @@ void drawLight() {
   glPopMatrix();  
 }
 
+bool viewFurstumCulling(Vec3f position){
+  float farDist = 1000.0;
+  float nearDist = 0.5f;
+  float angle = 65.0;
+  float ratio = (float)windowWidth / (float)windowHeight;
+
+  float Hnear = 2 * tan(angle / 2) * nearDist;
+  float Wnear = Hnear * ratio;
+  float Hfar = 2 * tan(angle / 2) * farDist;
+
+  Vec3f p = cameraPos;
+  Vec3f d = cameraDir;
+  Vec3f u = Vec3f(0.0,1.0,0.0);
+  Vec3f l = p + d;
+
+  Vec3f Z = p - l; // z axis
+  Z.normalize();
+  Vec3f X = Vec3f(0.0,Z.y,0.0); // x axisof camera
+  X.normalize();
+  Vec3f Y = Vec3f(0.0,Z.y * X.y,0.0); // up
+
+  float tang = (float)tan(ANG2RAD * angle * 0.5) ;
+  float nh = nearDist * tang;
+  float nw = nh * ratio;
+  float fh = farDist  * tang;
+  float fw = fh * ratio;
+
+  // compute the centers of the near and far planes
+  Vec3f nc = p - Z * nearDist;
+  Vec3f fc = p - Z * farDist;
+
+  // compute the 4 corners of the frustum on the near plane
+  Vec3f ntl = nc + Y * nh - X * nw;
+  Vec3f ntr = nc + Y * nh + X * nw;
+  Vec3f nbl = nc - Y * nh - X * nw;
+  Vec3f nbr = nc - Y * nh + X * nw;
+
+  // compute the 4 corners of the frustum on the far plane
+  Vec3f ftl = fc + Y * fh - X * fw;
+  Vec3f ftr = fc + Y * fh + X * fw;
+  Vec3f fbl = fc - Y * fh - X * fw;
+  Vec3f fbr = fc - Y * fh + X * fw;
+
+  // TODO: from here on we should save the stuff in planes
+  // TODO: also use boundingbox mid and size to calculate the 4 box points
+  // TODO: also maybe save the corners inside an own class instead of calculating it for every mesh
+
+  Vec3f aux1 = ntr - ntl;
+  Vec3f aux2 = ftl - ntl;
+
+  Vec3f normal = aux2 ^ aux1;
+
+  normal.normalize();
+
+  float dis = -(normal * ntl);
+
+  float distance = (dis + normal * position);
+
+  if (distance < 0)
+    return false;
+
+  return true;
+}
+
 void renderScene() {
   unsigned int trianglesDrawn = 0;
   unsigned int objectsDrawn = 0;
@@ -328,6 +394,7 @@ void renderScene() {
   //draw() returns the drawn number of triangles
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
+  cout << "is inside: " << viewFurstumCulling(meshes[0].getBoundingBoxMid()) << endl;
   triangles = meshes[0].draw();
   glBindTexture(GL_TEXTURE_2D, 0);
 

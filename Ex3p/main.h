@@ -45,7 +45,12 @@ unsigned int drawMode;
 // skybox texture IDs
 vector<GLuint> skyboxTextureIDs;
 
+// texture stuff
 vector<GLuint> textureIDs;
+
+// view furstum culliing stuff
+float windowWidth;
+float windowHeight;
 
 // ==============
 // === BASICS ===
@@ -90,3 +95,6 @@ void mouseMoved(int x, int y);
 // ===============
 
 void coutHelp();
+
+
+bool viewFurstumCulling(Vec3f position);
