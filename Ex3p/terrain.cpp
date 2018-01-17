@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "terrain.h"
 #include <iostream>
+#include <time.h>
 
 Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
     {
@@ -30,6 +31,8 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
         float min = 10.0f;
         float max = -10.0f;
         
+        srand(time(NULL));
+        
         if(mode == 0)
         {
             int count;
@@ -38,6 +41,8 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
             do
             {
                 count = 0;
+                min = 10.0f;
+                max = -10.0f;
                 float v = rand();
                 float a = sin(v);
                 float b = cos(v);
