@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
 
   // load sky box-
-  string names [] = {"neg_z.bmp", "pos_x.bmp", "pos_z.bmp", "neg_x.bmp", "neg_z.bmp", "pos_y.bmp", "neg_y.bmp"};
+  string names [] = {"neg_z.bmp", "pos_x.bmp", "pos_z.bmp", "neg_x.bmp", "pos_y.bmp", "neg_y.bmp"};
   string sbox = "skybox2";
   Image * image;
   for(int i = 0; i < 6; ++i)
