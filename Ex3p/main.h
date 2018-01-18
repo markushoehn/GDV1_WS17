@@ -97,4 +97,4 @@ void mouseMoved(int x, int y);
 void coutHelp();
 
 
-bool viewFurstumCulling(Vec3f position);
+bool viewFurstumCulling(Vec3f min_position, Vec3f max_position);

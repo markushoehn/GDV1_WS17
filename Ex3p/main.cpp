@@ -18,6 +18,7 @@
 #include <fstream>        // read file
 #include "main.h"         // this header
 #include "terrain.h"      // our fancy terrain
+#include "plane.h"        // our mighty planes
 #include <algorithm>
 #define ANG2RAD 3.14159265358979323846/180.0
 
@@ -87,27 +88,7 @@ int main(int argc, char** argv) {
     skyboxTextureIDs[i] = loadTexture(image);
   }
 
-//  Image* image;
-//  filename = "./Textures/skybox1/neg_z.bmp";
-//  image = loadBMP(filename.c_str());
-//  skyboxTextureIDs[0] = loadTexture(image);
-//  filename = "./Textures/skybox1/pos_x.bmp";
-//  image = loadBMP(filename.c_str());
-//  skyboxTextureIDs[1] = loadTexture(image);
-//  filename = "./Textures/skybox1/pos_z.bmp";
-//  image = loadBMP(filename.c_str());
-//  skyboxTextureIDs[2] = loadTexture(image);
-//  filename = "./Textures/skybox1/neg_x.bmp";
-//  image = loadBMP(filename.c_str());
-//  skyboxTextureIDs[3] = loadTexture(image);
-//  filename = "./Textures/skybox1/pos_y.bmp";
-//  image = loadBMP(filename.c_str());
-//  skyboxTextureIDs[4] = loadTexture(image);
-//  filename = "./Textures/skybox1/neg_y.bmp";
-//  image = loadBMP(filename.c_str());
-//  skyboxTextureIDs[5] = loadTexture(image);
-
-
+  // Plane texture
   filename = prefix + "/Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
   textureIDs[0] = loadTexture(image);
@@ -329,7 +310,7 @@ void drawLight() {
   glPopMatrix();  
 }
 
-bool viewFurstumCulling(Vec3f position){
+bool viewFurstumCulling(Vec3f min_position, Vec3f max_position){
   float farDist = 1000.0;
   float nearDist = 0.5f;
   float angle = 65.0;
@@ -372,26 +353,29 @@ bool viewFurstumCulling(Vec3f position){
   Vec3f fbl = fc - Y * fh - X * fw;
   Vec3f fbr = fc - Y * fh + X * fw;
 
-  // TODO: from here on we should save the stuff in planes
-  // TODO: also use boundingbox mid and size to calculate the 4 box points
   // TODO: also maybe save the corners inside an own class instead of calculating it for every mesh
+  Plane pl[6];
 
-  Vec3f aux1 = ntr - ntl;
-  Vec3f aux2 = ftl - ntl;
+  pl[0] = Plane(ntr,ntl,ftl);
+  pl[1] = Plane(nbl,nbr,fbr);
+  pl[2] = Plane(ntl,nbl,fbl);
+  pl[3] = Plane(nbr,ntr,fbr);
+  pl[4] = Plane(ntl,ntr,nbr);
+  pl[5] = Plane(ftr,ftl,fbl);
 
-  Vec3f normal = aux2 ^ aux1;
+  int result = true;
+  //for each plane do ...
+  for(int i=0; i < 6; i++) {
 
-  normal.normalize();
-
-  float dis = -(normal * ntl);
-
-  float distance = (dis + normal * position);
-
-  if (distance < 0)
-    return false;
-
+    // is the positive vertex outside?
+    if (pl[i].distance(min_position) < 0)
+      return false; // outside
+    // is the negative vertex outside?
+    else if (pl[i].distance(max_position) < 0)
+      result =  true;
+  }
   return true;
-}
+ }
 
 void drawTerrain() {
     glEnable(GL_COLOR_MATERIAL);
@@ -427,8 +411,10 @@ void renderScene() {
   drawTerrain();
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
-  cout << "is inside: " << viewFurstumCulling(meshes[0].getBoundingBoxMid()) << endl;
-  triangles = meshes[0].draw();
+  //cout << "is inside: " << viewFurstumCulling(meshes[0].getBoundingBoxMax(), meshes[0].getBoundingBoxMin()) << endl;
+  if(viewFurstumCulling(meshes[0].getBoundingBoxMax(), meshes[0].getBoundingBoxMin())){
+    triangles = meshes[0].draw();
+  }
   glBindTexture(GL_TEXTURE_2D, 0);
 
   if (triangles > 0) {

@@ -1,6 +1,7 @@
 #include "plane.h"
 #include "Vec3.h"
 
+Plane::Plane(){}
 Plane::Plane(Vec3f v1, Vec3f v2, Vec3f v3){
     Vec3f a1, a2;
     a1 = v1 - v2;

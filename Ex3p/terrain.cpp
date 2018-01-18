@@ -10,8 +10,8 @@
 
 Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
     {
-        Terrain::_max_height = 200.0f;
-        Terrain::_threshold = 100;
+        Terrain::_max_height = 265.0f;
+        Terrain::_threshold = 128;
         Terrain::_height = new float*[Terrain::_size];
         for(int i = 0; i < Terrain::_size; ++i)
         {
@@ -30,6 +30,7 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
     {
         float min = 10.0f;
         float max = -10.0f;
+        int iterations = 1024;
         
         srand(time(NULL));
         
@@ -67,7 +68,7 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                             min = Terrain::_height[z][x];
                     }
                 }
-            } while((count < Terrain::_threshold) && (it < 1000));
+            } while((count < Terrain::_threshold) && (it < iterations));
         }
 
         if(smooth)
