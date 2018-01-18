@@ -320,8 +320,7 @@ void TriangleMesh::calculateBB() {
 
 void TriangleMesh::checkVBOSupport() {
   // check if VBOs are supported and cleanup VBOs
-  bool glGenBuffed = true;
-  if(glGenBuffed && glBindBuffer && glBufferData && glBufferSubData && glMapBuffer && glUnmapBuffer && glDeleteBuffers && glGetBufferParameteriv) {
+  if(glGenBuffers && glBindBuffer && glBufferData && glBufferSubData && glMapBuffer && glUnmapBuffer && glDeleteBuffers && glGetBufferParameteriv) {
     VBOsupported = true;
     //cout << "VBOs are supported!" << endl;
   }
