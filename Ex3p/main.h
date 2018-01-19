@@ -17,6 +17,7 @@
 #include "Vec3.h"         // basic vector arithmetic class (embedded in std::)
 #include "TriangleMesh.h" // simple class for reading and rendering triangle meshes
 #include "imageloader.h"  // loads bmp files
+#include "viewFrustum.h"  // sexy view frustums
 
 using namespace std;
 
@@ -51,6 +52,8 @@ vector<GLuint> textureIDs;
 // view furstum culliing stuff
 float windowWidth;
 float windowHeight;
+
+ViewFrustum frustum;
 
 // ==============
 // === BASICS ===
@@ -95,6 +98,3 @@ void mouseMoved(int x, int y);
 // ===============
 
 void coutHelp();
-
-
-bool viewFurstumCulling(Vec3f min_position, Vec3f max_position);

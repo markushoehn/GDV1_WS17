@@ -18,10 +18,8 @@
 #include <fstream>        // read file
 #include "main.h"         // this header
 #include "terrain.h"      // our fancy terrain
-#include "plane.h"        // our mighty planes
 #include <algorithm>
-#define ANG2RAD 3.14159265358979323846/180.0
-
+ 
 // ===============
 // === TERRAIN ===
 // ===============
@@ -134,6 +132,10 @@ void initialize() {
   // sky box texture IDs (6 IDs, initialized with 0)
   skyboxTextureIDs.resize(6,0);
   textureIDs.resize(1,0);
+  // view frustum  
+  // farDistance, nearDistance, angle, ratio
+  float ratio = (float)windowWidth / (float)windowHeight;
+  frustum = ViewFrustum(1000.0, 0.5f, 65.0, ratio);
 }
 
 void setDefaults() {
@@ -310,72 +312,6 @@ void drawLight() {
   glPopMatrix();  
 }
 
-bool viewFurstumCulling(Vec3f min_position, Vec3f max_position){
-  float farDist = 1000.0;
-  float nearDist = 0.5f;
-  float angle = 65.0;
-  float ratio = (float)windowWidth / (float)windowHeight;
-
-  float Hnear = 2 * tan(angle / 2) * nearDist;
-  float Wnear = Hnear * ratio;
-  float Hfar = 2 * tan(angle / 2) * farDist;
-
-  Vec3f p = cameraPos;
-  Vec3f d = cameraDir;
-  Vec3f u = Vec3f(0.0,1.0,0.0);
-  Vec3f l = p + d;
-
-  Vec3f Z = p - l; // z axis
-  Z.normalize();
-  Vec3f X = Vec3f(0.0,Z.y,0.0); // x axisof camera
-  X.normalize();
-  Vec3f Y = Vec3f(0.0,Z.y * X.y,0.0); // up
-
-  float tang = (float)tan(ANG2RAD * angle * 0.5) ;
-  float nh = nearDist * tang;
-  float nw = nh * ratio;
-  float fh = farDist  * tang;
-  float fw = fh * ratio;
-
-  // compute the centers of the near and far planes
-  Vec3f nc = p - Z * nearDist;
-  Vec3f fc = p - Z * farDist;
-
-  // compute the 4 corners of the frustum on the near plane
-  Vec3f ntl = nc + Y * nh - X * nw;
-  Vec3f ntr = nc + Y * nh + X * nw;
-  Vec3f nbl = nc - Y * nh - X * nw;
-  Vec3f nbr = nc - Y * nh + X * nw;
-
-  // compute the 4 corners of the frustum on the far plane
-  Vec3f ftl = fc + Y * fh - X * fw;
-  Vec3f ftr = fc + Y * fh + X * fw;
-  Vec3f fbl = fc - Y * fh - X * fw;
-  Vec3f fbr = fc - Y * fh + X * fw;
-
-  // TODO: also maybe save the corners inside an own class instead of calculating it for every mesh
-  Plane pl[6];
-
-  pl[0] = Plane(ntr,ntl,ftl);
-  pl[1] = Plane(nbl,nbr,fbr);
-  pl[2] = Plane(ntl,nbl,fbl);
-  pl[3] = Plane(nbr,ntr,fbr);
-  pl[4] = Plane(ntl,ntr,nbr);
-  pl[5] = Plane(ftr,ftl,fbl);
-
-  int result = true;
-  //for each plane do ...
-  for(int i=0; i < 6; i++) {
-
-    // is the positive vertex outside?
-    if (pl[i].distance(min_position) < 0)
-      return false; // outside
-    // is the negative vertex outside?
-    else if (pl[i].distance(max_position) < 0)
-      result =  true;
-  }
-  return true;
- }
 
 void drawTerrain() {
     glEnable(GL_COLOR_MATERIAL);
@@ -411,8 +347,9 @@ void renderScene() {
   drawTerrain();
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
-  //cout << "is inside: " << viewFurstumCulling(meshes[0].getBoundingBoxMax(), meshes[0].getBoundingBoxMin()) << endl;
-  if(viewFurstumCulling(meshes[0].getBoundingBoxMax(), meshes[0].getBoundingBoxMin())){
+
+  frustum.init(cameraPos, cameraDir);
+  if(frustum.test(meshes[0].getBoundingBoxMax(), meshes[0].getBoundingBoxMin())){
     triangles = meshes[0].draw();
   }
   glBindTexture(GL_TEXTURE_2D, 0);

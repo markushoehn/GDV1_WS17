@@ -13,6 +13,7 @@ SET(HEADER_FILES
   "ClipPlane.h"
   "terrain.h"
   "plane.h"
+  "viewFrustum.h"
 )
 SET(SOURCE_FILES  
   "main.cpp"
@@ -20,6 +21,7 @@ SET(SOURCE_FILES
   "imageloader.cpp"
   "terrain.cpp"
   "plane.cpp"
+  "viewFrustum.cpp"
 )
 SOURCE_GROUP(Header FILES ${HEADER_FILES})
 SOURCE_GROUP(Source FILES ${SOURCE_FILES})
