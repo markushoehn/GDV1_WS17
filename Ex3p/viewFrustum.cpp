@@ -7,11 +7,9 @@ ViewFrustum::ViewFrustum(float farDist, float nearDist, float angle, float ratio
 }
 ViewFrustum::~ViewFrustum(){}
 
-void ViewFrustum::init(Vec3f pos, Vec3f dir){
-  // up
-  Vec3f u = Vec3f(0.0,1.0,0.0);
+void ViewFrustum::init(Vec3f p, Vec3f l, Vec3f u){
 
-  Vec3f Z = dir; // z axis
+  Vec3f Z = p - l; // z axis
   Z.normalize();
   Vec3f X = u ^ Z; // x axisof camera
   X.normalize();
@@ -24,8 +22,8 @@ void ViewFrustum::init(Vec3f pos, Vec3f dir){
   float fw = fh * ratio;
 
   // compute the centers of the near and far planes
-  Vec3f nc = pos - Z * nearDist;
-  Vec3f fc = pos - Z * farDist;
+  Vec3f nc = p - Z * nearDist;
+  Vec3f fc = p - Z * farDist;
 
   // compute the 4 corners of the frustum on the near plane
   Vec3f ntl = nc + Y * nh - X * nw;
@@ -39,12 +37,12 @@ void ViewFrustum::init(Vec3f pos, Vec3f dir){
   Vec3f fbl = fc - Y * fh - X * fw;
   Vec3f fbr = fc - Y * fh + X * fw;
 
-  ViewFrustum::pl[0] = Plane(ntr,ntl,ftl);
-  ViewFrustum::pl[1] = Plane(nbl,nbr,fbr);
-  ViewFrustum::pl[2] = Plane(ntl,nbl,fbl);
-  ViewFrustum::pl[3] = Plane(nbr,ntr,fbr);
-  ViewFrustum::pl[4] = Plane(ntl,ntr,nbr);
-  ViewFrustum::pl[5] = Plane(ftr,ftl,fbl);
+  ViewFrustum::pl[0] = Plane(ntr, ntl, ftl);
+  ViewFrustum::pl[1] = Plane(nbl, nbr, fbr);
+  ViewFrustum::pl[2] = Plane(ntl, nbl, fbl);
+  ViewFrustum::pl[3] = Plane(nbr, ntr, fbr);
+  ViewFrustum::pl[4] = Plane(ntl, ntr, nbr);
+  ViewFrustum::pl[5] = Plane(ftr, ftl, fbl);
 }
 
 bool ViewFrustum::test(Vec3f p, Vec3f n){

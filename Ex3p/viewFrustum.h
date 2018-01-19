@@ -16,6 +16,6 @@ class ViewFrustum {
         ViewFrustum();
         ViewFrustum(float farDist, float nearDist, float angle, float ratio);
         ~ViewFrustum();
-        void init(Vec3f pos, Vec3f dir);
+        void init(Vec3f p, Vec3f l, Vec3f u);
         bool test(Vec3f p, Vec3f n);
 };

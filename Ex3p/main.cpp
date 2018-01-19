@@ -132,10 +132,6 @@ void initialize() {
   // sky box texture IDs (6 IDs, initialized with 0)
   skyboxTextureIDs.resize(6,0);
   textureIDs.resize(1,0);
-  // view frustum  
-  // farDistance, nearDistance, angle, ratio
-  float ratio = (float)windowWidth / (float)windowHeight;
-  frustum = ViewFrustum(1000.0, 0.5f, 65.0, ratio);
 }
 
 void setDefaults() {
@@ -162,12 +158,20 @@ void setDefaults() {
 }
 
 void reshape(GLint width, GLint height) {
+  float angle = 65.0;
+  float farDist = 1000.0;
+  float nearDist = 0.5;
+  float ratio = (float)windowWidth / (float)windowHeight;
+
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(65.0, (float)width / (float)height, 0.5, 1000);
+  gluPerspective(angle, ratio, nearDist, farDist);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+
+  // view frustum
+  frustum = ViewFrustum(farDist, nearDist, angle, ratio);
 }
 
 void processTimedEvent(int x) {
@@ -348,7 +352,7 @@ void renderScene() {
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
 
-  frustum.init(cameraPos, cameraDir);
+  frustum.init(cameraPos, cameraLookAt, Vec3f(0.0,1.0,0.0));
   if(frustum.test(meshes[0].getBoundingBoxMax(), meshes[0].getBoundingBoxMin())){
     triangles = meshes[0].draw();
   }
