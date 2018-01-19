@@ -344,7 +344,7 @@ void renderScene() {
   // doppeldecker
   glColor3f(1,1,1);
   //draw() returns the drawn number of triangles
-  drawTerrain();
+  //drawTerrain();
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
 
