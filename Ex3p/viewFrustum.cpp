@@ -2,7 +2,7 @@
 #define ANG2RAD 3.14159265358979323846/180.0
 
 ViewFrustum::ViewFrustum(){}
-ViewFrustum::ViewFrustum(float farDist, float nearDist, float angle, float ratio) : farDist(farDist), nearDist(nearDist), angle(angle), ratio(ratio){
+ViewFrustum::ViewFrustum(float angle, float ratio, float nearDist, float farDist) : farDist(farDist), nearDist(nearDist), angle(angle), ratio(ratio){
 
 }
 ViewFrustum::~ViewFrustum(){}
@@ -55,12 +55,37 @@ bool ViewFrustum::test(Vec3f p, Vec3f n){
   for(int i=0; i < 6; i++) {
 
     // is the positive vertex outside?
-    if (ViewFrustum::pl[i].distance(p) < 0)
+    if (pl[i].distance(getVertexP(p, n, pl[i].normal)) < 0)
       return OUTSIDE;
 
     // is the negative vertex outside?
-    else if (ViewFrustum::pl[i].distance(n) < 0)
+    else if (pl[i].distance(getVertexN(p, n, pl[i].normal)) < 0)
       result =  INTERSECT;
   }
   return result;
+}
+
+
+Vec3f ViewFrustum::getVertexP(Vec3f p, Vec3f n, Vec3f normal){
+    // max
+    Vec3f res = n;
+    if (normal.x <= 0)
+        res.x = p.x;
+    if (normal.y <= 0)
+        res.y = p.y;
+    if (normal.z <= 0)
+        res.z = p.z;
+    return res;
+}
+
+Vec3f ViewFrustum::getVertexN(Vec3f p, Vec3f n, Vec3f normal){
+    // min
+    Vec3f res = p;
+    if (normal.x >= 0)
+        res.x = n.x;
+    if (normal.y >= 0)
+        res.y = n.y;
+    if (normal.z >= 0)
+        res.z = n.z;
+    return res;
 }

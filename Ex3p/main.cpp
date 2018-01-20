@@ -37,11 +37,9 @@ void terrain(){
 int main(int argc, char** argv) {
 
   // initialize openGL window
-  windowHeight = 600;
-  windowWidth = 400;
   glutInit(&argc, argv);
   glutInitWindowPosition(300,200);
-  glutInitWindowSize(windowHeight,windowWidth);
+  glutInitWindowSize(600,400);
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
   glutCreateWindow("OpenGL Terrain Texture Culling"); 
   // link functions to certain openGL events
@@ -161,7 +159,7 @@ void reshape(GLint width, GLint height) {
   float angle = 65.0;
   float farDist = 1000.0;
   float nearDist = 0.5;
-  float ratio = (float)windowWidth / (float)windowHeight;
+  float ratio = (float)width / (float)height;
 
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
@@ -171,7 +169,7 @@ void reshape(GLint width, GLint height) {
   glLoadIdentity();
 
   // view frustum
-  frustum = ViewFrustum(farDist, nearDist, angle, ratio);
+  frustum = ViewFrustum(angle, ratio, nearDist, farDist);
 }
 
 void processTimedEvent(int x) {

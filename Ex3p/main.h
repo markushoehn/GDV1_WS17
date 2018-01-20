@@ -50,9 +50,6 @@ vector<GLuint> skyboxTextureIDs;
 vector<GLuint> textureIDs;
 
 // view furstum culliing stuff
-float windowWidth;
-float windowHeight;
-
 ViewFrustum frustum;
 
 // ==============
