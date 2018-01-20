@@ -351,7 +351,7 @@ void renderScene() {
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
 
   frustum.init(cameraPos, cameraLookAt, Vec3f(0.0,1.0,0.0));
-  if(frustum.test(meshes[0].getBoundingBoxMax(), meshes[0].getBoundingBoxMin())){
+  if(frustum.test(meshes[0].getBoundingBoxMin(), meshes[0].getBoundingBoxMax())){
     triangles = meshes[0].draw();
   }
   glBindTexture(GL_TEXTURE_2D, 0);
