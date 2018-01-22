@@ -61,15 +61,16 @@ int main(int argc, char** argv) {
   if(build) prefix = "..";
 
 
+  // generate terrain from random heightmap
+  TriangleMesh terr;
+  terr.generateHeightmap();
+  terr.toggleWithColorArray();
+  meshes.push_back(terr);
   // load doppeldecker: mesh[0] (flies in positive z direction)
   TriangleMesh doppeldecker;
   string filename = prefix + "/Models/doppeldecker.off";
   doppeldecker.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 5.0f);
   meshes.push_back(doppeldecker);
-  TriangleMesh terr;
-  terr.generateHeightmap();
-  terr.toggleWithColorArray();
-  meshes.push_back(terr);
   // cout mesh data
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
 
@@ -318,7 +319,8 @@ void drawLight() {
 void drawTerrain() {
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    meshes[1].draw();
+    meshes[0].draw();
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);  // reset active color to white
     glDisable(GL_COLOR_MATERIAL);
 }
 
@@ -343,16 +345,14 @@ void renderScene() {
   drawLight();
   // draw objects. count triangles and objects drawn.
   unsigned int triangles = 0;  
-  // doppeldecker
-  glColor3f(1,1,1);
   //draw() returns the drawn number of triangles
   drawTerrain();
 
+  // doppeldecker
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
-
   frustum.init(cameraPos, cameraLookAt, Vec3f(0.0,1.0,0.0));
-  if(frustum.test(meshes[0].getBoundingBoxMin(), meshes[0].getBoundingBoxMax())){
-    triangles = meshes[0].draw();
+  if(frustum.test(meshes[1].getBoundingBoxMin(), meshes[1].getBoundingBoxMax())){
+    triangles = meshes[1].draw();
   }
   glBindTexture(GL_TEXTURE_2D, 0);
 
