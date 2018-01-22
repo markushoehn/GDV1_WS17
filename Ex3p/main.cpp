@@ -75,14 +75,16 @@ int main(int argc, char** argv) {
   meshes.push_back(doppeldecker);
   
   // second plane
-  doppeldecker.translateToCenter(Vec3f(5.0f,0.0f,0.0f), false);
-  doppeldecker.textureID = -1;
-  meshes.push_back(doppeldecker);
+  TriangleMesh doppeldecker2(doppeldecker);
+  doppeldecker2.translateToCenter(Vec3f(5.0f,0.0f,0.0f), true);
+  doppeldecker2.textureID = -1;
+  meshes.push_back(doppeldecker2);
   
   // third plane
-  doppeldecker.translateToCenter(Vec3f(5.0f,0.0f,5.0f), false);
-  doppeldecker.textureID = 1;
-  meshes.push_back(doppeldecker);
+  TriangleMesh doppeldecker3(doppeldecker);
+  doppeldecker3.translateToCenter(Vec3f(5.0f,0.0f,5.0f), true);
+  doppeldecker3.textureID = 1;
+  meshes.push_back(doppeldecker3);
   
   float dim = 50.0f;
   float dist = 5.5f;
@@ -90,9 +92,10 @@ int main(int argc, char** argv) {
   for (float x = -dim/2.0f; x < dim/2.0f; x = x + dist){
     for (float y = -dim/2.0f; y < dim/2.0f; y = y + dist){
       for (float z = -dim/2.0f; z < dim/2.0f; z = z + dist){
-        doppeldecker.translateToCenter(Vec3f(x, y, z), false);
-        doppeldecker.textureID = 0;
-        meshes.push_back(doppeldecker);
+        TriangleMesh doppeldeckerI(doppeldecker);
+        doppeldeckerI.translateToCenter(Vec3f(x, y, z), true);
+        doppeldeckerI.textureID = 0;
+        meshes.push_back(doppeldeckerI);
       }
     }
   }
