@@ -218,8 +218,13 @@ void TriangleMesh::generateHeightmap(float bbox_height, float bbox_plane) {
     col.push_back(Vec3f(0.5f, 0.5f, 0.5f));   // gray
     col.push_back(Vec3f(1.0f, 1.0f, 1.0f));   // white
     float colstep = bbox_height / col.size();
+
+
+    int straight_mode = 0,
+        cosine_mode = 1;
+
     Terrain terr;
-    terr.generate(0, true);
+    terr.generate(cosine_mode, true);
     int size = terr.getSize();
     int nv = pow(size, 2);
     int nf = (6 + (size - 2) * 3 + pow((size - 2), 2) * 6) / 3;
