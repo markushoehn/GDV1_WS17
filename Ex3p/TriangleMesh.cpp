@@ -209,7 +209,7 @@ void TriangleMesh::loadOFF(const char* filename, const Vec3f& BBmid, const float
   scaleToLength(BBlength, true);
 }
 
-void TriangleMesh::generateHeightmap(float bbox_height, float bbox_plane) {
+void TriangleMesh::generateHeightmap(float bbox_height, float bbox_plane, bool visualize) {
     std::vector<Vec3f> col;
     col.push_back(Vec3f(0.0f, 0.75f, 1.0f));   // light blue
     col.push_back(Vec3f(0.0f, 0.5f, 0.0f));   // dark green
@@ -226,6 +226,8 @@ void TriangleMesh::generateHeightmap(float bbox_height, float bbox_plane) {
 
     Terrain terr;
     terr.generate(circ_mode, true);
+    if(visualize)
+        terr.visualize();
     int size = terr.getSize();
     int nv = pow(size, 2);
     int nf = (6 + (size - 2) * 3 + pow((size - 2), 2) * 6) / 3;
