@@ -50,15 +50,73 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                 float d = sqrt(2) * Terrain::_size;
                 float c = ((float) rand() / (float) RAND_MAX) * d - d/2;
 
-                std::cout << ++it << " - " << round(a * 1000.0f) / 1000.0f << "*x + " << round(b * 1000.0f) / 1000.0f << "*z = " << round(c * 1000.0f) / 1000.0f << std::endl;
+                // testing variable displacement
+                float disp_start = Terrain::_displacement;
+                float disp_max = disp_start * 32.0f;
+
+                ++it;
+                //std::cout << it << " - " << round(a * 1000.0f) / 1000.0f << "*x + " << round(b * 1000.0f) / 1000.0f << "*z = " << round(c * 1000.0f) / 1000.0f << std::endl;
                 for(int z = 0; z < Terrain::_size; ++z)
                 {
                     for(int x = 0; x < Terrain::_size; ++x)
                     {
+                        // calculate current displacement
+                        float disp_cur = disp_max;
+                        if(it < iterations)
+                            disp_cur = disp_start + ((float)it / (float)iterations) * (disp_max - disp_start); 
+
                         if(a*x + b*z - c > 0)
-                            Terrain::_height[z][x] += Terrain::_displacement;
+                            Terrain::_height[z][x] += disp_cur; //Terrain::_displacement;
                         else
-                            Terrain::_height[z][x] -= Terrain::_displacement;
+                            Terrain::_height[z][x] -= disp_cur; //Terrain::_displacement;
+
+                        if (abs(Terrain::_height[z][x]) >= Terrain::_max_height)
+                            ++count;
+                        if (Terrain::_height[z][x] > max)
+                            max = Terrain::_height[z][x];
+                        if (Terrain::_height[z][x] < min)
+                            min = Terrain::_height[z][x];
+                    }
+                }
+            } while((count < Terrain::_threshold) && (it < iterations));
+        }
+        else if(mode == 1)
+        {
+            int count;
+            int it = 0;
+
+            do
+            {
+                count = 0;
+                min = 10.0f;
+                max = -10.0f;
+                float v = rand();
+                float a = sin(v);
+                float b = cos(v);
+                float d = sqrt(2) * Terrain::_size;
+                float c = ((float) rand() / (float) RAND_MAX) * d - d/2;
+
+                // testing variable displacement
+                float disp_start = Terrain::_displacement;
+                float disp_max = disp_start * 32.0f;
+
+                ++it;
+                for(int z = 0; z < Terrain::_size; ++z)
+                {
+                    for(int x = 0; x < Terrain::_size; ++x)
+                    {
+                        // calculate current displacement
+                        float disp_cur = disp_max;
+                        if(it < iterations)
+                            disp_cur = disp_start + ((float)it / (float)iterations) * (disp_max - disp_start); 
+
+                        float half_wavelength = 25.0f;
+                        float dist = abs(a*x + b*z - c);
+
+                        if(dist < half_wavelength)
+                            Terrain::_height[z][x] += disp_cur / 2.0f + sin(dist + half_wavelength) * disp_cur;
+                       // else
+                         //   Terrain::_height[z][x] -= disp_cur; //Terrain::_displacement;
 
                         if (abs(Terrain::_height[z][x]) >= Terrain::_max_height)
                             ++count;
@@ -71,18 +129,19 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
             } while((count < Terrain::_threshold) && (it < iterations));
         }
 
+
         if(smooth)
         {
             // normal smooth filter
             /*            
-            int ksize = 3;
+            int kernel_size = 3;
             float kernel [] = {1.0f, 1.0f, 1.0f,
                                1.0f, 2.0f, 1.0f,
                                1.0f, 1.0f, 1.0f};
             */
 
             // gaussioan smooth filter
-            int ksize = 5;
+            int kernel_size = 5;
             float d = 273.0f;
             float kernel [] = {1.0f / d,  4.0f / d,  7.0f / d,  4.0f / d, 1.0f / d,
                                4.0f / d, 16.0f / d, 26.0f / d, 16.0f / d, 4.0f / d,
@@ -90,38 +149,27 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                                4.0f / d, 16.0f / d, 26.0f / d, 16.0f / d, 4.0f / d,
                                1.0f / d,  4.0f / d,  7.0f / d,  4.0f / d, 1.0f / d};
 
-            std::cout << "kernel vals" << std::endl;
-            for(int y = 0; y < ksize; ++y)
-                for(int x = 0; x < ksize; ++x)
-                    std::cout << kernel[ksize * y + x] << std::endl;
-
-
-            int hsize = ksize / 2;
+            int half_kernel_size = kernel_size / 2;
             for(int z = 0; z < Terrain::_size; ++z)
-            {
                 for(int x = 0; x < Terrain::_size; ++x)
                 {
                     float sum = 0.0f;
-
-                    for(int n = 0; n < ksize; ++n)
-                    {
-                        for(int m = 0; m < ksize; ++m)
+                    for(int n = 0; n < kernel_size; ++n)
+                        for(int m = 0; m < kernel_size; ++m)
                         {
-                            int curz = z + (n - hsize);
-                            int curx = x + (m - hsize);
+                            int curz = z + (n - half_kernel_size);
+                            int curx = x + (m - half_kernel_size);
 
                             if(curz < 0 || curz > (Terrain::_size - 1) || curx < 0 || curx > (Terrain::_size - 1))
                                 sum += 0.0f;
                             else
-                                sum += Terrain::_height[z][x] * kernel[ksize * n + m];
+                                sum += Terrain::_height[z][x] * kernel[kernel_size * n + m];
                         }
-                    }
 
                     if (sum > max) max = sum;
                     if (sum < min) min = sum;
 
                     Terrain::_height[z][x] = sum;
-                }
             }
         }
 
