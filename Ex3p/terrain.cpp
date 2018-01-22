@@ -61,7 +61,7 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                     for(int x = 0; x < Terrain::_size; ++x)
                     {
                         // calculate current displacement
-                        float disp_cur = disp_max;
+                        float disp_cur = disp_start;
                         if(it < iterations)
                             disp_cur = disp_start + ((float)it / (float)iterations) * (disp_max - disp_start); 
 
@@ -106,7 +106,7 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                     for(int x = 0; x < Terrain::_size; ++x)
                     {
                         // calculate current displacement
-                        float disp_cur = disp_max;
+                        float disp_cur = disp_start;
                         if(it < iterations)
                             disp_cur = disp_start + ((float)it / (float)iterations) * (disp_max - disp_start); 
 
@@ -138,12 +138,12 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                 count = 0;
                 min = 10.0f;
                 max = -10.0f;
-                float rz = ((float) rand() / (RAND_MAX));
-                float rx = ((float) rand() / (RAND_MAX));
+                float rz = ((float) rand() / (RAND_MAX)) * Terrain::_size;
+                float rx = ((float) rand() / (RAND_MAX)) * Terrain::_size;
                 
                 // testing variable displacement
                 float disp_start = Terrain::_displacement;
-                float disp_max = disp_start * 32.0f;
+                float disp_max = disp_start * 16.0f;
 
                 ++it;
 
@@ -152,11 +152,11 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                     for(int x = 0; x < Terrain::_size; ++x)
                     {
                         // calculate current displacement
-                        float disp_cur = disp_max;
+                        float disp_cur = disp_start;
                         if(it < iterations)
                             disp_cur = disp_start + ((float)it / (float)iterations) * (disp_max - disp_start); 
 
-                        float terrainCircleSize = 3.0f;
+                        float terrainCircleSize = 32.0f;
                         float dist = sqrt((z-rz)* (z-rz) + (x-rx)* (x-rx)) * 2.0f / terrainCircleSize;
     
                         if (abs(dist) <= 1.0)
