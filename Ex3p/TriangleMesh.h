@@ -72,6 +72,8 @@ private:
   // ===============================
 
 public:
+    
+  int textureID = -1;
 
   TriangleMesh();
   ~TriangleMesh();

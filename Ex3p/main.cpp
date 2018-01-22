@@ -69,8 +69,34 @@ int main(int argc, char** argv) {
   // load doppeldecker: mesh[0] (flies in positive z direction)
   TriangleMesh doppeldecker;
   string filename = prefix + "/Models/doppeldecker.off";
-  doppeldecker.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 5.0f);
+  doppeldecker.loadOFF(filename.c_str(), Vec3f(0.0f,1.0f,0.0f), 5.0f);
+  // see loading of plane texture below
+  doppeldecker.textureID = 0;
   meshes.push_back(doppeldecker);
+  
+  // second plane
+  doppeldecker.translateToCenter(Vec3f(5.0f,0.0f,0.0f), false);
+  doppeldecker.textureID = -1;
+  meshes.push_back(doppeldecker);
+  
+  // third plane
+  doppeldecker.translateToCenter(Vec3f(5.0f,0.0f,5.0f), false);
+  doppeldecker.textureID = 1;
+  meshes.push_back(doppeldecker);
+  
+  float dim = 50.0f;
+  float dist = 5.5f;
+  // add some more planes
+  for (float x = -dim/2.0f; x < dim/2.0f; x = x + dist){
+    for (float y = -dim/2.0f; y < dim/2.0f; y = y + dist){
+      for (float z = -dim/2.0f; z < dim/2.0f; z = z + dist){
+        doppeldecker.translateToCenter(Vec3f(x, y, z), false);
+        doppeldecker.textureID = 0;
+        meshes.push_back(doppeldecker);
+      }
+    }
+  }
+  
   // cout mesh data
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
 
@@ -89,6 +115,7 @@ int main(int argc, char** argv) {
   filename = prefix + "/Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
   textureIDs[0] = loadTexture(image);
+  textureIDs[1] = skyboxTextureIDs[0];
 
   // free memory
   delete image;
@@ -130,7 +157,7 @@ void initialize() {
   glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
   // sky box texture IDs (6 IDs, initialized with 0)
   skyboxTextureIDs.resize(6,0);
-  textureIDs.resize(1,0);
+  textureIDs.resize(2,0);
 }
 
 void setDefaults() {
@@ -349,17 +376,32 @@ void renderScene() {
   drawTerrain();
 
   // doppeldecker
-  glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
-  frustum.init(cameraPos, cameraLookAt, Vec3f(0.0,1.0,0.0));
-  if(frustum.test(meshes[1].getBoundingBoxMin(), meshes[1].getBoundingBoxMax())){
-    triangles = meshes[1].draw();
+//   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
+//   frustum.init(cameraPos, cameraLookAt, Vec3f(0.0,1.0,0.0));
+//   if(frustum.test(meshes[1].getBoundingBoxMin(), meshes[1].getBoundingBoxMax())){
+//     triangles = meshes[1].draw();
+//   }
+//   glBindTexture(GL_TEXTURE_2D, 0);
+  
+  // draw all meshes (with texture) 
+  // meshes[0] is the terrain
+  for(int i = 1; i < meshes.size(); i++){
+    if (meshes[i].textureID != -1){
+      glBindTexture(GL_TEXTURE_2D, textureIDs[meshes[i].textureID]);
+    }
+    
+    frustum.init(cameraPos, cameraLookAt, Vec3f(0.0,1.0,0.0));
+    if(frustum.test(meshes[i].getBoundingBoxMin(), meshes[i].getBoundingBoxMax())){
+      triangles = meshes[i].draw();
+    }
+    glBindTexture(GL_TEXTURE_2D, 0); 
+    
+    if (triangles > 0) {
+      trianglesDrawn += triangles;
+      objectsDrawn++;
+    }
   }
-  glBindTexture(GL_TEXTURE_2D, 0);
-
-  if (triangles > 0) {
-    trianglesDrawn += triangles;
-    objectsDrawn++;
-  }
+  
   // swap Buffers
   glutSwapBuffers();
   // cout number of objects and triangles if different from last run
