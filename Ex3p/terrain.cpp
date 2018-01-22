@@ -128,6 +128,51 @@ Terrain::Terrain(int size, float disp) : _size(size), _displacement(disp)
                 }
             } while((count < Terrain::_threshold) && (it < iterations));
         }
+        else if(mode == 2)
+        {
+            int count;
+            int it = 0;
+
+            do
+            {
+                count = 0;
+                min = 10.0f;
+                max = -10.0f;
+                float rz = ((float) rand() / (RAND_MAX));
+                float rx = ((float) rand() / (RAND_MAX));
+                
+                // testing variable displacement
+                float disp_start = Terrain::_displacement;
+                float disp_max = disp_start * 32.0f;
+
+                ++it;
+
+                for(int z = 0; z < Terrain::_size; ++z)
+                {
+                    for(int x = 0; x < Terrain::_size; ++x)
+                    {
+                        // calculate current displacement
+                        float disp_cur = disp_max;
+                        if(it < iterations)
+                            disp_cur = disp_start + ((float)it / (float)iterations) * (disp_max - disp_start); 
+
+                        float terrainCircleSize = 3.0f;
+                        float dist = sqrt((z-rz)* (z-rz) + (x-rx)* (x-rx)) * 2.0f / terrainCircleSize;
+    
+                        if (abs(dist) <= 1.0)
+                            Terrain::_height[z][x] += disp_cur / 2.0f + cos(dist * 3.14) * disp_cur / 2;
+
+                        if (abs(Terrain::_height[z][x]) >= Terrain::_max_height)
+                            ++count;
+                        if (Terrain::_height[z][x] > max)
+                            max = Terrain::_height[z][x];
+                        if (Terrain::_height[z][x] < min)
+                            min = Terrain::_height[z][x];
+                    }
+                }
+            } while((count < Terrain::_threshold) && (it < iterations));
+        }
+
 
 
         if(smooth)

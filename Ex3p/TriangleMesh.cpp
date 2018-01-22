@@ -221,10 +221,11 @@ void TriangleMesh::generateHeightmap(float bbox_height, float bbox_plane) {
 
 
     int straight_mode = 0,
-        cosine_mode = 1;
+        trigon_mode = 1,
+        circ_mode = 2;
 
     Terrain terr;
-    terr.generate(cosine_mode, true);
+    terr.generate(circ_mode, true);
     int size = terr.getSize();
     int nv = pow(size, 2);
     int nf = (6 + (size - 2) * 3 + pow((size - 2), 2) * 6) / 3;
