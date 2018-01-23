@@ -16,6 +16,12 @@
 
 \usepackage{subcaption}
 
+
+\usepackage{tikz}
+\usetikzlibrary{3d}
+\usetikzlibrary{shadings}
+\definecolor{mypurple}{rgb}{1.0,0.0,1.0}
+
 \usepackage{tabularx}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündig mit Breitenangabe
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
@@ -62,11 +68,37 @@
 
 \subsubsection{iii}
 
+\begin{tikzpicture}[x  = {(0.5cm,0.5cm)},
+    y  = {(0.95cm,-0.25cm)},
+    z  = {(0cm,0.9cm)}]
+    \begin{scope}[canvas is yz plane at x=-1]
+    \shade[lower right=mypurple, lower left=blue, upper right=white, upper left=cyan] (-1,-1) rectangle (1,1);
+    \end{scope}
+    \begin{scope}[canvas is xz plane at y=1]
+    \shade[lower right=red, lower left=mypurple, upper right=yellow, upper left=white] (-1,-1) rectangle (1,1);
+    \end{scope}
+    \begin{scope}[canvas is yx plane at z=1]
+    \shade[lower right=white, lower left=cyan, upper right=yellow, upper left=green] (-1,-1) rectangle (1,1);
+    \end{scope}
+    \end{tikzpicture}
+
 \subsubsection{iv}
 
 \subsection{(1 Punkt)}
 
-\subsection{(1 Punkt)}
+\subsection{(1 Punkt)}%c
+\newcommand{\VecThree}[3]{\begin{pmatrix} #1 \\ #2 \\ #3 \end{pmatrix}}
+Gegeben:
+\[
+N = \VecThree{0}{1}{0}, V = \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0}, H = \VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}}, \lVert L+V \rVert = \sqrt{3}, k = 1, I_{BP} = \frac{\sqrt{6}}{3}
+\]
+
+\begin{align*}
+I_p &= f_p(\gamma) = (R(L)^T \cdot V)^k \cdot E = cos^k(\gamma) \cdot E \\
+I_{BP} &= f_{BP}(\phi) = (H^T \cdot N)^k \cdot E = cos^k(\phi) \cdot E = \frac{\sqrt{6}}{3} \\
+E &= \frac{\frac{\sqrt{6}}{3}}{(H^T \cdot N)^k} \\
+E &= \frac{\sqrt{6} \cdot (H^T \cdot N)^k}{3}
+\end{align*}
 
 \subsection{(0.5 Punkte)}
 
