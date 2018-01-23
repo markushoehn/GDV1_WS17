@@ -20,7 +20,16 @@
 \usepackage{tikz}
 \usetikzlibrary{3d}
 \usetikzlibrary{shadings}
-\definecolor{mypurple}{rgb}{1.0,0.0,1.0}
+\definecolor{mypurple}{RGB}{255,0,255}
+
+\makeatletter
+\tikzoption{canvas is xy plane at z}[]%
+{   \def\tikz@plane@origin{\pgfpointxyz{0}{0}{#1}}%
+	\def\tikz@plane@x{\pgfpointxyz{1}{0}{#1}}%
+	\def\tikz@plane@y{\pgfpointxyz{0}{1}{#1}}%
+	\tikz@canvas@is@plane
+}
+\makeatother 
 
 \usepackage{tabularx}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % linksbündig mit Breitenangabe
@@ -62,27 +71,6 @@
 
 \subsection{(1 Punkt)}
 
-\subsubsection{i}
-
-\subsubsection{ii}
-
-\subsubsection{iii}
-
-\begin{tikzpicture}[x  = {(0.5cm,0.5cm)},
-    y  = {(0.95cm,-0.25cm)},
-    z  = {(0cm,0.9cm)}]
-    \begin{scope}[canvas is yz plane at x=-1]
-    \shade[lower right=mypurple, lower left=blue, upper right=white, upper left=cyan] (-1,-1) rectangle (1,1);
-    \end{scope}
-    \begin{scope}[canvas is xz plane at y=1]
-    \shade[lower right=red, lower left=mypurple, upper right=yellow, upper left=white] (-1,-1) rectangle (1,1);
-    \end{scope}
-    \begin{scope}[canvas is yx plane at z=1]
-    \shade[lower right=white, lower left=cyan, upper right=yellow, upper left=green] (-1,-1) rectangle (1,1);
-    \end{scope}
-    \end{tikzpicture}
-
-\subsubsection{iv}
 \subsubsection{}
 
 Umrechnung von RGB in HSV: \\
@@ -131,7 +119,108 @@ $
 
 \subsubsection{}
 
+RGB Cube:\\
+
+\pgfmathtruncatemacro{\Divisions}{30}
+\pgfmathsetmacro{\Cube}{3}
+
+\begin{tikzpicture}
+[   x={(0.5cm,0.5cm)},
+y={(0.95cm,-0.25cm)},
+z={(0cm,0.9cm)}
+]
+\begin{scope}[canvas is yz plane at x=-\Cube/2] %front
+\shade[lower right=mypurple, lower left=blue, upper right=white, upper left=cyan] (-1,-1) rectangle (1,1);
+\clip (-\Cube/2,-\Cube/2) rectangle (\Cube/2,\Cube/2);
+\colorlet{BL}[RGB]{blue}
+\colorlet{BR}[RGB]{mypurple}
+\colorlet{TL}[RGB]{cyan}
+\colorlet{TR}[RGB]{white}
+\foreach \x in {1,...,\Divisions}
+{   \pgfmathtruncatemacro{\px}{(\x-1)/(\Divisions-1)*100}
+	\colorlet{B}[RGB]{BR!\px!BL}
+	\colorlet{T}[RGB]{TR!\px!TL}
+	\foreach \y in {1,...,\Divisions}
+	{   \pgfmathtruncatemacro{\py}{(\y-1)/(\Divisions-1)*100}
+		\fill[T!\py!B] ({-\Cube/2+\Cube*(\x-1)/\Divisions},{-\Cube/2+\Cube*(\y-1)/\Divisions}) rectangle ({-\Cube/2+\Cube*(\x+0.1)/\Divisions},{-\Cube/2+\Cube*(\y+0.1)/\Divisions});
+	}
+}
+\draw (-\Cube/2,-\Cube/2) rectangle (\Cube/2,\Cube/2);
+\end{scope}
+
+\begin{scope}[canvas is xz plane at y=\Cube/2] %right
+\clip (-\Cube/2,-\Cube/2) rectangle (\Cube/2,\Cube/2);
+\colorlet{BL}[RGB]{mypurple}
+\colorlet{BR}[RGB]{red}
+\colorlet{TL}[RGB]{white}
+\colorlet{TR}[RGB]{yellow}
+\foreach \x in {1,...,\Divisions}
+{   \pgfmathtruncatemacro{\px}{(\x-1)/(\Divisions-1)*100}
+	\colorlet{B}[RGB]{BR!\px!BL}
+	\colorlet{T}[RGB]{TR!\px!TL}
+	\foreach \y in {1,...,\Divisions}
+	{   \pgfmathtruncatemacro{\py}{(\y-1)/(\Divisions-1)*100}
+		\fill[T!\py!B] ({-\Cube/2+\Cube*(\x-1)/\Divisions},{-\Cube/2+\Cube*(\y-1)/\Divisions}) rectangle ({-\Cube/2+\Cube*(\x+0.1)/\Divisions},{-\Cube/2+\Cube*(\y+0.1)/\Divisions});
+	}
+}
+\draw (-\Cube/2,-\Cube/2) rectangle (\Cube/2,\Cube/2);
+\end{scope}
+
+\begin{scope}[canvas is xy plane at z=\Cube/2] %top
+\clip (-\Cube/2,-\Cube/2) rectangle (\Cube/2,\Cube/2);
+\colorlet{BL}[RGB]{cyan}
+\colorlet{BR}[RGB]{green}
+\colorlet{TL}[RGB]{white}
+\colorlet{TR}[RGB]{yellow}
+\foreach \x in {1,...,\Divisions}
+{   \pgfmathtruncatemacro{\px}{(\x-1)/(\Divisions-1)*100}
+	\colorlet{B}[RGB]{BR!\px!BL}
+	\colorlet{T}[RGB]{TR!\px!TL}
+	\foreach \y in {1,...,\Divisions}
+	{   \pgfmathtruncatemacro{\py}{(\y-1)/(\Divisions-1)*100}
+		\fill[T!\py!B] ({-\Cube/2+\Cube*(\x-1)/\Divisions},{-\Cube/2+\Cube*(\y-1)/\Divisions}) rectangle ({-\Cube/2+\Cube*(\x+0.1)/\Divisions},{-\Cube/2+\Cube*(\y+0.1)/\Divisions});
+	}
+}
+\draw (-\Cube/2,-\Cube/2) rectangle (\Cube/2,\Cube/2);
+\end{scope}
+\draw [-stealth](-\Cube/2,\Cube/2, -\Cube/2) -> (\Cube/2,-\Cube/2, \Cube/2);
+\end{tikzpicture}\\
+
+
+HSV Cone: \\
+\includegraphics[scale=0.5]{hsv}
+
 \subsubsection{}
+
+\definecolor{rgb1}{RGB}{204, 51, 204}
+\definecolor{rgb2}{RGB}{153, 102, 153}
+\definecolor{rgb3}{RGB}{128, 128, 128}
+\definecolor{rgb4}{RGB}{102, 153, 102}
+\definecolor{rgb5}{RGB}{51, 204, 51}
+
+\definecolor{hsv1}{RGB}{102, 0, 255}
+\definecolor{hsv2}{RGB}{0, 51, 255}
+\definecolor{hsv3}{RGB}{0, 128, 255}
+\definecolor{hsv4}{RGB}{0, 204, 255}
+\definecolor{hsv5}{RGB}{0, 255, 153}
+
+$
+x_1 = 0.2\\
+x_2 = 0.4\\
+x_3 = 0.5\\
+x_4 = 0.6\\
+x_5 = 0.8\\~\\
+f_{RGB}(x_1) = (204, 51, 204)\tikz \fill [rgb1] (0.1,0.1) rectangle (0.4,0.4);\\
+f_{RGB}(x_2) = (153, 102, 153)\tikz \fill [rgb2] (0.1,0.1) rectangle (0.4,0.4);\\
+f_{RGB}(x_3) = (127.5, 127.5, 127.5)\tikz \fill [rgb3] (0.1,0.1) rectangle (0.4,0.4);\\
+f_{RGB}(x_4) = (102, 153, 102)\tikz \fill [rgb4] (0.1,0.1) rectangle (0.4,0.4);\\
+f_{RGB}(x_5) = (51, 204, 51)\tikz \fill [rgb5] (0.1,0.1) rectangle (0.4,0.4);\\~\\
+f_{HSV}(x_1) = (264^\circ, 1, 1)\tikz \fill [hsv1] (0.1,0.1) rectangle (0.4,0.4);\\
+f_{HSV}(x_2) = (228^\circ, 1, 1)\tikz \fill [hsv2] (0.1,0.1) rectangle (0.4,0.4);\\
+f_{HSV}(x_3) = (210^\circ, 1, 1)\tikz \fill [hsv3] (0.1,0.1) rectangle (0.4,0.4);\\
+f_{HSV}(x_4) = (192^\circ, 1, 1)\tikz \fill [hsv4] (0.1,0.1) rectangle (0.4,0.4);\\
+f_{HSV}(x_5) = (156^\circ, 1, 1)\tikz \fill [hsv5] (0.1,0.1) rectangle (0.4,0.4);\\~\\
+$
 
 \subsection{(1 Punkt)}
 
