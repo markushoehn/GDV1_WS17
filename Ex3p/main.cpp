@@ -388,12 +388,12 @@ void renderScene() {
   
   // draw all meshes (with texture) 
   // meshes[0] is the terrain
+  frustum.init(cameraPos, cameraLookAt, Vec3f(0.0,1.0,0.0));
   for(int i = 1; i < meshes.size(); i++){
     if (meshes[i].textureID != -1){
       glBindTexture(GL_TEXTURE_2D, textureIDs[meshes[i].textureID]);
     }
     
-    frustum.init(cameraPos, cameraLookAt, Vec3f(0.0,1.0,0.0));
     if(frustum.test(meshes[i].getBoundingBoxMin(), meshes[i].getBoundingBoxMax())){
       triangles = meshes[i].draw();
     }
