@@ -138,19 +138,71 @@ $
 \subsection{(1 Punkt)}%c
 \newcommand{\VecThree}[3]{\begin{pmatrix} #1 \\ #2 \\ #3 \end{pmatrix}}
 Gegeben:
-\[
+\begin{gather*}
 N = \VecThree{0}{1}{0}, V = \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0}, H = \VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}}, \lVert L+V \rVert = \sqrt{3}, k = 1, I_{BP} = \frac{\sqrt{6}}{3}
-\]
-
+\end{gather*}
+\\
+\begin{gather*}
+I_p = f_p(\gamma) = (R(L)^T \cdot V)^k \cdot E = cos^k(\gamma) \cdot E \\
+I_{BP} = f_{BP}(\phi) = (H^T \cdot N)^k \cdot E = cos^k(\phi) \cdot E = \frac{\sqrt{6}}{3} \\
+\end{gather*}
+\begin{gather*}
+E = \frac{\frac{\sqrt{6}}{3}}{(H^T \cdot N)^k} = \frac{\sqrt{6} \cdot (H^T \cdot N)^k}{3} \\
+= \frac{\sqrt{6} \cdot \left(\VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}}^T \cdot \VecThree{0}{1}{0}\right)^1}{3} = \frac{\sqrt{6} \cdot \frac{\sqrt{6}}{3}}{3} =  \frac{2}{3}
+\end{gather*}
+\\
+\begin{gather*}
+\gamma = \arccos(R(L)^T \cdot V) \\
+= \arccos\left(\VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}} \cdot \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} \right) \\
+= \arccos(0.5) \approx 1.047
+\end{gather*}
+\\
+\begin{gather*}
+I_p = cos(\gamma) \cdot E = 0.5 \cdot E = \frac{1}{3}
+\end{gather*}
+\\
+\begin{gather*}
+\phi = \arccos(H^T \cdot N) = \arccos\left(\frac{\sqrt{6}}{3}\right) \approx 0.615
+\end{gather*}
+\\
+\begin{gather*}
+\lVert L+V \rVert = \VecThree{l_1}{l_2+1}{l_3} = \sqrt{l_1^2 + (l_2+1)^2 + l_3^2} = \sqrt{3} \\
+l_1^2 + (l_2+1)^2 + l_3^2 = 3
+\end{gather*}
+\\
+\begin{gather*}
+R(L) = - L + 2 \left(L \cdot N \right) N \\
+= - \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} + 2 \left(\VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} \cdot \VecThree{0}{1}{0} \right) \VecThree{0}{1}{0} \\
+= - \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} + 2 \left( \sqrt{0.5} \right) \VecThree{0}{1}{0} \\ 
+= \VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}}
+\end{gather*}
+\\
 \begin{align*}
-I_p &= f_p(\gamma) = (R(L)^T \cdot V)^k \cdot E = cos^k(\gamma) \cdot E \\
-I_{BP} &= f_{BP}(\phi) = (H^T \cdot N)^k \cdot E = cos^k(\phi) \cdot E = \frac{\sqrt{6}}{3} \\
-E &= \frac{\frac{\sqrt{6}}{3}}{(H^T \cdot N)^k} \\
-E &= \frac{\sqrt{6} \cdot (H^T \cdot N)^k}{3}
+H &= \frac{L+V}{\lVert L+V \rVert} = \frac{L+V}{\sqrt{3}} \\
+\VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}} &= \frac{L+V}{\sqrt{3}} \\
+L &= \VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}} \cdot \sqrt{3} - \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} = \VecThree{\frac{\sqrt{2}}{2}}{\sqrt{2}}{-\frac{\sqrt{2}}{2}} - \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} = \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}}
 \end{align*}
+\\
+Lösung:
+\begin{gather*}
+E = \frac{2}{3} \\
+I_P = \frac{1}{3}\\
+\gamma = \arccos(0.5) \approx 1.047\\
+\phi = \arccos\left(\frac{\sqrt{6}}{3}\right) \approx 0.615 \\
+L =  \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} \\
+R(L) = \VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}}\\
+\end{gather*}
 
-\subsection{(0.5 Punkte)}
-
+\subsection{(0.5 Punkte)} %d
+%TODO, auskommentiert damit niemand denkt es wäre fertig
+%\begin{gather*}
+%I_{BP} \neq 0 \neq I_P \\
+%(R(L)^T \cdot V)^k = cos^k(\gamma) \\
+%(H^T \cdot N)^k = cos^k(\phi) \\
+%\gamma = \phi \\
+%\Rightarrow \left\vert R(L)^T \cdot V \right\vert = \left\vert H^T \cdot N \right\vert \\
+%\Rightarrow \left\vert \left(- L + 2 \left(L \cdot N \right) N\right)^T \cdot V \right\vert = \left\vert \left(\frac{L+V}{\lVert L+V \rVert}\right)^T \cdot N \right\vert
+%\end{gather*}
 \subsection{(0.5 Punkte)}
 
 \section{Texturierung (2 Punkte)}
