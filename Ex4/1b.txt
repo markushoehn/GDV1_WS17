@@ -1,0 +1,30 @@
+Isotropic BRDF
+
+Ist invariant bezüglich Rotation um die Normale. Kann vielleicht local berrechnet werden?
+Das Isotropische Material (z.B Plastik)
+
+
+BRDF
+
+Reflexioneigenschaften sind unabähngig von der Position. Daher kann BRDF local berrechnet werden.
+Das Homogene Material (z.B gebürstetes Metall) kann auch local berrechnet werden.
+
+Spatially Varying BRDF
+
+Verwendet eine 2d Location über dem Object Surface. Kann daher local berrechnet werden.
+
+BSSRDF
+
+Licht verlässt die Oberfläche eventuell an anderer Stelle. Daher kann es nicht Local berrechnet werden.
+Dadurch kann Licht von durchlässigen Materialien an andere abgegeben werden.
+Dadurch kann kein Material mehr local berrechnet werden.
+
+Scattering Function
+
+Abhängig von der Wellenlänge. Wellenlänge nicht mehr diskretisiert, Fluoreszenz. Daher nicht local berrechenbar.
+Wie bei BSSRDF kann kein Material mehr Local berrechnet werden.
+
+allgemeines Reflexionsmodell
+
+Kann nicht Local berrechnet werden.
+Wie bei BSSRDF kann kein Material mehr Local berrechnet werden.
