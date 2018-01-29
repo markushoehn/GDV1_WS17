@@ -368,14 +368,45 @@ $c_{avg}(1,2,2,5) = (25 - 14 - 7 + 6) / (2  * 4) = 1.25$
 \subsection{(1 Punkt)}
 $l_1(s) = (3, -12)^T + s(-6, 6)^T \qquad s \in [0,1]$ \\
 
-Berechnung von p und q
+Berechnung von p und q:\\
 
-$l_2(t) = p + t(q-p) \qquad t \in [0,1]$
+$l_2(t) = p + t(q-p) \qquad t \in [0,1]\\~\\
+\lambda \cdot (3, -12)^T = (x_1, -4)^T\\
+-12 \lambda = -4 \Rightarrow \lambda = \frac{1}{3}\\
+3 \lambda = x_1 \Rightarrow x_1 = 1\\
+\Rightarrow p = (1, -4)^T\\~\\
+\phi \cdot (-3, -6)^T = (x_2, -4)^T\\
+-6 \phi = -4 \Rightarrow \phi = \frac{2}{3}\\
+-3 \phi = x_2 \Rightarrow x_2 = -2\\
+\Rightarrow q = (-2, -4)^T\\~\\
+l_2(t) = (1, -4) + t(-3, 0)
+$\\
+
+Bei dem Liniensegment $l_2$ werden durch die Interpolation die unterschiedlichen z-Koordinaten von P und Q vernachlässigt, wodurch die Textur möglicherweise verzerrt dargestellt wird.
 \subsection{(1 Punkt)} 
 
-\subsection{(1 Punkt)}
+$
+l_3 = -4 \cdot \left( \dfrac{x_1 + s (x_2 - x_1)}{z_1 + s(z_2 - z_1)}, 1\right)^T\\
+l_3 = -4 \cdot \left( \dfrac{3 - 6s}{-12 + 6s}, 1\right)^T
+$
 
 \subsection{(1 Punkt)}
 
+$
+l_2 = l_3\\
+-4 \cdot \left( \frac{x_1}{x_2} + t(\frac{x_2}{z_2} - \frac{x_1}{z_1}) \right) = -4 \cdot \left( \dfrac{x_1 + s (x_2 - x_1)}{z_1 + s (z_2 - z_1)}\right)\\
+-4 \cdot \left( \frac{3}{-3} + t(\frac{-3}{-6} - \frac{3}{-12}) \right) = -4 \cdot \left( \dfrac{3 - 6s }{-12 + 6s}\right)\\
+\Rightarrow s = \dfrac{-12t}{-6 -6t}
+$\\
+
+Durch die Umstellung auf s können wir aus der einfachen Interpolation $l_2(t)$ die perspektivisch projezierte Interpolation $l_3(s)$ berechnen. Damit können aus den perspektivisch verzerrten Texturkoordinaten die perspektivisch korrekten Koordinaten errechnet werden. 
+
+\subsection{(1 Punkt)}
+
+ohne perspektivische Korrektur:\\
+\includegraphics[scale = .2]{3d_2}\\
+
+mit perspektivischer Korrektur: \\
+\includegraphics[scale= .2]{3d_1}
 
 \end{document}
