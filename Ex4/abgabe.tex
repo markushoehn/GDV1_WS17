@@ -222,7 +222,40 @@ f_{HSV}(x_4) = (192^\circ, 1, 1)\tikz \fill [hsv4] (0.1,0.1) rectangle (0.4,0.4)
 f_{HSV}(x_5) = (156^\circ, 1, 1)\tikz \fill [hsv5] (0.1,0.1) rectangle (0.4,0.4);\\~\\
 $
 
-\subsection{(1 Punkt)}
+\subsection{(1 Punkt)}%b
+
+\textbf{Isotropic BRDF}
+
+Ist invariant bezüglich Rotation um die Normale. Kann vielleicht local berrechnet werden?
+Das Isotropische Material (z.B Plastik)
+
+
+\textbf{BRDF}
+
+Reflexioneigenschaften sind unabähngig von der Position. Daher kann BRDF local berrechnet werden.
+Das Homogene Material (z.B gebürstetes Metall) kann auch local berrechnet werden.
+
+\textbf{Spatially Varying BRDF}
+
+Verwendet eine 2d Location über dem Object Surface. Kann daher local berrechnet werden.
+
+\textbf{BSSRDF}
+
+Licht verlässt die Oberfläche eventuell an anderer Stelle. Daher kann es nicht Local berrechnet werden.
+Dadurch kann Licht von durchlässigen Materialien an andere abgegeben werden.
+Dadurch kann kein Material mehr local berrechnet werden.
+
+\textbf{Scattering Function}
+
+Abhängig von der Wellenlänge. Wellenlänge nicht mehr diskretisiert, Fluoreszenz. Daher nicht local berrechenbar.
+Wie bei BSSRDF kann kein Material mehr Local berrechnet werden.
+
+\textbf{allgemeines Reflexionsmodell}
+
+Kann nicht Local berrechnet werden.
+Wie bei BSSRDF kann kein Material mehr Local berrechnet werden.
+
+% TODO: nochmal drüberlesen
 
 \subsection{(1 Punkt)}%c
 \newcommand{\VecThree}[3]{\begin{pmatrix} #1 \\ #2 \\ #3 \end{pmatrix}}
@@ -294,11 +327,62 @@ R(L) = \VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}}\\
 %\end{gather*}
 \subsection{(0.5 Punkte)}
 
-\section{Texturierung (2 Punkte)}
+\section{Texturierung (2 Punkte)} %2
 
-\subsection{(1 Punkt)}
+\subsection{(1 Punkt)} %2a
 
-\subsection{(1 Punkt)} 
+% Source: Vorlesung 10, Slide 13
+
+
+$(u,v) = F_{inv} map(x,y,z)$
+
+$u,v \in [0,1]$
+
+$r,h$
+
+$x = r * sin(u)$
+
+$y = v$
+
+$z = r * cos(u)$
+
+$v = \frac{h}{y}$
+
+$u = \frac{1}{2pi} * atan2(x,z) + 0.5$
+
+
+\subsection{(1 Punkt)} %2b
+
+% Source: Vorlesung 10, Slide 49. Summed Area Tables
+
+\textbf{Rechteck}
+\begin{Verbatim}[samepage=true, frame=single]
+5    1    2    4    2
+2    3    4    1    1
+2    1    1    3    1
+2    2    1    3    5
+0    2    2    3    1
+\end{Verbatim}
+
+$C_{sat}$
+\begin{Verbatim}[samepage=true, frame=single]
+ 5    6    8   12   14
+ 7   11   17   22   25
+ 9   14   21   29   33
+11   18   26   37   46
+11   20   30   44   54
+\end{Verbatim}
+
+\textbf{schraffiertes Rechteck}
+\begin{Verbatim}[samepage=true, frame=single]
+1  2  4  2
+3  4  1  1
+\end{Verbatim}
+
+$c_{avg}(1,2,2,5) = (25 - 14 - 7 + 6) / (2  * 4) = 1.25$
+
+% TODO: finish c_average
+
 
 \section{Perspektivisch korrekte Texturierung (4 Punkte)}
 
