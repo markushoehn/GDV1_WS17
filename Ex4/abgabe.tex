@@ -221,6 +221,8 @@ f_{HSV}(x_3) = (210^\circ, 1, 1)\tikz \fill [hsv3] (0.1,0.1) rectangle (0.4,0.4)
 f_{HSV}(x_4) = (192^\circ, 1, 1)\tikz \fill [hsv4] (0.1,0.1) rectangle (0.4,0.4);\\
 f_{HSV}(x_5) = (156^\circ, 1, 1)\tikz \fill [hsv5] (0.1,0.1) rectangle (0.4,0.4);\\~\\
 $
+Der Farbverlauf im RGB-Cube geht von der unteren rechten pinken Ecke durch den Cube zu der oberen linken grünen Ecke. Dadurch entsteht ein Farbverlauf durch den Grauwert RGB(127.5, 127.5, 127.5). Die Rot-, Grün- und Blauwerte verändern sich entsprechend des Eingabewertes.\\
+Im HSV-Raum bleiben Saturation und Value konstant, während der Hue-Wert sich ändert. So entsteht ein Farbverlauf von pink bei Hue=300$^\circ$ über die Blauwerte des Cones bis zu grün bei Hue=120$^\circ$. 
 
 \subsection{(1 Punkt)}%b
 
@@ -264,56 +266,33 @@ Gegeben:
 N = \VecThree{0}{1}{0}, V = \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0}, H = \VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}}, \lVert L+V \rVert = \sqrt{3}, k = 1, I_{BP} = \frac{\sqrt{6}}{3}
 \end{gather*}
 \\
-\begin{gather*}
-I_p = f_p(\gamma) = (R(L)^T \cdot V)^k \cdot E = cos^k(\gamma) \cdot E \\
-I_{BP} = f_{BP}(\phi) = (H^T \cdot N)^k \cdot E = cos^k(\phi) \cdot E = \frac{\sqrt{6}}{3} \\
-\end{gather*}
-\begin{gather*}
-E = \frac{\frac{\sqrt{6}}{3}}{(H^T \cdot N)^k} = \frac{\sqrt{6} \cdot (H^T \cdot N)^k}{3} \\
-= \frac{\sqrt{6} \cdot \left(\VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}}^T \cdot \VecThree{0}{1}{0}\right)^1}{3} = \frac{\sqrt{6} \cdot \frac{\sqrt{6}}{3}}{3} =  \frac{2}{3}
-\end{gather*}
-\\
-\begin{gather*}
-\gamma = \arccos(R(L)^T \cdot V) \\
-= \arccos\left(\VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}} \cdot \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} \right) \\
-= \arccos(0.5) \approx 1.047
-\end{gather*}
-\\
-\begin{gather*}
-I_p = cos(\gamma) \cdot E = 0.5 \cdot E = \frac{1}{3}
-\end{gather*}
-\\
-\begin{gather*}
-\phi = \arccos(H^T \cdot N) = \arccos\left(\frac{\sqrt{6}}{3}\right) \approx 0.615
-\end{gather*}
-\\
-\begin{gather*}
-\lVert L+V \rVert = \VecThree{l_1}{l_2+1}{l_3} = \sqrt{l_1^2 + (l_2+1)^2 + l_3^2} = \sqrt{3} \\
-l_1^2 + (l_2+1)^2 + l_3^2 = 3
-\end{gather*}
-\\
-\begin{gather*}
-R(L) = - L + 2 \left(L \cdot N \right) N \\
-= - \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} + 2 \left(\VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} \cdot \VecThree{0}{1}{0} \right) \VecThree{0}{1}{0} \\
-= - \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} + 2 \left( \sqrt{0.5} \right) \VecThree{0}{1}{0} \\ 
-= \VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}}
-\end{gather*}
-\\
 \begin{align*}
-H &= \frac{L+V}{\lVert L+V \rVert} = \frac{L+V}{\sqrt{3}} \\
-\VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}} &= \frac{L+V}{\sqrt{3}} \\
-L &= \VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}} \cdot \sqrt{3} - \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} = \VecThree{\frac{\sqrt{2}}{2}}{\sqrt{2}}{-\frac{\sqrt{2}}{2}} - \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} = \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}}
+I_p &= f_p(\gamma) = (R(L)^T \cdot V)^k \cdot E = cos^k(\gamma) \cdot E \\
+I_{BP} &= f_{BP}(\phi) = (H^T \cdot N)^k \cdot E = cos^k(\phi) \cdot E = \frac{\sqrt{6}}{3}\\
+\phi &= \arccos(H^T \cdot N) = \arccos\left(\frac{\sqrt{6}}{3}\right) \approx 0.615\\~\\
+E &= \frac{\frac{\sqrt{6}}{3}}{(H^T \cdot N)^k} = \frac{\sqrt{6} \cdot (H^T \cdot N)^k}{3} \\
+&= \frac{\sqrt{6} \cdot \left(\VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}}^T \cdot \VecThree{0}{1}{0}\right)^1}{3} = \frac{\sqrt{6} \cdot \frac{\sqrt{6}}{3}}{3} =  \frac{2}{3}\\~\\
+H &= \frac{L+V}{\lVert L+V \rVert} = \frac{L+V}{\sqrt{3}} \Rightarrow
+\VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}} = \frac{L+V}{\sqrt{3}} \\
+L &= \VecThree{\frac{\sqrt{6}}{6}}{\frac{\sqrt{6}}{3}}{-\frac{\sqrt{6}}{6}} \cdot \sqrt{3} - \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} = \VecThree{\frac{\sqrt{2}}{2}}{\sqrt{2}}{-\frac{\sqrt{2}}{2}} - \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} = \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}}\\~\\
+R(L) &= - L + 2 \left(L \cdot N \right) N \\
+&= - \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} + 2 \left(\VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} \cdot \VecThree{0}{1}{0} \right) \VecThree{0}{1}{0} \\
+&= - \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} + 2 \left( \sqrt{0.5} \right) \VecThree{0}{1}{0} \\ 
+&= \VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}}\\~\\
+\gamma &= \arccos(R(L)^T \cdot V) \\
+&= \arccos\left(\VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}} \cdot \VecThree{\sqrt{0.5}}{\sqrt{0.5}}{0} \right) \\
+&= \arccos(0.5) \approx 1.047\\~\\
+I_p &= cos(\gamma) \cdot E = 0.5 \cdot E = \frac{1}{3}
 \end{align*}
-\\
 Lösung:
-\begin{gather*}
-E = \frac{2}{3} \\
-I_P = \frac{1}{3}\\
-\gamma = \arccos(0.5) \approx 1.047\\
-\phi = \arccos\left(\frac{\sqrt{6}}{3}\right) \approx 0.615 \\
-L =  \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} \\
-R(L) = \VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}}\\
-\end{gather*}
+\begin{align*}
+I_p &= \frac{1}{3}\\
+E &= \frac{2}{3} \\
+\gamma &= \arccos(0.5) \approx 1.047\\
+\phi &= \arccos\left(\frac{\sqrt{6}}{3}\right) \approx 0.615 \\
+L &=  \VecThree{0}{\sqrt{0.5}}{-\frac{\sqrt{2}}{2}} \\
+R(L) &= \VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}}\\
+\end{align*}
 
 \subsection{(0.5 Punkte)} %d
 %TODO, auskommentiert damit niemand denkt es wäre fertig
