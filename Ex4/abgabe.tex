@@ -328,11 +328,21 @@ $y = v$
 
 $z = r * cos(u)$\\
 
-Daraus ergibt sich folgende Funktionen für $v$ und $u$:
+Daraus ergibt sich folgende Funktionen für $v$:
 
-$v = \frac{h}{y}$
+\[v = \frac{h}{y}\]
 
-$u = \frac{1}{2pi} * atan2(x,z) + 0.5$
+Falls $x \geq 0 \Leftrightarrow u \in [0,0.5]$
+
+\[u = \cos^{-1}(\frac{z}{\sqrt{x^2+z^2}}) * \frac{1}{2pi}\]
+
+Sonst $x \wedge 0 \Leftrightarrow u \in [0.5, 1]$
+
+\[u = (2\pi - \cos^{-1}(\frac{z}{\sqrt{x^2+z^2}})) * \frac{1}{2pi}\]
+
+Alternativ ohne Fallunterscheidung:
+
+\[u = \frac{1}{2pi} * atan2(x,z) + 0.5\]
 
 
 \subsection{(1 Punkt)} %2b
