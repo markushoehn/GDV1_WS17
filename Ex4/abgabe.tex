@@ -316,33 +316,33 @@ R(L) &= \VecThree{0}{\sqrt{0.5}}{\frac{\sqrt{2}}{2}}\\
 
 % Source: Vorlesung 10, Slide 13
 
-Zu berrechnen ist die Umkehrfunktion $(u,v) = F_{inv} map(x,y,z)$.\\
+Zu berrechnen ist die Umkehrfunktion $(u,v) = F_{\text{inv map}}(x,y,z)$.\\
 
 Gegeben sei $u,v \in [0,1]$, $r, h$ sowie $x,y,z$.\\
 
 Das Zylinder-Mapping gibt an:
 
-$x = r * sin(u)$
+$x = r \cdot sin(u)$
 
 $y = v$
 
-$z = r * cos(u)$\\
+$z = r \cdot cos(u)$\\
 
 Daraus ergibt sich folgende Funktionen für $v$:
 
-\[v = \frac{h}{y}\]
+\[v = \frac{y}{h}\]
 
 Falls $x \geq 0 \Leftrightarrow u \in [0,0.5]$
 
-\[u = \cos^{-1}(\frac{z}{\sqrt{x^2+z^2}}) * \frac{1}{2pi}\]
+\[u = \cos^{-1}(\frac{z}{\sqrt{x^2+z^2}}) \cdot \frac{1}{2\pi}\]
 
-Sonst $x \wedge 0 \Leftrightarrow u \in [0.5, 1]$
+Sonst $x < 0 \Leftrightarrow u \in [0.5, 1]$
 
-\[u = (2\pi - \cos^{-1}(\frac{z}{\sqrt{x^2+z^2}})) * \frac{1}{2pi}\]
+\[u = (2\pi - \cos^{-1}(\frac{z}{\sqrt{x^2+z^2}})) \cdot \frac{1}{2\pi}\]
 
 Alternativ ohne Fallunterscheidung:
 
-\[u = \frac{1}{2pi} * atan2(x,z) + 0.5\]
+\[u = \frac{1}{2\pi} \cdot atan2(x,z) + 0.5\]
 
 
 \subsection{(1 Punkt)} %2b
