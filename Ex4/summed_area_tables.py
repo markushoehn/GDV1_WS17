@@ -35,3 +35,13 @@ print("(",r1,"-",r2,"-",r3,"+",r4,")/",lower)
 
 upper = (r1 - r2 - r3 + r4)
 print(str(upper) + " / " + str(lower) + " = " + str(upper/lower))
+
+counter = 0
+for i in range(i0,i1+1):
+    for j in range(j0,j1+1):
+        counter = counter + 1
+
+print("we would need " + str(counter) + " zugriffe with the standart formula")
+
+# r1 + r3
+print("we need 2 zugriffe with the c_avg formula")
