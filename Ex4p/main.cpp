@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
   setDefaults();  
 
   // set flag for build dir
-  string buildprefix = "..";
+  string buildprefix = ".";
 
   skyboxTextureIDs.resize(6,0);
   textureIDs.resize(2,0);
@@ -73,11 +73,11 @@ int main(int argc, char** argv) {
   // load meshes
   // string filename;
   TriangleMesh tm1;
-  filename = "../Models/ballon.off";
+  filename = buildprefix + "/Models/ballon.off";
   tm1.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 20.0f);
   meshes.push_back(tm1);
   TriangleMesh tm2;
-  filename = "../Models/delphin.off";
+  filename = buildprefix + "/Models/delphin.off";
   tm2.loadOFF(filename.c_str(), Vec3f(0.6f,0.0f,0.3f), 7.0f);
   meshes.push_back(tm2);
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
