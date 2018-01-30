@@ -31,6 +31,28 @@
 // ==============
 
 int main(int argc, char** argv) {
+
+  // set flag for build dir
+  string buildprefix = ".";
+
+  skyboxTextureIDs.resize(6,0);
+  textureIDs.resize(2,0);
+
+  // load sky box-
+  string names [] = {"neg_z.bmp", "pos_x.bmp", "pos_z.bmp", "neg_x.bmp", "pos_y.bmp", "neg_y.bmp"};
+  string sbox = "skybox", filename = "";
+  Image * image;
+  for(int i = 0; i < 6; ++i)
+  {
+    filename = buildprefix + "/Textures/" + sbox + "/" +names[i];
+
+    std::cout << filename << std::endl;
+
+    image = loadBMP(filename.c_str());
+    skyboxTextureIDs[i] = loadTexture(image);
+  }
+
+
   // initialize openGL window
   glutInit(&argc, argv);
   glutInitWindowPosition(300,200);
@@ -48,7 +70,7 @@ int main(int argc, char** argv) {
   initialize();
   setDefaults();  
   // load meshes
-  string filename;
+  // string filename;
   TriangleMesh tm1;
   filename = "Models/ballon.off";
   tm1.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 20.0f);
@@ -58,11 +80,19 @@ int main(int argc, char** argv) {
   tm2.loadOFF(filename.c_str(), Vec3f(0.6f,0.0f,0.3f), 7.0f);
   meshes.push_back(tm2);
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
+  
   // load textures
-  Image* image;
-  filename = "Textures/TEST_GRID.bmp";
+  // Image* image;
+  // filename = "Textures/TEST_GRID.bmp";
+  // image = loadBMP(filename.c_str());
+  // textureIDs.push_back(loadTexture(image));
+
+  filename = buildprefix + "/Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
-  textureIDs.push_back(loadTexture(image));
+  textureIDs[0] = loadTexture(image);
+  textureIDs[1] = skyboxTextureIDs[0];
+
+
   // add object attributes (material, texture, ...)
   SceneObject so;
   so.matAmbient[0]  = 0.2f; so.matAmbient[1]  = 0.1f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
@@ -177,6 +207,74 @@ void processTimedEvent(const int x) {
 // === RENDERING ===
 // =================
 
+void drawSkybox() {
+  // prepare (no lighting, no depth test, texture filter)
+  glEnable(GL_TEXTURE_2D);
+  glColor3f(1,1,1);
+  // draw skybox
+  
+  float pWidth = 4
+  float pLength = 4;
+  float pHeight = 4;
+  float px = cameraPos.x - pWidth/2;
+  float py = cameraPos.y - pLength/2;
+  float pz = cameraPos.z - pHeight/2;
+
+
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[0]);//neg_z
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 0); glVertex3f(px,          py,           pz);
+  glTexCoord2f(0, 1); glVertex3f(px,          py + pHeight, pz);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py + pHeight, pz);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py,           pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[2]);//pos_z
+glBegin(GL_QUADS);
+  glTexCoord2f(1, 0); glVertex3f(px,          py,           pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px,          py + pHeight, pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py,           pz + pLength);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[5]);//neg_y
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py, pz);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py, pz + pLength);
+  glTexCoord2f(1, 0); glVertex3f(px,          py, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px,          py, pz);
+glEnd();
+
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[4]);//pos_y
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 1); glVertex3f(px,          py + pHeight, pz);
+  glTexCoord2f(1, 1); glVertex3f(px,          py + pHeight, pz + pLength);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py + pHeight, pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[1]);//pos_x
+glBegin(GL_QUADS);
+  glTexCoord2f(1, 0); glVertex3f(px, py,           pz);
+  glTexCoord2f(0, 0); glVertex3f(px, py,           pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px, py + pHeight, pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px, py + pHeight, pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[3]);//neg_x
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py,           pz);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py,           pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py + pHeight, pz);
+ glEnd();
+
+  // restore matrix and attributes
+  glPopMatrix();
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
+}
+
 void drawCS() {
   glBegin(GL_LINES);
     // red X
@@ -208,6 +306,12 @@ void drawLight() {
 void renderScene() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   // render ray trace result on a quad in front of the camera
+
+  glDisable(GL_LIGHTING);
+  glDisable(GL_DEPTH_TEST);
+  drawSkybox();
+  glEnable(GL_DEPTH_TEST);
+
   if ( raytracedTextureID ) {
     // save matrix and load identities => no transformation, no projection
     glMatrixMode(GL_PROJECTION);
