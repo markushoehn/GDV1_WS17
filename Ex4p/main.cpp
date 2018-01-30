@@ -32,6 +32,24 @@
 
 int main(int argc, char** argv) {
 
+
+  // initialize openGL window
+  glutInit(&argc, argv);
+  glutInitWindowPosition(300,200);
+  glutInitWindowSize(300,300);
+  glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+  glutCreateWindow("OpenGL Raytracer"); 
+  // link functions to certain openGL events
+  glutDisplayFunc(renderScene);
+  glutReshapeFunc(reshape);  
+  glutMouseFunc(mousePressed);
+  glutMotionFunc(mouseMoved);
+  glutKeyboardFunc(keyPressed);
+  glutKeyboardUpFunc(keyReleased);
+  // further initializations
+  initialize();
+  setDefaults();  
+
   // set flag for build dir
   string buildprefix = ".";
 
@@ -52,23 +70,6 @@ int main(int argc, char** argv) {
     skyboxTextureIDs[i] = loadTexture(image);
   }
 
-
-  // initialize openGL window
-  glutInit(&argc, argv);
-  glutInitWindowPosition(300,200);
-  glutInitWindowSize(300,300);
-  glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-  glutCreateWindow("OpenGL Raytracer"); 
-  // link functions to certain openGL events
-  glutDisplayFunc(renderScene);
-  glutReshapeFunc(reshape);  
-  glutMouseFunc(mousePressed);
-  glutMotionFunc(mouseMoved);
-  glutKeyboardFunc(keyPressed);
-  glutKeyboardUpFunc(keyReleased);
-  // further initializations
-  initialize();
-  setDefaults();  
   // load meshes
   // string filename;
   TriangleMesh tm1;
@@ -213,7 +214,7 @@ void drawSkybox() {
   glColor3f(1,1,1);
   // draw skybox
   
-  float pWidth = 4
+  float pWidth = 4;
   float pLength = 4;
   float pHeight = 4;
   float px = cameraPos.x - pWidth/2;
