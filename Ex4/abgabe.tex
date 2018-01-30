@@ -315,7 +315,7 @@ Damit sind sowohl $I_P \neq 0$ und $I_{BP} \neq 0$ als auch $\gamma = \phi$ erf\
 
 
 
-\clearpage
+
 \section{Texturierung (2 Punkte)} %2
 
 \subsection{(1 Punkt)} %2a
@@ -402,11 +402,10 @@ nodes={inner sep=0pt,text width=.5cm,align=center,minimum height=.5cm}]{
 
 \[c_{avg}(i_0,j_0,i_1,j_1) = \frac{\sum_{i=i_{0}}^{i_{1}} \sum_{j=j_{0}}^{j_{1}}  C[i,j]}{(i_{1}-i_{0}+1)(j_{1}-j_{0}+1)}\]
 
-\[c_{avg}(0,1,1,4) = \frac{25 - 0 - 7 + 0}{(1-0+1)(4-1+1)} = 2.125\]
-
+\[c_{avg}(0,1,1,4) = \frac{25 - 0 - 7 + 0}{(1-0+1)(4-1+1)} = 2.125\]\\
 Demnach benötigen wir 2 Zugriffe (1 Zugriff für $C_{sat}[i_{1},j_{1}]$, 1 für $C_{sat}[i_{1},j_{0}-1]$) wenn man $C_{sat}$ verwendet.\\
 Für die normale Berrechnung benötigen wir dagegen 8 Zugriffe (jeweils 1 Zugriff für jeden Grau-Textur-Wert).\\
-Wir sparen dadurch 8 Zugriffe durch die Verwendung von $C_{sat}$.
+Wir sparen damit 6 Zugriffe durch die Verwendung von $C_{sat}$.
 
 
 \section{Perspektivisch korrekte Texturierung (4 Punkte)}
