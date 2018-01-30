@@ -50,17 +50,17 @@ int main(int argc, char** argv) {
   // load meshes
   string filename;
   TriangleMesh tm1;
-  filename = "Models/ballon.off";
+  filename = "../Models/ballon.off";
   tm1.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 20.0f);
   meshes.push_back(tm1);
   TriangleMesh tm2;
-  filename = "Models/delphin.off";
+  filename = "../Models/delphin.off";
   tm2.loadOFF(filename.c_str(), Vec3f(0.6f,0.0f,0.3f), 7.0f);
   meshes.push_back(tm2);
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
   // load textures
   Image* image;
-  filename = "Textures/TEST_GRID.bmp";
+  filename = "../Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
   textureIDs.push_back(loadTexture(image));
   // add object attributes (material, texture, ...)
@@ -348,6 +348,9 @@ void raytrace() {
 int intersectRayObjectsEarliest(const Ray<float> &ray, float &t, float &u, float &v, unsigned int &hitTri) {
   // iterate over all meshes
   unsigned int i_small = -1;
+  float t_small = -1.0f;
+  float u_small = -1.0f;
+  float v_small = -1.0f;
   for (unsigned int i = 0; i < meshes.size(); i++) {
     // optional: check ray versus bounding box first (t must have been initialized!)
     if (rayAABBIntersect(ray, meshes[i].boundingBoxMin, meshes[i].boundingBoxMax, 0.0f, t) == false) continue;
@@ -356,17 +359,18 @@ int intersectRayObjectsEarliest(const Ray<float> &ray, float &t, float &u, float
     vector<Vec3ui>& triangles = meshes[i].getTriangles();
 
     // brute force: find smallest t
-    float t_small = t;
     for (unsigned int j = 0; j < triangles.size(); j++) {
       Vec3f& p0 = vertices[triangles[j][0]];
       Vec3f& p1 = vertices[triangles[j][1]];
       Vec3f& p2 = vertices[triangles[j][2]];
-      int hit = ray.triangleIntersect(&p0.x, &p1.x, &p2.x, u, v, t_small);
+      int hit = ray.triangleIntersect(&p0.x, &p1.x, &p2.x, u_small, v_small, t_small);
       intersectionTests++;
       if (hit == 1 && t_small > 0.0f && t > t_small) {
         t = t_small;
-        hitTri = j;
         i_small = i;
+        hitTri = j;
+        u = u_small;
+        v = v_small;
       }
     }
   }
