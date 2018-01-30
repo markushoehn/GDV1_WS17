@@ -24,6 +24,10 @@ using namespace std;
 // === GLOBAL DATA ===
 // ===================
 
+// skybox texture IDs
+vector<GLuint> skyboxTextureIDs;
+
+
 // camera Information
 Vec3f cameraPos;
 Vec3f cameraDir;
