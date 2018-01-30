@@ -408,6 +408,7 @@ void raytrace() {
       if ((hitMesh = intersectRayObjectsEarliest(ray,t,u,v,hitTri)) != -1) {
         // TODO: calculate color
         // temporary pure white
+
         Vec3f rgb(1.0f, 1.0f, 1.0f);
         pictureRGB[pixel] = rgb;
         hits++;
@@ -450,26 +451,30 @@ void raytrace() {
 
 int intersectRayObjectsEarliest(const Ray<float> &ray, float &t, float &u, float &v, unsigned int &hitTri) {
   // iterate over all meshes
+  unsigned int i_small = -1;
   for (unsigned int i = 0; i < meshes.size(); i++) {
     // optional: check ray versus bounding box first (t must have been initialized!)
     if (rayAABBIntersect(ray, meshes[i].boundingBoxMin, meshes[i].boundingBoxMax, 0.0f, t) == false) continue;
     // get triangle information
     vector<Vec3f>& vertices = meshes[i].getVertices();
     vector<Vec3ui>& triangles = meshes[i].getTriangles();
-    // brute force: iterate over all triangles of the mesh
+
+    // brute force: find smallest t
+    float t_small = t;
     for (unsigned int j = 0; j < triangles.size(); j++) {
       Vec3f& p0 = vertices[triangles[j][0]];
       Vec3f& p1 = vertices[triangles[j][1]];
       Vec3f& p2 = vertices[triangles[j][2]];
-      int hit = ray.triangleIntersect(&p0.x, &p1.x, &p2.x, u, v, t);
+      int hit = ray.triangleIntersect(&p0.x, &p1.x, &p2.x, u, v, t_small);
       intersectionTests++;
-      if (hit == 1 && t > 0.0f) {
+      if (hit == 1 && t_small > 0.0f && t > t_small) {
+        t = t_small;
         hitTri = j;
-        return i;
+        i_small = i;
       }
     }
   }
-  return -1;
+  return i_small;
 }
 
 // Smits’ method: Brian Smits. Efficient bounding box intersection. Ray tracing news, 15(1), 2002.
