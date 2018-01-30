@@ -229,36 +229,37 @@ Im HSV-Raum bleiben Saturation und Value konstant, während der Hue-Wert sich ä
 
 \textbf{Isotropic BRDF}
 
-Ist invariant bezüglich Rotation um die Normale. Kann vielleicht local berrechnet werden?
-Das Isotropische Material (z.B Plastik)
-
+Ist invariant bezüglich Rotation um die Normale. Daher kann jeder Vertex unabhängig berrechnet werden.
+Das Isotropische Material (z.B Plastik) kann lokal berrechnet werden.
 
 \textbf{BRDF}
 
-Reflexioneigenschaften sind unabähngig von der Position. Daher kann BRDF local berrechnet werden.
-Das Homogene Material (z.B gebürstetes Metall) kann auch local berrechnet werden.
+Die Reflexioneigenschaften sind unabähngig von der Position.
+Das Homogene Material (z.B gebürstetes Metall) kann dadurch lokal berrechnet werden.
 
 \textbf{Spatially Varying BRDF}
 
-Verwendet eine 2d Location über dem Object Surface. Kann daher local berrechnet werden.
+Verwendet eine 2d Location über dem Object Surface um Beleuchtung zu berrechnen.
+Dadurch kann jeder Vertex unabähngig berrechnet werden.
+Auch das Inhomogenes Material (z.B Holzmaserung) kann lokal berrechnet werden.
 
 \textbf{BSSRDF}
 
-Licht verlässt die Oberfläche eventuell an anderer Stelle. Daher kann es nicht Local berrechnet werden.
+Das Licht verlässt die Oberfläche eventuell an anderer Stelle.
 Dadurch kann Licht von durchlässigen Materialien an andere abgegeben werden.
-Dadurch kann kein Material mehr local berrechnet werden.
+Materialien die Subsurface Scattering (z.B Haut) verwenden können nicht lokal berrechnet werden.
+Da diese Materialien Licht an andere abgeben könnten, können auch andere Materialien nicht mehr lokal berrechnet werden.
 
 \textbf{Scattering Function}
 
-Abhängig von der Wellenlänge. Wellenlänge nicht mehr diskretisiert, Fluoreszenz. Daher nicht local berrechenbar.
-Wie bei BSSRDF kann kein Material mehr Local berrechnet werden.
+Ist abhängig von der Wellenlänge. Die Wellenlänge ist nicht mehr diskretisiert.
+Dadurch können Lichtdurchlässigkeit erzeugt werden. Fluoreszenz ist daher nicht lokal berrechenbar.
+Wie bei BSSRDF kann kein Material mehr lokal berrechnet werden.
 
 \textbf{allgemeines Reflexionsmodell}
 
-Kann nicht Local berrechnet werden.
-Wie bei BSSRDF kann kein Material mehr Local berrechnet werden.
-
-% TODO: nochmal drüberlesen
+Ist zusätzlich zeitabhängig. Durch die zusätzliche zeitliche Variable können die Vertices nicht local berrechnet werden.
+Phosphoreszenz kann nicht lokal berrechnet werden und wie bei BSSRDF kann kein Material mehr lokal berrechnet werden.
 
 \subsection{(1 Punkt)}%c
 \newcommand{\VecThree}[3]{\begin{pmatrix} #1 \\ #2 \\ #3 \end{pmatrix}}
