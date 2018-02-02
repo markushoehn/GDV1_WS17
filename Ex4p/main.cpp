@@ -300,7 +300,7 @@ void drawLight() {
   glPushMatrix();    
     glTranslatef(lp[0], lp[1], lp[2]);
     glColor3f(1,1,0);    
-    glutSolidSphere(0.2f,16,16);    
+    glutSolidSphere(0.2f,16,16);
   glPopMatrix();  
 }
 
@@ -407,11 +407,19 @@ void raytrace() {
       int hitMesh;
       unsigned int hitTri;
       if ((hitMesh = intersectRayObjectsEarliest(ray,t,u,v,hitTri)) != -1) {
-        // TODO: calculate color
-        // temporary pure white
 
-        Vec3f rgb(1.0f, 1.0f, 1.0f);
-        pictureRGB[pixel] = rgb;
+        Vec3f lightPosition(lightPos.x, lightPos.y, lightPos.z);
+
+        Vec3f ilambdai(0.2f, 0.2f, 0.2f); // itensity of light source
+        float ilambdaa = 0.5f; // ambient intensity
+        Vec3f fd(0.8f, 0.8f, 0.8); // diffuseLight
+        Vec3f fs(0.5f, 0.5f, 0.5f); // specularLight
+
+        Vec3f ka(objects[hitMesh].matAmbient[0], objects[hitMesh].matAmbient[1], objects[hitMesh].matAmbient[2]);
+        Vec3f kd(objects[hitMesh].matDiffuse[0], objects[hitMesh].matDiffuse[1], objects[hitMesh].matDiffuse[2]);
+        Vec3f ks(objects[hitMesh].matSpecular[0], objects[hitMesh].matSpecular[1], objects[hitMesh].matSpecular[2]);
+
+        pictureRGB[pixel] = ilambdaa * ka + ilambdai * (kd * fd + ks * fs);
         hits++;
       }
       // cout "." every 1/50 of all pixels
