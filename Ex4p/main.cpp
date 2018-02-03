@@ -409,6 +409,28 @@ void raytrace() {
       if ((hitMesh = intersectRayObjectsEarliest(ray,t,u,v,hitTri)) != -1) {
 
         Vec3f lightPosition(lightPos.x, lightPos.y, lightPos.z);
+        // get hit position
+        vector<Vec3f>& vertices = meshes[hitMesh].getVertices();
+        vector<Vec3ui>& triangles = meshes[hitMesh].getTriangles();
+        Vec3f p0 = vertices[triangles[hitTri][0]];
+        Vec3f p1 = vertices[triangles[hitTri][1]];
+        Vec3f p2 = vertices[triangles[hitTri][2]];
+        // reconstruction from barycentric coordinates:
+        Vec3f P = p0 + u * p1 + v * p2;
+        // get light vector
+        Vec3f L = lightPos - P / (lightPos - P).length();
+        // get normal vector
+        vector<Vec3f>& normals = meshes[hitMesh].getNormals();
+        Vec3f n0 = normals[triangles[hitTri][0]];
+        Vec3f n1 = normals[triangles[hitTri][1]];
+        Vec3f n2 = normals[triangles[hitTri][2]];
+        // interpolation via barycentric coordinates:
+        Vec3f N = n0 + u * n1 + v * n2;
+        N /= N.length();
+        // get observation vector
+        Vec3f V = cameraPos - P / (cameraPos - P).length();
+        // get halfway vector
+        Vec3f H = (V + L) / (V + L).length();
 
         Vec3f ilambdai(0.2f, 0.2f, 0.2f); // itensity of light source
         float ilambdaa = 0.5f; // ambient intensity
@@ -418,8 +440,9 @@ void raytrace() {
         Vec3f ka(objects[hitMesh].matAmbient[0], objects[hitMesh].matAmbient[1], objects[hitMesh].matAmbient[2]);
         Vec3f kd(objects[hitMesh].matDiffuse[0], objects[hitMesh].matDiffuse[1], objects[hitMesh].matDiffuse[2]);
         Vec3f ks(objects[hitMesh].matSpecular[0], objects[hitMesh].matSpecular[1], objects[hitMesh].matSpecular[2]);
+        float ke = objects[hitMesh].matShininess;
 
-        pictureRGB[pixel] = ilambdaa * ka + ilambdai * (kd * fd + ks * fs);
+        pictureRGB[pixel] = ilambdaa * ka + ilambdai * (kd * fd * (L * N) + ks * fs * pow(H * N, ke));
         hits++;
       }
       // cout "." every 1/50 of all pixels
