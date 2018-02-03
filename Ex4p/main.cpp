@@ -416,7 +416,7 @@ void raytrace() {
         Vec3f p1 = vertices[triangles[hitTri][1]];
         Vec3f p2 = vertices[triangles[hitTri][2]];
         // reconstruction from barycentric coordinates:
-        Vec3f P = p0 + u * p1 + v * p2;
+        Vec3f P = (1-u-v) * p0 + u * p1 + v * p2;
         // get light vector
         Vec3f L = lightPos - P;
         L.normalize();
@@ -426,7 +426,7 @@ void raytrace() {
         Vec3f n1 = normals[triangles[hitTri][1]];
         Vec3f n2 = normals[triangles[hitTri][2]];
         // interpolation via barycentric coordinates:
-        Vec3f N = n0 + u * n1 + v * n2;
+        Vec3f N = (1-u-v) * n0 + u * n1 + v * n2;
         N /= N.length();
         // get observation vector
         Vec3f V = cameraPos - P;
