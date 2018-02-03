@@ -418,7 +418,8 @@ void raytrace() {
         // reconstruction from barycentric coordinates:
         Vec3f P = p0 + u * p1 + v * p2;
         // get light vector
-        Vec3f L = lightPos - P / (lightPos - P).length();
+        Vec3f L = lightPos - P;
+        L.normalize();
         // get normal vector
         vector<Vec3f>& normals = meshes[hitMesh].getNormals();
         Vec3f n0 = normals[triangles[hitTri][0]];
@@ -428,9 +429,11 @@ void raytrace() {
         Vec3f N = n0 + u * n1 + v * n2;
         N /= N.length();
         // get observation vector
-        Vec3f V = cameraPos - P / (cameraPos - P).length();
+        Vec3f V = cameraPos - P;
+        V.normalize();
         // get halfway vector
-        Vec3f H = (V + L) / (V + L).length();
+        Vec3f H = V + L;
+        H.normalize();
 
         Vec3f ilambdai(0.2f, 0.2f, 0.2f); // itensity of light source
         float ilambdaa = 0.5f; // ambient intensity
