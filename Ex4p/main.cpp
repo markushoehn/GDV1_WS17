@@ -470,8 +470,8 @@ void raytrace() {
         // create ray against light source
         float epsilon = 0.0001f;
         Vec3f newPos = P + (epsilon * L);
-        float endP[3]; endP[0]=(float)newPos[0];    endP[1]=(float)newPos[1];    endP[2]=(float)newPos[2]; 
-        float eyeP[3]; eyeP[0]=(float)lightPos[0];  eyeP[1]=(float)lightPos[1];  eyeP[2]=(float)lightPos[2]; 
+        float endP[3]; endP[0]=(float)lightPos[0];    endP[1]=(float)lightPos[1];    endP[2]=(float)lightPos[2];
+        float eyeP[3]; eyeP[0]=(float)newPos[0];      eyeP[1]=(float)newPos[1];      eyeP[2]=(float)newPos[2];
         Ray<float> lightRay(&eyeP[0], &endP[0]);
 
         int s = 0;
@@ -479,6 +479,19 @@ void raytrace() {
         if ((hitMesh = intersectRayObjectsEarliest(lightRay,t,u,v,hitTri)) == -1) {
           s = 1;
         }
+
+        Vec3f R = -V + 2 * (V * N) * N;
+        newPos = P + (epsilon * R);
+        Vec3f recPos = newPos + R * 1000;
+        float endR[3]; endR[0]=(float)recPos[0];  endR[1]=(float)recPos[1];  endR[2]=(float)recPos[2];
+        float eyeR[3]; eyeR[0]=(float)newPos[0];  eyeR[1]=(float)newPos[1];  eyeR[2]=(float)newPos[2];
+        Ray<float> recursiveRay(&eyeR[0], &endR[0]);
+
+        // check if recursiveRay hits light
+        if ((hitMesh = intersectRayObjectsEarliest(recursiveRay,t,u,v,hitTri)) == -1) {
+          // recursive step
+        }
+
 
         // calculate each pixel value
         float redPixel = ilambdaa[0] * ka[0] + s * ilambdai[0] * (kd[0] * fd[0] * (L * N) + ks[0] * fs[0] * pow(H * N, ke));
