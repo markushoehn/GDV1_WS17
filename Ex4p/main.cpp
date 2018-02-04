@@ -32,6 +32,17 @@
 
 int main(int argc, char** argv) {
 
+  // init light
+
+  ambientLight[0] = 0.6f; ambientLight[1] = 0.6f; ambientLight[2] = 0.6f; ambientLight[3] = 1.0f;
+  diffuseLight[0] = 0.8f; diffuseLight[1] = 0.8f; diffuseLight[2] = 0.8; diffuseLight[3] = 1.0f;
+  specularLight[0] = 0.5f; specularLight[1] = 0.5f; specularLight[2] = 0.5f; specularLight[3] = 1.0f;
+
+  //Vec3f ilambdai(0.6f, 0.6f, 0.6f); // itensity of light source
+  //float ilambdaa = 0.6f; // ambient intensity
+  //Vec3f fd(0.8f, 0.8f, 0.8); // diffuseLight
+  //Vec3f fs(0.5f, 0.5f, 0.5f); // specularLight
+
 
   // initialize openGL window
   glutInit(&argc, argv);
@@ -295,7 +306,15 @@ void drawCS() {
 
 void drawLight() {
   GLfloat lp[] = { lightPos.x, lightPos.y, lightPos.z, 1.0f };
+  GLfloat al[] = { ambientLight[0], ambientLight[1], ambientLight[2], 1.0f };
+  GLfloat dl[] = { diffuseLight[0], diffuseLight[1], diffuseLight[2], 1.0f };
+  GLfloat sl[] = { specularLight[0], specularLight[1], specularLight[2], 1.0f };
+  glLightfv(GL_LIGHT0, GL_AMBIENT, al);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, dl);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, sl);
   glLightfv(GL_LIGHT0, GL_POSITION, lp);
+
+
   // draw yellow sphere for light source
   glPushMatrix();    
     glTranslatef(lp[0], lp[1], lp[2]);
@@ -408,7 +427,6 @@ void raytrace() {
       unsigned int hitTri;
       if ((hitMesh = intersectRayObjectsEarliest(ray,t,u,v,hitTri)) != -1) {
 
-        Vec3f lightPosition(lightPos.x, lightPos.y, lightPos.z);
         // get hit position
         vector<Vec3f>& vertices = meshes[hitMesh].getVertices();
         vector<Vec3ui>& triangles = meshes[hitMesh].getTriangles();
@@ -435,17 +453,26 @@ void raytrace() {
         Vec3f H = V + L;
         H.normalize();
 
-        Vec3f ilambdai(0.2f, 0.2f, 0.2f); // itensity of light source
-        float ilambdaa = 0.5f; // ambient intensity
-        Vec3f fd(0.8f, 0.8f, 0.8); // diffuseLight
-        Vec3f fs(0.5f, 0.5f, 0.5f); // specularLight
+        Vec3f ilambdaa(ambientLight[0], ambientLight[1], ambientLight[2]);
+        Vec3f fd(diffuseLight[0], diffuseLight[1], diffuseLight[2]);
+        Vec3f fs(specularLight[0], specularLight[1], specularLight[2]);
+
+        Vec3f ilambdai(0.6f, 0.6f, 0.6f); // itensity of light source
+        //float ilambdaa = 0.6f; // ambient intensity
+        //Vec3f fd(0.8f, 0.8f, 0.8); // diffuseLight
+        //Vec3f fs(0.5f, 0.5f, 0.5f); // specularLight
 
         Vec3f ka(objects[hitMesh].matAmbient[0], objects[hitMesh].matAmbient[1], objects[hitMesh].matAmbient[2]);
         Vec3f kd(objects[hitMesh].matDiffuse[0], objects[hitMesh].matDiffuse[1], objects[hitMesh].matDiffuse[2]);
         Vec3f ks(objects[hitMesh].matSpecular[0], objects[hitMesh].matSpecular[1], objects[hitMesh].matSpecular[2]);
         float ke = objects[hitMesh].matShininess;
 
-        pictureRGB[pixel] = ilambdaa * ka + ilambdai * (kd * fd * (L * N) + ks * fs * pow(H * N, ke));
+        float redPixel = ilambdaa[0] * ka[0] + ilambdai[0] * (kd[0] * fd[0] * (L * N) + ks[0] * fs[0] * pow(H * N, ke));
+        float greenPixel = ilambdaa[1] * ka[1] + ilambdai[1] * (kd[1] * fd[1] * (L * N) + ks[1] * fs[1] * pow(H * N, ke));
+        float bluePixel = ilambdaa[2] * ka[2] + ilambdai[2] * (kd[2] * fd[2] * (L * N) + ks[2] * fs[2] * pow(H * N, ke));
+        Vec3f rgb(redPixel, greenPixel, bluePixel);
+
+        pictureRGB[pixel] = rgb;
         hits++;
       }
       // cout "." every 1/50 of all pixels

@@ -58,6 +58,11 @@ unsigned int drawMode;
 GLuint raytracedTextureID;
 unsigned int intersectionTests;
 
+// light components for opengl and raytracing
+float ambientLight[4];
+float diffuseLight[4];
+float specularLight[4];
+
 // ==============
 // === BASICS ===
 // ==============
