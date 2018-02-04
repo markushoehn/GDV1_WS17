@@ -467,9 +467,23 @@ void raytrace() {
         Vec3f ks(objects[hitMesh].matSpecular[0], objects[hitMesh].matSpecular[1], objects[hitMesh].matSpecular[2]);
         float ke = objects[hitMesh].matShininess;
 
-        float redPixel = ilambdaa[0] * ka[0] + ilambdai[0] * (kd[0] * fd[0] * (L * N) + ks[0] * fs[0] * pow(H * N, ke));
-        float greenPixel = ilambdaa[1] * ka[1] + ilambdai[1] * (kd[1] * fd[1] * (L * N) + ks[1] * fs[1] * pow(H * N, ke));
-        float bluePixel = ilambdaa[2] * ka[2] + ilambdai[2] * (kd[2] * fd[2] * (L * N) + ks[2] * fs[2] * pow(H * N, ke));
+        // create ray against light source
+        float epsilon = 0.0001f;
+        Vec3f newPos = P + (epsilon * L);
+        float endP[3]; endP[0]=(float)newPos[0];    endP[1]=(float)newPos[1];    endP[2]=(float)newPos[2]; 
+        float eyeP[3]; eyeP[0]=(float)lightPos[0];  eyeP[1]=(float)lightPos[1];  eyeP[2]=(float)lightPos[2]; 
+        Ray<float> lightRay(&eyeP[0], &endP[0]);
+
+        int s = 0;
+        // check if lightray hits light
+        if ((hitMesh = intersectRayObjectsEarliest(lightRay,t,u,v,hitTri)) == -1) {
+          s = 1;
+        }
+
+        // calculate each pixel value
+        float redPixel = ilambdaa[0] * ka[0] + s * ilambdai[0] * (kd[0] * fd[0] * (L * N) + ks[0] * fs[0] * pow(H * N, ke));
+        float greenPixel = ilambdaa[1] * ka[1] + s * ilambdai[1] * (kd[1] * fd[1] * (L * N) + ks[1] * fs[1] * pow(H * N, ke));
+        float bluePixel = ilambdaa[2] * ka[2] + s * ilambdai[2] * (kd[2] * fd[2] * (L * N) + ks[2] * fs[2] * pow(H * N, ke));
         Vec3f rgb(redPixel, greenPixel, bluePixel);
 
         pictureRGB[pixel] = rgb;
