@@ -48,6 +48,7 @@ struct SceneObject {
   float matAmbient[4];
   float matDiffuse[4];
   float matSpecular[4];
+  float matReflect[4];
   float matShininess;
   GLuint textureID;
 };
@@ -86,6 +87,8 @@ void drawCS();
 void drawLight();
 
 void renderScene(void);
+
+Vec3f calculateIntensity(Ray<float> ray, unsigned int& hits, int depth, bool verbose);
 
 void raytrace();
 

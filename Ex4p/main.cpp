@@ -110,12 +110,14 @@ int main(int argc, char** argv) {
   so.matAmbient[0]  = 0.2f; so.matAmbient[1]  = 0.1f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
   so.matDiffuse[0]  = 0.6f; so.matDiffuse[1]  = 0.3f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
+  so.matReflect[0]  = 0.0f; so.matReflect[1]  = 0.0f; so.matReflect[2]  = 0.0f; so.matReflect[3]  = 1.0f;
   so.matShininess = 0.8f * 128.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
   so.matAmbient[0]  = 0.1f; so.matAmbient[1]  = 0.2f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
   so.matDiffuse[0]  = 0.3f; so.matDiffuse[1]  = 0.6f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
+  so.matReflect[0]  = 0.0f; so.matReflect[1]  = 0.0f; so.matReflect[2]  = 0.0; so.matReflect[3]  = 1.0f;
   so.matShininess = 0.8f * 128.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
@@ -390,43 +392,15 @@ void renderScene() {
   glutSwapBuffers();
 }
 
-void raytrace() {
-  // initialization
-  GLdouble MV[16];
-  GLdouble PR[16];
-  GLint VP[4];
-  glGetDoublev(GL_MODELVIEW_MATRIX, MV);
-  glGetDoublev(GL_PROJECTION_MATRIX, PR);
-  glGetIntegerv(GL_VIEWPORT, VP);
-  vector<Vec3f> pictureRGB(VP[2]*VP[3]);
-  intersectionTests = 0;
-  unsigned int hits = 0;
-  clock_t clockStart = clock();
-  std::cout << "   10   20   30   40   50   60   70   80   90  100" << endl;
-  std::cout << "====|====|====|====|====|====|====|====|====|====|" << endl;
-  // iterate over all pixel
-  unsigned int pixelCounter = 0;
-  #pragma omp parallel for schedule(dynamic)
-  for (int y = VP[1]; y < VP[1] + VP[3]; y++) {
-    for (int x = VP[0]; x < VP[0] + VP[2]; x++) {
-      // get pixel index for addressing pictureRGB array
-      int pixel = (y-VP[1])*(VP[2]-VP[0]) + x - VP[0];
-      GLdouble end[3];
-      GLdouble eye[3];
-      // convert pixel coordinate to two points on near and far plane in world coordinates
-      gluUnProject(x,y,-1, MV, PR, VP, &eye[0], &eye[1], &eye[2]);
-      gluUnProject(x,y, 1, MV, PR, VP, &end[0], &end[1], &end[2]);
-      // create primary ray
-      float endF[3]; endF[0]=(float)end[0];  endF[1]=(float)end[1];  endF[2]=(float)end[2]; 
-      float eyeF[3]; eyeF[0]=(float)eye[0];  eyeF[1]=(float)eye[1];  eyeF[2]=(float)eye[2]; 
-      Ray<float> ray(&eyeF[0], &endF[0]);
+void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth, bool verbose) {
       float t = 1000.0f;              // ray parameter hit point, initialized with max view length
       float u,v;                      // barycentric coordinates (w = 1-u-v)
       // intersection test
       int hitMesh;
       unsigned int hitTri;
+      if (verbose) std::cout << "test - depth " << depth << std::endl;
       if ((hitMesh = intersectRayObjectsEarliest(ray,t,u,v,hitTri)) != -1) {
-
+        if(verbose) std::cout << "hit" << std::endl;
         // get hit position
         vector<Vec3f>& vertices = meshes[hitMesh].getVertices();
         vector<Vec3ui>& triangles = meshes[hitMesh].getTriangles();
@@ -457,14 +431,12 @@ void raytrace() {
         Vec3f fd(diffuseLight[0], diffuseLight[1], diffuseLight[2]);
         Vec3f fs(specularLight[0], specularLight[1], specularLight[2]);
 
-        Vec3f ilambdai(0.6f, 0.6f, 0.6f); // itensity of light source
-        //float ilambdaa = 0.6f; // ambient intensity
-        //Vec3f fd(0.8f, 0.8f, 0.8); // diffuseLight
-        //Vec3f fs(0.5f, 0.5f, 0.5f); // specularLight
+        Vec3f ilambdai(1.0f, 1.0f, 1.0f); // itensity of light source
 
         Vec3f ka(objects[hitMesh].matAmbient[0], objects[hitMesh].matAmbient[1], objects[hitMesh].matAmbient[2]);
         Vec3f kd(objects[hitMesh].matDiffuse[0], objects[hitMesh].matDiffuse[1], objects[hitMesh].matDiffuse[2]);
         Vec3f ks(objects[hitMesh].matSpecular[0], objects[hitMesh].matSpecular[1], objects[hitMesh].matSpecular[2]);
+        Vec3f kr(objects[hitMesh].matReflect[0], objects[hitMesh].matReflect[1], objects[hitMesh].matReflect[2]);
         float ke = objects[hitMesh].matShininess;
 
         // create ray against light source
@@ -475,33 +447,101 @@ void raytrace() {
         Ray<float> lightRay(&eyeP[0], &endP[0]);
 
         int s = 0;
+        int hitMeshShadow;
+        unsigned int hitTriShadow;
+        float tShadow = 1000.0f;
+        float uShadow, vShadow;
         // check if lightray hits light
-        if ((hitMesh = intersectRayObjectsEarliest(lightRay,t,u,v,hitTri)) == -1) {
+        if ((hitMeshShadow = intersectRayObjectsEarliest(lightRay,tShadow,uShadow,vShadow,hitTriShadow)) == -1) {
           s = 1;
         }
+        if(verbose) std::cout << "light ray: s=" << s << std::endl;
 
-        Vec3f R = -V + 2 * (V * N) * N;
+        Vec3f R = 2 * (V * N) * N - V;
         newPos = P + (epsilon * R);
         Vec3f recPos = newPos + R * 1000;
         float endR[3]; endR[0]=(float)recPos[0];  endR[1]=(float)recPos[1];  endR[2]=(float)recPos[2];
         float eyeR[3]; eyeR[0]=(float)newPos[0];  eyeR[1]=(float)newPos[1];  eyeR[2]=(float)newPos[2];
         Ray<float> recursiveRay(&eyeR[0], &endR[0]);
 
-        // check if recursiveRay hits light
-        if ((hitMesh = intersectRayObjectsEarliest(recursiveRay,t,u,v,hitTri)) == -1) {
-          // recursive step
+        // check if recursiveRay hits other objects
+        Vec3f recI(0.0f, 0.0f, 0.0f);
+        if ((depth > 0)) {
+            if(verbose) std::cout << "---- start recursion" << std::endl;
+            calculateIntensity(recursiveRay, recI, hits, depth-1, verbose);
+            if(verbose) std::cout << "---- end recursion" << std::endl;
         }
-
+        else if(verbose) std::cout << "no further recursion - min depth reached" << std::endl;
+        if(verbose) std::cout << "recursive intensity: " << recI << std::endl;
 
         // calculate each pixel value
-        float redPixel = ilambdaa[0] * ka[0] + s * ilambdai[0] * (kd[0] * fd[0] * (L * N) + ks[0] * fs[0] * pow(H * N, ke));
-        float greenPixel = ilambdaa[1] * ka[1] + s * ilambdai[1] * (kd[1] * fd[1] * (L * N) + ks[1] * fs[1] * pow(H * N, ke));
-        float bluePixel = ilambdaa[2] * ka[2] + s * ilambdai[2] * (kd[2] * fd[2] * (L * N) + ks[2] * fs[2] * pow(H * N, ke));
-        Vec3f rgb(redPixel, greenPixel, bluePixel);
-
-        pictureRGB[pixel] = rgb;
+        if(verbose && !depth) {
+            std::cout << "parameters recursive calls:" << std::endl;
+            std::cout << "hitMesh: " << hitMesh << std::endl;
+            std::cout << "hitTri: " << hitTri << std::endl;
+            std::cout << "fs: " << fs << std::endl;
+            std::cout << "ilambdai: " << ilambdai << std::endl;
+            std::cout << "ks: " << ks << std::endl;
+            std::cout << "ke: " << ke << std::endl;
+            std::cout << "Halfway vector: " << H << std::endl;
+            std::cout << "Normal vector: " << N << std::endl;
+            std::cout << "H * N: " << H * N << std::endl;
+            std::cout << "pow(H * N, ke): " << pow(H * N, ke) << std::endl;
+        }
+        if(verbose && !depth) {
+            std::cout << "ambient: " << ilambdaa[0] * ka[0] << std::endl;
+            std::cout << "diffuse: " << s * ilambdai[0] * kd[0] * fd[0] * (L * N) << std::endl;
+            std::cout << "specular: " << s * ilambdai[0] * ks[0] * fs[0] * pow(H * N, ke) << std::endl;
+            std::cout << "reflected: " << kr[0] * recI[0] << std::endl;
+        }
+        float redPixel = (ilambdaa[0] * ka[0]) + (s * ilambdai[0] * (kd[0] * fd[0] * (L * N) + ks[0] * fs[0] * pow(H * N, ke))) + (kr[0] * recI[0]);
+        float greenPixel = (ilambdaa[1] * ka[1]) + (s * ilambdai[1] * (kd[1] * fd[1] * (L * N) + ks[1] * fs[1] * pow(H * N, ke))) + (kr[1] * recI[1]);
+        float bluePixel = (ilambdaa[2] * ka[2]) + (s * ilambdai[2] * (kd[2] * fd[2] * (L * N) + ks[2] * fs[2] * pow(H * N, ke))) + (kr[2] * recI[2]);
+        I[0] = redPixel;
+        I[1] = greenPixel;
+        I[2] = bluePixel;
+        if(verbose) std::cout << "overall intensity: " << I << std::endl;
         hits++;
       }
+      else if (verbose)
+          std::cout << "no hit" << std::endl;
+}
+
+void raytrace() {
+  // initialization
+  GLdouble MV[16];
+  GLdouble PR[16];
+  GLint VP[4];
+  glGetDoublev(GL_MODELVIEW_MATRIX, MV);
+  glGetDoublev(GL_PROJECTION_MATRIX, PR);
+  glGetIntegerv(GL_VIEWPORT, VP);
+  vector<Vec3f> pictureRGB(VP[2]*VP[3]);
+  intersectionTests = 0;
+  unsigned int hits = 0;
+  clock_t clockStart = clock();
+  std::cout << "   10   20   30   40   50   60   70   80   90  100" << endl;
+  std::cout << "====|====|====|====|====|====|====|====|====|====|" << endl;
+  // iterate over all pixel
+  unsigned int pixelCounter = 0;
+  #pragma omp parallel for schedule(dynamic)
+  for (int y = VP[1]; y < VP[1] + VP[3]; y++) {
+    for (int x = VP[0]; x < VP[0] + VP[2]; x++) {
+      // get pixel index for addressing pictureRGB array
+      int pixel = (y-VP[1])*(VP[2]-VP[0]) + x - VP[0];
+      GLdouble end[3];
+      GLdouble eye[3];
+      // convert pixel coordinate to two points on near and far plane in world coordinates
+      gluUnProject(x,y,-1, MV, PR, VP, &eye[0], &eye[1], &eye[2]);
+      gluUnProject(x,y, 1, MV, PR, VP, &end[0], &end[1], &end[2]);
+      // create primary ray
+      float endF[3]; endF[0]=(float)end[0];  endF[1]=(float)end[1];  endF[2]=(float)end[2]; 
+      float eyeF[3]; eyeF[0]=(float)eye[0];  eyeF[1]=(float)eye[1];  eyeF[2]=(float)eye[2]; 
+      Ray<float> ray(&eyeF[0], &endF[0]);
+      pictureRGB[pixel] = Vec3f(0.0f, 0.0f, 0.0f);
+      if ((y == (VP[1] + VP[3]) / 2) && (x == (VP[0] + VP[2]) / 2))
+        calculateIntensity(ray, pictureRGB[pixel], hits, 1, true);
+      else
+        calculateIntensity(ray, pictureRGB[pixel], hits, 1, false);
       // cout "." every 1/50 of all pixels
       #pragma omp flush (pixelCounter)
       pixelCounter++;
