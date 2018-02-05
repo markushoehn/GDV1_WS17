@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
   setDefaults();  
 
   // set flag for build dir
-  string buildprefix = ".";
+  string buildprefix = "..";
 
   skyboxTextureIDs.resize(6,0);
   textureIDs.resize(2,0);
@@ -113,6 +113,7 @@ int main(int argc, char** argv) {
   so.matReflect[0]  = 0.2f; so.matReflect[1]  = 0.2f; so.matReflect[2]  = 0.2f; so.matReflect[3]  = 1.0f;
   so.matOpacity[0]  = 0.0f; so.matOpacity[1]  = 0.0f; so.matOpacity[2]  = 0.0f; so.matOpacity[3]  = 1.0f;
   so.matShininess = 0.8f * 128.0f;
+  so.matRefract = 1.5f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
   so.matAmbient[0]  = 0.1f; so.matAmbient[1]  = 0.2f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
@@ -121,6 +122,7 @@ int main(int argc, char** argv) {
   so.matReflect[0]  = 0.5f; so.matReflect[1]  = 0.5f; so.matReflect[2]  = 0.5f; so.matReflect[3]  = 1.0f;
   so.matOpacity[0]  = 0.4f; so.matOpacity[1]  = 0.4f; so.matOpacity[2]  = 0.4f; so.matOpacity[3]  = 0.4f; 
   so.matShininess = 0.8f * 128.0f;
+  so.matRefract = 5.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
   // activate main loop
@@ -441,6 +443,7 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
         Vec3f kr(objects[hitMesh].matReflect[0], objects[hitMesh].matReflect[1], objects[hitMesh].matReflect[2]);
         Vec3f kt(objects[hitMesh].matOpacity[0], objects[hitMesh].matOpacity[1], objects[hitMesh].matOpacity[2]); 
         float ke = objects[hitMesh].matShininess;
+        float n = objects[hitMesh].matRefract;
 
         // create ray against light source
         float epsilon = 0.0001f;
@@ -475,8 +478,22 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
         if(verbose) std::cout << "recursive intensity: " << recI << std::endl;
 
         // create transparent ray, through the object
-        newPos = P + (V * epsilon * (-1));
-        Vec3f transPos = newPos + V * 1000 * (-1);
+        Vec3f V_refract;
+        if((N * V) > 0) {
+            Vec3f sin = V - N;
+            sin = sin / n;
+            V_refract = sin + N;
+            V_refract.normalize();
+            V_refract *= -1;
+        } else {
+            Vec3f V_inv = V * -1;
+            Vec3f sin = V_inv - N;
+            sin *= n;
+            V_refract = sin + N;
+            V_refract.normalize();
+        }
+        newPos = P + (V_refract * epsilon);
+        Vec3f transPos = newPos + (V_refract * 1000);
         float endT[3]; endT[0]=(float)transPos[0];  endT[1]=(float)transPos[1];  endT[2]=(float)transPos[2];
         float eyeT[3]; eyeT[0]=(float)newPos[0];    eyeT[1]=(float)newPos[1];    eyeT[2]=(float)newPos[2];
 

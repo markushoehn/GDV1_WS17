@@ -51,6 +51,7 @@ struct SceneObject {
   float matReflect[4];
   float matOpacity[4];
   float matShininess;
+  float matRefract;
   GLuint textureID;
 };
 vector<SceneObject> objects;
