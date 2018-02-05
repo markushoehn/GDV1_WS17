@@ -33,16 +33,9 @@
 int main(int argc, char** argv) {
 
   // init light
-
   ambientLight[0] = 0.6f; ambientLight[1] = 0.6f; ambientLight[2] = 0.6f; ambientLight[3] = 1.0f;
   diffuseLight[0] = 0.8f; diffuseLight[1] = 0.8f; diffuseLight[2] = 0.8; diffuseLight[3] = 1.0f;
   specularLight[0] = 0.5f; specularLight[1] = 0.5f; specularLight[2] = 0.5f; specularLight[3] = 1.0f;
-
-  //Vec3f ilambdai(0.6f, 0.6f, 0.6f); // itensity of light source
-  //float ilambdaa = 0.6f; // ambient intensity
-  //Vec3f fd(0.8f, 0.8f, 0.8); // diffuseLight
-  //Vec3f fs(0.5f, 0.5f, 0.5f); // specularLight
-
 
   // initialize openGL window
   glutInit(&argc, argv);
