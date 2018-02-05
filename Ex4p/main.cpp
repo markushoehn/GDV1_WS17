@@ -111,14 +111,14 @@ int main(int argc, char** argv) {
   so.matDiffuse[0]  = 0.6f; so.matDiffuse[1]  = 0.3f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
   so.matReflect[0]  = 0.2f; so.matReflect[1]  = 0.2f; so.matReflect[2]  = 0.2f; so.matReflect[3]  = 1.0f;
-  so.matShininess = 100.0f;//0.8f * 128.0f;
+  so.matShininess = 0.8f * 128.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
   so.matAmbient[0]  = 0.1f; so.matAmbient[1]  = 0.2f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
   so.matDiffuse[0]  = 0.3f; so.matDiffuse[1]  = 0.6f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
   so.matReflect[0]  = 0.5f; so.matReflect[1]  = 0.5f; so.matReflect[2]  = 0.5f; so.matReflect[3]  = 1.0f;
-  so.matShininess = 100.0f;//0.8f * 128.0f;
+  so.matShininess = 0.8f * 128.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
   // activate main loop
@@ -421,7 +421,7 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
         Vec3f N = (1-u-v) * n0 + u * n1 + v * n2;
         N /= N.length();
         // get observation vector
-        Vec3f V = cameraPos - P;
+        Vec3f V = ray.o - P;
         V.normalize();
         // get halfway vector
         Vec3f H = V + L;
@@ -483,8 +483,11 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
             std::cout << "ilambdai: " << ilambdai << std::endl;
             std::cout << "ks: " << ks << std::endl;
             std::cout << "ke: " << ke << std::endl;
-            std::cout << "Halfway vector: " << H << std::endl;
             std::cout << "Normal vector: " << N << std::endl;
+            std::cout << "Light vector: " << L << std::endl;
+            std::cout << "N * L: " << N * L << std::endl;
+            std::cout << "Observation vector: " << V << std::endl;
+            std::cout << "Halfway vector: " << H << std::endl;
             std::cout << "H * N: " << H * N << std::endl;
             std::cout << "pow(H * N, ke): " << pow(H * N, ke) << std::endl;
             std::cout << "ambient: " << ilambdaa[0] * ka[0] << std::endl;
@@ -492,9 +495,11 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
             std::cout << "specular: " << s * ilambdai[0] * ks[0] * fs[0] * pow(H * N, ke) << std::endl;
             std::cout << "reflected: " << kr[0] * recI[0] << std::endl;
         }
-        float redPixel = (ilambdaa[0] * ka[0]) + (s * ilambdai[0] * (kd[0] * fd[0] * (L * N) + ks[0] * fs[0] * pow(H * N, ke))) + (kr[0] * recI[0]);
-        float greenPixel = (ilambdaa[1] * ka[1]) + (s * ilambdai[1] * (kd[1] * fd[1] * (L * N) + ks[1] * fs[1] * pow(H * N, ke))) + (kr[1] * recI[1]);
-        float bluePixel = (ilambdaa[2] * ka[2]) + (s * ilambdai[2] * (kd[2] * fd[2] * (L * N) + ks[2] * fs[2] * pow(H * N, ke))) + (kr[2] * recI[2]);
+        float NH = max(N * H, 0.0f);
+        float NL = max(N * L, 0.0f);
+        float redPixel = (ilambdaa[0] * ka[0]) + (s * ilambdai[0] * (kd[0] * fd[0] * NL + ks[0] * fs[0] * pow(NH, ke))) + (kr[0] * recI[0]);
+        float greenPixel = (ilambdaa[1] * ka[1]) + (s * ilambdai[1] * (kd[1] * fd[1] * NL + ks[1] * fs[1] * pow(NH, ke))) + (kr[1] * recI[1]);
+        float bluePixel = (ilambdaa[2] * ka[2]) + (s * ilambdai[2] * (kd[2] * fd[2] * NL + ks[2] * fs[2] * pow(NH, ke))) + (kr[2] * recI[2]);
         I[0] = redPixel;
         I[1] = greenPixel;
         I[2] = bluePixel;
