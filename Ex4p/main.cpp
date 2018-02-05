@@ -89,21 +89,22 @@ int main(int argc, char** argv) {
   meshes.push_back(tm1);
   TriangleMesh tm2;
   filename = buildprefix + "/Models/delphin.off";
-  tm2.loadOFF(filename.c_str(), Vec3f(0.6f,0.0f,0.3f), 7.0f);
-  meshes.push_back(tm2);
+  int ycount = 2;
+  int xcount = 2;
+  for (int i = 1; i < 1+xcount; ++i)
+  {
+    for (int j = 1; j < 1+ycount; ++j)
+    {
+      tm2.loadOFF(filename.c_str(), Vec3f(0.6f+1.0f*i,0.0f,0.3f+1.0f*j), 7.0f);
+      meshes.push_back(tm2);
+    }
+  }
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
   
-  // load textures
-  // Image* image;
-  // filename = "Textures/TEST_GRID.bmp";
-  // image = loadBMP(filename.c_str());
-  // textureIDs.push_back(loadTexture(image));
-
   filename = buildprefix + "/Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
   textureIDs[0] = loadTexture(image);
   textureIDs[1] = skyboxTextureIDs[0];
-
 
   // add object attributes (material, texture, ...)
   SceneObject so;
@@ -113,18 +114,31 @@ int main(int argc, char** argv) {
   so.matReflect[0]  = 0.2f; so.matReflect[1]  = 0.2f; so.matReflect[2]  = 0.2f; so.matReflect[3]  = 1.0f;
   so.matOpacity[0]  = 0.0f; so.matOpacity[1]  = 0.0f; so.matOpacity[2]  = 0.0f; so.matOpacity[3]  = 1.0f;
   so.matShininess = 0.8f * 128.0f;
-  so.matRefract = 1.5f;
-  so.textureID = textureIDs[0];
-  objects.push_back(so);
-  so.matAmbient[0]  = 0.1f; so.matAmbient[1]  = 0.2f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
-  so.matDiffuse[0]  = 0.3f; so.matDiffuse[1]  = 0.6f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
-  so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
-  so.matReflect[0]  = 0.5f; so.matReflect[1]  = 0.5f; so.matReflect[2]  = 0.5f; so.matReflect[3]  = 1.0f;
-  so.matOpacity[0]  = 0.4f; so.matOpacity[1]  = 0.4f; so.matOpacity[2]  = 0.4f; so.matOpacity[3]  = 0.4f; 
-  so.matShininess = 0.8f * 128.0f;
   so.matRefract = 5.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
+
+  for (int i = 0; i < xcount*ycount; ++i)
+  {
+    so.matAmbient[0]  = 0.1f; so.matAmbient[1]  = 0.2f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
+    so.matDiffuse[0]  = 0.3f; so.matDiffuse[1]  = 0.6f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
+    so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
+    if(i == 1) {
+        so.matReflect[0]  = 0.5f; so.matReflect[1]  = 0.5f; so.matReflect[2]  = 0.5f; so.matReflect[3]  = 1.0f;
+    } else {
+        so.matReflect[0]  = 0.0f; so.matReflect[1]  = 0.0f; so.matReflect[2]  = 0.0f; so.matReflect[3]  = 1.0f;
+    }
+    if(i == 2) {
+        so.matOpacity[0]  = 0.5f; so.matOpacity[1]  = 0.5f; so.matOpacity[2]  = 0.5f; so.matOpacity[3]  = 1.0f;
+    } else {
+        so.matOpacity[0]  = 0.0f; so.matOpacity[1]  = 0.0f; so.matOpacity[2]  = 0.0f; so.matOpacity[3]  = 1.0f;
+    }
+    so.matShininess = 0.8f * 128.0f;
+    so.matRefract = 1.5f;
+    so.textureID = textureIDs[0];
+    objects.push_back(so);
+  }
+
   // activate main loop
   coutHelp();
   glutTimerFunc(10, processTimedEvent, clock());
