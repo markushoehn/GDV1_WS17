@@ -347,10 +347,6 @@ void renderScene() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   // render ray trace result on a quad in front of the camera
 
-  glDisable(GL_LIGHTING);
-  glDisable(GL_DEPTH_TEST);
-  drawSkybox();
-  glEnable(GL_DEPTH_TEST);
 
   if ( raytracedTextureID ) {
     // save matrix and load identities => no transformation, no projection
@@ -389,6 +385,9 @@ void renderScene() {
               0.0,            1.0,            0.0);           // Up-direction  
     // draw coordinate system without lighting
     glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    drawSkybox();
+    glEnable(GL_DEPTH_TEST);
     drawCS();
     // draw sphere for light still without lighting
     drawLight();
