@@ -111,6 +111,7 @@ int main(int argc, char** argv) {
   so.matDiffuse[0]  = 0.6f; so.matDiffuse[1]  = 0.3f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
   so.matReflect[0]  = 0.2f; so.matReflect[1]  = 0.2f; so.matReflect[2]  = 0.2f; so.matReflect[3]  = 1.0f;
+  so.matOpacity[0]  = 0.0f; so.matOpacity[1]  = 0.0f; so.matOpacity[2]  = 0.0f; so.matOpacity[3]  = 1.0f;
   so.matShininess = 0.8f * 128.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
@@ -118,6 +119,7 @@ int main(int argc, char** argv) {
   so.matDiffuse[0]  = 0.3f; so.matDiffuse[1]  = 0.6f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
   so.matReflect[0]  = 0.5f; so.matReflect[1]  = 0.5f; so.matReflect[2]  = 0.5f; so.matReflect[3]  = 1.0f;
+  so.matOpacity[0]  = 0.4f; so.matOpacity[1]  = 0.4f; so.matOpacity[2]  = 0.4f; so.matOpacity[3]  = 0.4f; 
   so.matShininess = 0.8f * 128.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
@@ -437,6 +439,7 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
         Vec3f kd(objects[hitMesh].matDiffuse[0], objects[hitMesh].matDiffuse[1], objects[hitMesh].matDiffuse[2]);
         Vec3f ks(objects[hitMesh].matSpecular[0], objects[hitMesh].matSpecular[1], objects[hitMesh].matSpecular[2]);
         Vec3f kr(objects[hitMesh].matReflect[0], objects[hitMesh].matReflect[1], objects[hitMesh].matReflect[2]);
+        Vec3f kt(objects[hitMesh].matOpacity[0], objects[hitMesh].matOpacity[1], objects[hitMesh].matOpacity[2]); 
         float ke = objects[hitMesh].matShininess;
 
         // create ray against light source
@@ -447,16 +450,13 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
         Ray<float> lightRay(&eyeP[0], &endP[0]);
 
         int s = 0;
-        int hitMeshShadow;
-        unsigned int hitTriShadow;
-        float tShadow = 1000.0f;
-        float uShadow, vShadow;
         // check if lightray hits light
-        if ((hitMeshShadow = intersectRayObjectsEarliest(lightRay,tShadow,uShadow,vShadow,hitTriShadow)) == -1) {
+        if ((hitMesh = intersectRayObjectsEarliest(lightRay,t,u,v,hitTri)) == -1) {
           s = 1;
         }
         if(verbose) std::cout << "light ray: s=" << s << std::endl;
 
+        // create recursive ray, in ideally reflected direction
         Vec3f R = 2 * (V * N) * N - V;
         newPos = P + (epsilon * R);
         Vec3f recPos = newPos + R * 1000;
@@ -473,6 +473,22 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
         }
         else if(verbose) std::cout << std::endl << "no further recursion - min depth reached" << std::endl;
         if(verbose) std::cout << "recursive intensity: " << recI << std::endl;
+
+        // create transparent ray, through the object
+        newPos = P + (V * epsilon * (-1));
+        Vec3f transPos = newPos + V * 1000 * (-1);
+        float endT[3]; endT[0]=(float)transPos[0];  endT[1]=(float)transPos[1];  endT[2]=(float)transPos[2];
+        float eyeT[3]; eyeT[0]=(float)newPos[0];    eyeT[1]=(float)newPos[1];    eyeT[2]=(float)newPos[2];
+
+        // check if transparent ray hits other objects
+        Vec3f transI(0.0f, 0.0f, 0.0f);
+        Ray<float> transparentRay(&eyeT[0], &endT[0]);
+        if (depth > 0) {
+            if(verbose) std::cout << "---- start transparency recursion";
+            calculateIntensity(transparentRay, transI, hits, depth-1, verbose);
+            if(verbose) std::cout << "---- end transparency recursion" << std::endl;
+        } else if(verbose) std::cout << "no further transparency recursion - min depth reached" << std::endl;
+        if(verbose) std::cout << "transparent intensity: " << transI << std::endl;
 
         // calculate each pixel value
         if(verbose && !depth) {
@@ -497,9 +513,9 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
         }
         float NH = max(N * H, 0.0f);
         float NL = max(N * L, 0.0f);
-        float redPixel = (ilambdaa[0] * ka[0]) + (s * ilambdai[0] * (kd[0] * fd[0] * NL + ks[0] * fs[0] * pow(NH, ke))) + (kr[0] * recI[0]);
-        float greenPixel = (ilambdaa[1] * ka[1]) + (s * ilambdai[1] * (kd[1] * fd[1] * NL + ks[1] * fs[1] * pow(NH, ke))) + (kr[1] * recI[1]);
-        float bluePixel = (ilambdaa[2] * ka[2]) + (s * ilambdai[2] * (kd[2] * fd[2] * NL + ks[2] * fs[2] * pow(NH, ke))) + (kr[2] * recI[2]);
+        float redPixel = (ilambdaa[0] * ka[0]) + (s * ilambdai[0] * (kd[0] * fd[0] * NL + ks[0] * fs[0] * pow(NH, ke))) + (kr[0] * recI[0]) + (kt[0] * transI[0]);
+        float greenPixel = (ilambdaa[1] * ka[1]) + (s * ilambdai[1] * (kd[1] * fd[1] * NL + ks[1] * fs[1] * pow(NH, ke))) + (kr[1] * recI[1]) + (kt[1] * transI[1]);
+        float bluePixel = (ilambdaa[2] * ka[2]) + (s * ilambdai[2] * (kd[2] * fd[2] * NL + ks[2] * fs[2] * pow(NH, ke))) + (kr[2] * recI[2]) + (kt[2] * transI[2]);
         I[0] = redPixel;
         I[1] = greenPixel;
         I[2] = bluePixel;
