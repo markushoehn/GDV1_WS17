@@ -110,15 +110,15 @@ int main(int argc, char** argv) {
   so.matAmbient[0]  = 0.2f; so.matAmbient[1]  = 0.1f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
   so.matDiffuse[0]  = 0.6f; so.matDiffuse[1]  = 0.3f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
-  so.matReflect[0]  = 0.0f; so.matReflect[1]  = 0.0f; so.matReflect[2]  = 0.0f; so.matReflect[3]  = 1.0f;
-  so.matShininess = 0.8f * 128.0f;
+  so.matReflect[0]  = 0.2f; so.matReflect[1]  = 0.2f; so.matReflect[2]  = 0.2f; so.matReflect[3]  = 1.0f;
+  so.matShininess = 100.0f;//0.8f * 128.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
   so.matAmbient[0]  = 0.1f; so.matAmbient[1]  = 0.2f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
   so.matDiffuse[0]  = 0.3f; so.matDiffuse[1]  = 0.6f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
-  so.matReflect[0]  = 0.0f; so.matReflect[1]  = 0.0f; so.matReflect[2]  = 0.0; so.matReflect[3]  = 1.0f;
-  so.matShininess = 0.8f * 128.0f;
+  so.matReflect[0]  = 0.5f; so.matReflect[1]  = 0.5f; so.matReflect[2]  = 0.5f; so.matReflect[3]  = 1.0f;
+  so.matShininess = 100.0f;//0.8f * 128.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
   // activate main loop
@@ -398,7 +398,7 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
       // intersection test
       int hitMesh;
       unsigned int hitTri;
-      if (verbose) std::cout << "test - depth " << depth << std::endl;
+      if (verbose) std::cout << std::endl << "test - depth " << depth << std::endl;
       if ((hitMesh = intersectRayObjectsEarliest(ray,t,u,v,hitTri)) != -1) {
         if(verbose) std::cout << "hit" << std::endl;
         // get hit position
@@ -467,11 +467,11 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
         // check if recursiveRay hits other objects
         Vec3f recI(0.0f, 0.0f, 0.0f);
         if ((depth > 0)) {
-            if(verbose) std::cout << "---- start recursion" << std::endl;
+            if(verbose) std::cout << "---- start recursion";
             calculateIntensity(recursiveRay, recI, hits, depth-1, verbose);
             if(verbose) std::cout << "---- end recursion" << std::endl;
         }
-        else if(verbose) std::cout << "no further recursion - min depth reached" << std::endl;
+        else if(verbose) std::cout << std::endl << "no further recursion - min depth reached" << std::endl;
         if(verbose) std::cout << "recursive intensity: " << recI << std::endl;
 
         // calculate each pixel value
@@ -487,8 +487,6 @@ void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth,
             std::cout << "Normal vector: " << N << std::endl;
             std::cout << "H * N: " << H * N << std::endl;
             std::cout << "pow(H * N, ke): " << pow(H * N, ke) << std::endl;
-        }
-        if(verbose && !depth) {
             std::cout << "ambient: " << ilambdaa[0] * ka[0] << std::endl;
             std::cout << "diffuse: " << s * ilambdai[0] * kd[0] * fd[0] * (L * N) << std::endl;
             std::cout << "specular: " << s * ilambdai[0] * ks[0] * fs[0] * pow(H * N, ke) << std::endl;
@@ -538,10 +536,7 @@ void raytrace() {
       float eyeF[3]; eyeF[0]=(float)eye[0];  eyeF[1]=(float)eye[1];  eyeF[2]=(float)eye[2]; 
       Ray<float> ray(&eyeF[0], &endF[0]);
       pictureRGB[pixel] = Vec3f(0.0f, 0.0f, 0.0f);
-      if ((y == (VP[1] + VP[3]) / 2) && (x == (VP[0] + VP[2]) / 2))
-        calculateIntensity(ray, pictureRGB[pixel], hits, 1, true);
-      else
-        calculateIntensity(ray, pictureRGB[pixel], hits, 1, false);
+      calculateIntensity(ray, pictureRGB[pixel], hits, 3, false);
       // cout "." every 1/50 of all pixels
       #pragma omp flush (pixelCounter)
       pixelCounter++;
