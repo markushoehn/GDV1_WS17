@@ -31,6 +31,12 @@
 // ==============
 
 int main(int argc, char** argv) {
+
+  // init light
+  ambientLight[0] = 0.6f; ambientLight[1] = 0.6f; ambientLight[2] = 0.6f; ambientLight[3] = 1.0f;
+  diffuseLight[0] = 0.8f; diffuseLight[1] = 0.8f; diffuseLight[2] = 0.8; diffuseLight[3] = 1.0f;
+  specularLight[0] = 0.5f; specularLight[1] = 0.5f; specularLight[2] = 0.5f; specularLight[3] = 1.0f;
+
   // initialize openGL window
   glutInit(&argc, argv);
   glutInitWindowPosition(300,200);
@@ -47,36 +53,85 @@ int main(int argc, char** argv) {
   // further initializations
   initialize();
   setDefaults();  
+
+  // set flag for build dir
+  string buildprefix = "..";
+
+  skyboxTextureIDs.resize(6,0);
+  textureIDs.resize(2,0);
+
+  // load sky box-
+  string names [] = {"neg_z.bmp", "pos_x.bmp", "pos_z.bmp", "neg_x.bmp", "pos_y.bmp", "neg_y.bmp"};
+  string sbox = "skybox", filename = "";
+  Image * image;
+  for(int i = 0; i < 6; ++i)
+  {
+    filename = buildprefix + "/Textures/" + sbox + "/" +names[i];
+
+    std::cout << filename << std::endl;
+
+    image = loadBMP(filename.c_str());
+    skyboxTextureIDs[i] = loadTexture(image);
+  }
+
   // load meshes
-  string filename;
+  // string filename;
   TriangleMesh tm1;
-  filename = "Models/ballon.off";
+  filename = buildprefix + "/Models/ballon.off";
   tm1.loadOFF(filename.c_str(), Vec3f(0.0f,0.0f,0.0f), 20.0f);
   meshes.push_back(tm1);
   TriangleMesh tm2;
-  filename = "Models/delphin.off";
-  tm2.loadOFF(filename.c_str(), Vec3f(0.6f,0.0f,0.3f), 7.0f);
-  meshes.push_back(tm2);
+  filename = buildprefix + "/Models/delphin.off";
+  int ycount = 2;
+  int xcount = 2;
+  for (int i = 1; i < 1+xcount; ++i)
+  {
+    for (int j = 1; j < 1+ycount; ++j)
+    {
+      tm2.loadOFF(filename.c_str(), Vec3f(0.6f+1.0f*i,0.0f,0.3f+1.0f*j), 7.0f);
+      meshes.push_back(tm2);
+    }
+  }
   for (unsigned int i = 0; i < meshes.size(); i++) meshes[i].coutData();
-  // load textures
-  Image* image;
-  filename = "Textures/TEST_GRID.bmp";
+  
+  filename = buildprefix + "/Textures/TEST_GRID.bmp";
   image = loadBMP(filename.c_str());
-  textureIDs.push_back(loadTexture(image));
+  textureIDs[0] = loadTexture(image);
+  textureIDs[1] = skyboxTextureIDs[0];
+
   // add object attributes (material, texture, ...)
   SceneObject so;
   so.matAmbient[0]  = 0.2f; so.matAmbient[1]  = 0.1f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
   so.matDiffuse[0]  = 0.6f; so.matDiffuse[1]  = 0.3f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
   so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
+  so.matReflect[0]  = 0.2f; so.matReflect[1]  = 0.2f; so.matReflect[2]  = 0.2f; so.matReflect[3]  = 1.0f;
+  so.matOpacity[0]  = 0.0f; so.matOpacity[1]  = 0.0f; so.matOpacity[2]  = 0.0f; so.matOpacity[3]  = 1.0f;
   so.matShininess = 0.8f * 128.0f;
+  so.matRefract = 5.0f;
   so.textureID = textureIDs[0];
   objects.push_back(so);
-  so.matAmbient[0]  = 0.1f; so.matAmbient[1]  = 0.2f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
-  so.matDiffuse[0]  = 0.3f; so.matDiffuse[1]  = 0.6f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
-  so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
-  so.matShininess = 0.8f * 128.0f;
-  so.textureID = textureIDs[0];
-  objects.push_back(so);
+
+  for (int i = 0; i < xcount*ycount; ++i)
+  {
+    so.matAmbient[0]  = 0.1f; so.matAmbient[1]  = 0.2f; so.matAmbient[2]  = 0.1f; so.matAmbient[3]  = 1.0f;
+    so.matDiffuse[0]  = 0.3f; so.matDiffuse[1]  = 0.6f; so.matDiffuse[2]  = 0.3f; so.matDiffuse[3]  = 1.0f;
+    so.matSpecular[0] = 0.4f; so.matSpecular[1] = 0.4f; so.matSpecular[2] = 0.4f; so.matSpecular[3] = 1.0f;
+    if(i == 1) {
+        so.matReflect[0]  = 0.5f; so.matReflect[1]  = 0.5f; so.matReflect[2]  = 0.5f; so.matReflect[3]  = 1.0f;
+    } else {
+        so.matReflect[0]  = 0.0f; so.matReflect[1]  = 0.0f; so.matReflect[2]  = 0.0f; so.matReflect[3]  = 1.0f;
+    }
+    if(i == 2) {
+        so.matOpacity[0]  = 0.5f; so.matOpacity[1]  = 0.5f; so.matOpacity[2]  = 0.5f; so.matOpacity[3]  = 1.0f;
+    } else {
+        so.matOpacity[0]  = 0.0f; so.matOpacity[1]  = 0.0f; so.matOpacity[2]  = 0.0f; so.matOpacity[3]  = 1.0f;
+    }
+    so.matShininess = 0.8f * 128.0f;
+    so.matRefract = 1.5f;
+    so.textureID = textureIDs[0];
+    objects.push_back(so);
+  }
+
   // activate main loop
   coutHelp();
   glutTimerFunc(10, processTimedEvent, clock());
@@ -177,6 +232,74 @@ void processTimedEvent(const int x) {
 // === RENDERING ===
 // =================
 
+void drawSkybox() {
+  // prepare (no lighting, no depth test, texture filter)
+  glEnable(GL_TEXTURE_2D);
+  glColor3f(1,1,1);
+  // draw skybox
+  
+  float pWidth = 4;
+  float pLength = 4;
+  float pHeight = 4;
+  float px = cameraPos.x - pWidth/2;
+  float py = cameraPos.y - pLength/2;
+  float pz = cameraPos.z - pHeight/2;
+
+
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[0]);//neg_z
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 0); glVertex3f(px,          py,           pz);
+  glTexCoord2f(0, 1); glVertex3f(px,          py + pHeight, pz);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py + pHeight, pz);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py,           pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[2]);//pos_z
+glBegin(GL_QUADS);
+  glTexCoord2f(1, 0); glVertex3f(px,          py,           pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px,          py + pHeight, pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py,           pz + pLength);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[5]);//neg_y
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py, pz);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py, pz + pLength);
+  glTexCoord2f(1, 0); glVertex3f(px,          py, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px,          py, pz);
+glEnd();
+
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[4]);//pos_y
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 1); glVertex3f(px,          py + pHeight, pz);
+  glTexCoord2f(1, 1); glVertex3f(px,          py + pHeight, pz + pLength);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py + pHeight, pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[1]);//pos_x
+glBegin(GL_QUADS);
+  glTexCoord2f(1, 0); glVertex3f(px, py,           pz);
+  glTexCoord2f(0, 0); glVertex3f(px, py,           pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px, py + pHeight, pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px, py + pHeight, pz);
+glEnd();
+ 
+glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[3]);//neg_x
+glBegin(GL_QUADS);
+  glTexCoord2f(0, 0); glVertex3f(px + pWidth, py,           pz);
+  glTexCoord2f(1, 0); glVertex3f(px + pWidth, py,           pz + pLength);
+  glTexCoord2f(1, 1); glVertex3f(px + pWidth, py + pHeight, pz + pLength);
+  glTexCoord2f(0, 1); glVertex3f(px + pWidth, py + pHeight, pz);
+ glEnd();
+
+  // restore matrix and attributes
+  glPopMatrix();
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
+}
+
 void drawCS() {
   glBegin(GL_LINES);
     // red X
@@ -196,18 +319,28 @@ void drawCS() {
 
 void drawLight() {
   GLfloat lp[] = { lightPos.x, lightPos.y, lightPos.z, 1.0f };
+  GLfloat al[] = { ambientLight[0], ambientLight[1], ambientLight[2], 1.0f };
+  GLfloat dl[] = { diffuseLight[0], diffuseLight[1], diffuseLight[2], 1.0f };
+  GLfloat sl[] = { specularLight[0], specularLight[1], specularLight[2], 1.0f };
+  glLightfv(GL_LIGHT0, GL_AMBIENT, al);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, dl);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, sl);
   glLightfv(GL_LIGHT0, GL_POSITION, lp);
+
+
   // draw yellow sphere for light source
   glPushMatrix();    
     glTranslatef(lp[0], lp[1], lp[2]);
     glColor3f(1,1,0);    
-    glutSolidSphere(0.2f,16,16);    
+    glutSolidSphere(0.2f,16,16);
   glPopMatrix();  
 }
 
 void renderScene() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   // render ray trace result on a quad in front of the camera
+
+
   if ( raytracedTextureID ) {
     // save matrix and load identities => no transformation, no projection
     glMatrixMode(GL_PROJECTION);
@@ -245,6 +378,9 @@ void renderScene() {
               0.0,            1.0,            0.0);           // Up-direction  
     // draw coordinate system without lighting
     glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    drawSkybox();
+    glEnable(GL_DEPTH_TEST);
     drawCS();
     // draw sphere for light still without lighting
     drawLight();
@@ -264,6 +400,153 @@ void renderScene() {
   }
   // swap Buffers
   glutSwapBuffers();
+}
+
+void calculateIntensity(Ray<float> ray, Vec3f& I, unsigned int& hits, int depth, bool verbose) {
+      float t = 1000.0f;              // ray parameter hit point, initialized with max view length
+      float u,v;                      // barycentric coordinates (w = 1-u-v)
+      // intersection test
+      int hitMesh;
+      unsigned int hitTri;
+      if (verbose) std::cout << std::endl << "test - depth " << depth << std::endl;
+      if ((hitMesh = intersectRayObjectsEarliest(ray,t,u,v,hitTri)) != -1) {
+        if(verbose) std::cout << "hit" << std::endl;
+        // get hit position
+        vector<Vec3f>& vertices = meshes[hitMesh].getVertices();
+        vector<Vec3ui>& triangles = meshes[hitMesh].getTriangles();
+        Vec3f p0 = vertices[triangles[hitTri][0]];
+        Vec3f p1 = vertices[triangles[hitTri][1]];
+        Vec3f p2 = vertices[triangles[hitTri][2]];
+        // reconstruction from barycentric coordinates:
+        Vec3f P = (1-u-v) * p0 + u * p1 + v * p2;
+        // get light vector
+        Vec3f L = lightPos - P;
+        L.normalize();
+        // get normal vector
+        vector<Vec3f>& normals = meshes[hitMesh].getNormals();
+        Vec3f n0 = normals[triangles[hitTri][0]];
+        Vec3f n1 = normals[triangles[hitTri][1]];
+        Vec3f n2 = normals[triangles[hitTri][2]];
+        // interpolation via barycentric coordinates:
+        Vec3f N = (1-u-v) * n0 + u * n1 + v * n2;
+        N /= N.length();
+        // get observation vector
+        Vec3f V = ray.o - P;
+        V.normalize();
+        // get halfway vector
+        Vec3f H = V + L;
+        H.normalize();
+
+        Vec3f ilambdaa(ambientLight[0], ambientLight[1], ambientLight[2]);
+        Vec3f fd(diffuseLight[0], diffuseLight[1], diffuseLight[2]);
+        Vec3f fs(specularLight[0], specularLight[1], specularLight[2]);
+
+        Vec3f ilambdai(1.0f, 1.0f, 1.0f); // itensity of light source
+
+        Vec3f ka(objects[hitMesh].matAmbient[0], objects[hitMesh].matAmbient[1], objects[hitMesh].matAmbient[2]);
+        Vec3f kd(objects[hitMesh].matDiffuse[0], objects[hitMesh].matDiffuse[1], objects[hitMesh].matDiffuse[2]);
+        Vec3f ks(objects[hitMesh].matSpecular[0], objects[hitMesh].matSpecular[1], objects[hitMesh].matSpecular[2]);
+        Vec3f kr(objects[hitMesh].matReflect[0], objects[hitMesh].matReflect[1], objects[hitMesh].matReflect[2]);
+        Vec3f kt(objects[hitMesh].matOpacity[0], objects[hitMesh].matOpacity[1], objects[hitMesh].matOpacity[2]); 
+        float ke = objects[hitMesh].matShininess;
+        float n = objects[hitMesh].matRefract;
+
+        // create ray against light source
+        float epsilon = 0.0001f;
+        Vec3f newPos = P + (epsilon * L);
+        float endP[3]; endP[0]=(float)lightPos[0];    endP[1]=(float)lightPos[1];    endP[2]=(float)lightPos[2];
+        float eyeP[3]; eyeP[0]=(float)newPos[0];      eyeP[1]=(float)newPos[1];      eyeP[2]=(float)newPos[2];
+        Ray<float> lightRay(&eyeP[0], &endP[0]);
+
+        int s = 0;
+        // check if lightray hits light
+        if ((hitMesh = intersectRayObjectsEarliest(lightRay,t,u,v,hitTri)) == -1) {
+          s = 1;
+        }
+        if(verbose) std::cout << "light ray: s=" << s << std::endl;
+
+        // create recursive ray, in ideally reflected direction
+        Vec3f R = 2 * (V * N) * N - V;
+        newPos = P + (epsilon * R);
+        Vec3f recPos = newPos + R * 1000;
+        float endR[3]; endR[0]=(float)recPos[0];  endR[1]=(float)recPos[1];  endR[2]=(float)recPos[2];
+        float eyeR[3]; eyeR[0]=(float)newPos[0];  eyeR[1]=(float)newPos[1];  eyeR[2]=(float)newPos[2];
+        Ray<float> recursiveRay(&eyeR[0], &endR[0]);
+
+        // check if recursiveRay hits other objects
+        Vec3f recI(0.0f, 0.0f, 0.0f);
+        if ((depth > 0)) {
+            if(verbose) std::cout << "---- start recursion";
+            calculateIntensity(recursiveRay, recI, hits, depth-1, verbose);
+            if(verbose) std::cout << "---- end recursion" << std::endl;
+        }
+        else if(verbose) std::cout << std::endl << "no further recursion - min depth reached" << std::endl;
+        if(verbose) std::cout << "recursive intensity: " << recI << std::endl;
+
+        // create transparent ray, through the object
+        Vec3f V_refract;
+        if((N * V) > 0) {
+            Vec3f sin = V - N;
+            sin = sin / n;
+            V_refract = sin + N;
+            V_refract.normalize();
+            V_refract *= -1;
+        } else {
+            Vec3f V_inv = V * -1;
+            Vec3f sin = V_inv - N;
+            sin *= n;
+            V_refract = sin + N;
+            V_refract.normalize();
+        }
+        newPos = P + (V_refract * epsilon);
+        Vec3f transPos = newPos + (V_refract * 1000);
+        float endT[3]; endT[0]=(float)transPos[0];  endT[1]=(float)transPos[1];  endT[2]=(float)transPos[2];
+        float eyeT[3]; eyeT[0]=(float)newPos[0];    eyeT[1]=(float)newPos[1];    eyeT[2]=(float)newPos[2];
+
+        // check if transparent ray hits other objects
+        Vec3f transI(0.0f, 0.0f, 0.0f);
+        Ray<float> transparentRay(&eyeT[0], &endT[0]);
+        if (depth > 0) {
+            if(verbose) std::cout << "---- start transparency recursion";
+            calculateIntensity(transparentRay, transI, hits, depth-1, verbose);
+            if(verbose) std::cout << "---- end transparency recursion" << std::endl;
+        } else if(verbose) std::cout << "no further transparency recursion - min depth reached" << std::endl;
+        if(verbose) std::cout << "transparent intensity: " << transI << std::endl;
+
+        // calculate each pixel value
+        if(verbose && !depth) {
+            std::cout << "parameters recursive calls:" << std::endl;
+            std::cout << "hitMesh: " << hitMesh << std::endl;
+            std::cout << "hitTri: " << hitTri << std::endl;
+            std::cout << "fs: " << fs << std::endl;
+            std::cout << "ilambdai: " << ilambdai << std::endl;
+            std::cout << "ks: " << ks << std::endl;
+            std::cout << "ke: " << ke << std::endl;
+            std::cout << "Normal vector: " << N << std::endl;
+            std::cout << "Light vector: " << L << std::endl;
+            std::cout << "N * L: " << N * L << std::endl;
+            std::cout << "Observation vector: " << V << std::endl;
+            std::cout << "Halfway vector: " << H << std::endl;
+            std::cout << "H * N: " << H * N << std::endl;
+            std::cout << "pow(H * N, ke): " << pow(H * N, ke) << std::endl;
+            std::cout << "ambient: " << ilambdaa[0] * ka[0] << std::endl;
+            std::cout << "diffuse: " << s * ilambdai[0] * kd[0] * fd[0] * (L * N) << std::endl;
+            std::cout << "specular: " << s * ilambdai[0] * ks[0] * fs[0] * pow(H * N, ke) << std::endl;
+            std::cout << "reflected: " << kr[0] * recI[0] << std::endl;
+        }
+        float NH = max(N * H, 0.0f);
+        float NL = max(N * L, 0.0f);
+        float redPixel = (ilambdaa[0] * ka[0]) + (s * ilambdai[0] * (kd[0] * fd[0] * NL + ks[0] * fs[0] * pow(NH, ke))) + (kr[0] * recI[0]) + (kt[0] * transI[0]);
+        float greenPixel = (ilambdaa[1] * ka[1]) + (s * ilambdai[1] * (kd[1] * fd[1] * NL + ks[1] * fs[1] * pow(NH, ke))) + (kr[1] * recI[1]) + (kt[1] * transI[1]);
+        float bluePixel = (ilambdaa[2] * ka[2]) + (s * ilambdai[2] * (kd[2] * fd[2] * NL + ks[2] * fs[2] * pow(NH, ke))) + (kr[2] * recI[2]) + (kt[2] * transI[2]);
+        I[0] = redPixel;
+        I[1] = greenPixel;
+        I[2] = bluePixel;
+        if(verbose) std::cout << "overall intensity: " << I << std::endl;
+        hits++;
+      }
+      else if (verbose)
+          std::cout << "no hit" << std::endl;
 }
 
 void raytrace() {
@@ -296,18 +579,8 @@ void raytrace() {
       float endF[3]; endF[0]=(float)end[0];  endF[1]=(float)end[1];  endF[2]=(float)end[2]; 
       float eyeF[3]; eyeF[0]=(float)eye[0];  eyeF[1]=(float)eye[1];  eyeF[2]=(float)eye[2]; 
       Ray<float> ray(&eyeF[0], &endF[0]);
-      float t = 1000.0f;              // ray parameter hit point, initialized with max view length
-      float u,v;                      // barycentric coordinates (w = 1-u-v)
-      // intersection test
-      int hitMesh;
-      unsigned int hitTri;
-      if ((hitMesh = intersectRayObjectsEarliest(ray,t,u,v,hitTri)) != -1) {
-        // TODO: calculate color
-        // temporary pure white
-        Vec3f rgb(1.0f, 1.0f, 1.0f);
-        pictureRGB[pixel] = rgb;
-        hits++;
-      }
+      pictureRGB[pixel] = Vec3f(0.0f, 0.0f, 0.0f);
+      calculateIntensity(ray, pictureRGB[pixel], hits, 3, false);
       // cout "." every 1/50 of all pixels
       #pragma omp flush (pixelCounter)
       pixelCounter++;
@@ -346,26 +619,34 @@ void raytrace() {
 
 int intersectRayObjectsEarliest(const Ray<float> &ray, float &t, float &u, float &v, unsigned int &hitTri) {
   // iterate over all meshes
+  unsigned int i_small = -1;
+  float t_small = -1.0f;
+  float u_small = -1.0f;
+  float v_small = -1.0f;
   for (unsigned int i = 0; i < meshes.size(); i++) {
     // optional: check ray versus bounding box first (t must have been initialized!)
     if (rayAABBIntersect(ray, meshes[i].boundingBoxMin, meshes[i].boundingBoxMax, 0.0f, t) == false) continue;
     // get triangle information
     vector<Vec3f>& vertices = meshes[i].getVertices();
     vector<Vec3ui>& triangles = meshes[i].getTriangles();
-    // brute force: iterate over all triangles of the mesh
+
+    // brute force: find smallest t
     for (unsigned int j = 0; j < triangles.size(); j++) {
       Vec3f& p0 = vertices[triangles[j][0]];
       Vec3f& p1 = vertices[triangles[j][1]];
       Vec3f& p2 = vertices[triangles[j][2]];
-      int hit = ray.triangleIntersect(&p0.x, &p1.x, &p2.x, u, v, t);
+      int hit = ray.triangleIntersect(&p0.x, &p1.x, &p2.x, u_small, v_small, t_small);
       intersectionTests++;
-      if (hit == 1 && t > 0.0f) {
+      if (hit == 1 && t_small > 0.0f && t > t_small) {
+        t = t_small;
+        i_small = i;
         hitTri = j;
-        return i;
+        u = u_small;
+        v = v_small;
       }
     }
   }
-  return -1;
+  return i_small;
 }
 
 // Smits’ method: Brian Smits. Efficient bounding box intersection. Ray tracing news, 15(1), 2002.

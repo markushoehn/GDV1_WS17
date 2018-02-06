@@ -24,6 +24,10 @@ using namespace std;
 // === GLOBAL DATA ===
 // ===================
 
+// skybox texture IDs
+vector<GLuint> skyboxTextureIDs;
+
+
 // camera Information
 Vec3f cameraPos;
 Vec3f cameraDir;
@@ -44,7 +48,10 @@ struct SceneObject {
   float matAmbient[4];
   float matDiffuse[4];
   float matSpecular[4];
+  float matReflect[4];
+  float matOpacity[4];
   float matShininess;
+  float matRefract;
   GLuint textureID;
 };
 vector<SceneObject> objects;
@@ -53,6 +60,11 @@ unsigned int drawMode;
 // raytraced texture
 GLuint raytracedTextureID;
 unsigned int intersectionTests;
+
+// light components for opengl and raytracing
+float ambientLight[4];
+float diffuseLight[4];
+float specularLight[4];
 
 // ==============
 // === BASICS ===
@@ -77,6 +89,8 @@ void drawCS();
 void drawLight();
 
 void renderScene(void);
+
+Vec3f calculateIntensity(Ray<float> ray, unsigned int& hits, int depth, bool verbose);
 
 void raytrace();
 
